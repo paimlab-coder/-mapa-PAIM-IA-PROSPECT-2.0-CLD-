@@ -141,16 +141,70 @@ def _load_geo_cache() -> dict:
         return {}
 
 
-def _nominatim(params: dict):
+def _get_json(url, headers=None, timeout=20):
+    req = urllib.request.Request(url, headers={'User-Agent': NOMINATIM_UA, 'Accept-Language': 'es,pt,en', **(headers or {})})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.loads(r.read().decode('utf-8'))
+
+
+COUNTRY_QID = {'AR': 'Q414', 'BO': 'Q750', 'CL': 'Q298', 'CO': 'Q739', 'EC': 'Q736',
+               'MX': 'Q96', 'PY': 'Q733', 'PE': 'Q419', 'UY': 'Q77'}
+CITY_TYPES = {'city', 'town', 'village', 'municipality', 'locality', 'district', 'county'}
+
+
+def _photon(city, region, iso):
+    """Photon (komoot, dados OpenStreetMap): gratuito, sem chave, considera a provincia/estado."""
+    q = urllib.parse.urlencode({'q': f'{city}, {region}, {SUPPORTED.get(iso, iso)}', 'limit': 10})
+    data = _get_json('https://photon.komoot.io/api/?' + q)
+    best = None
+    for f in data.get('features') or []:
+        pr = f.get('properties') or {}
+        if (pr.get('countrycode') or '').upper() != iso:
+            continue
+        coords = (f.get('geometry') or {}).get('coordinates') or []
+        if len(coords) < 2:
+            continue
+        rank = 0
+        if norm(pr.get('name')) == norm(city):
+            rank += 2
+        st = norm(pr.get('state'))
+        if region and st and (norm(region) in st or st in norm(region)):
+            rank += 2
+        if (pr.get('type') or pr.get('osm_value') or '') in CITY_TYPES or pr.get('osm_value') in CITY_TYPES:
+            rank += 1
+        if best is None or rank > best[0]:
+            best = (rank, float(coords[1]), float(coords[0]), ', '.join(x for x in [pr.get('name'), pr.get('state'), pr.get('country')] if x))
+    return best[1:] if best else None
+
+
+def _wikidata(city, iso):
+    """Wikidata (CC0): cidade com o pais certo (P17) e coordenadas (P625)."""
+    W = 'https://www.wikidata.org/w/api.php?'
+    s = _get_json(W + urllib.parse.urlencode({'action': 'wbsearchentities', 'search': city, 'language': 'es',
+                                               'type': 'item', 'limit': 8, 'format': 'json'}))
+    ids = [x['id'] for x in s.get('search') or []]
+    if not ids:
+        return None
+    e = _get_json(W + urllib.parse.urlencode({'action': 'wbgetentities', 'ids': '|'.join(ids), 'props': 'claims|labels',
+                                               'languages': 'es', 'format': 'json'}))
+    for i in ids:
+        c = ((e.get('entities') or {}).get(i) or {}).get('claims') or {}
+        pais = [x.get('mainsnak', {}).get('datavalue', {}).get('value', {}).get('id') for x in c.get('P17', [])]
+        coord = [x.get('mainsnak', {}).get('datavalue', {}).get('value') for x in c.get('P625', [])]
+        coord = [v for v in coord if isinstance(v, dict) and 'latitude' in v]
+        if COUNTRY_QID.get(iso) in pais and coord:
+            return float(coord[0]['latitude']), float(coord[0]['longitude']), f'{city} (Wikidata {i})'
+    return None
+
+
+def _nominatim(city, region, iso):
     with _geo_lock:  # no maximo 1 requisicao por segundo (politica do Nominatim)
         wait = 1.1 - (time.time() - _last_geo_call[0])
         if wait > 0:
             time.sleep(wait)
-        url = NOMINATIM_URL + '?' + urllib.parse.urlencode({**params, 'format': 'jsonv2', 'limit': 1})
-        req = urllib.request.Request(url, headers={'User-Agent': NOMINATIM_UA, 'Accept-Language': 'es,pt,en'})
         try:
-            with urllib.request.urlopen(req, timeout=20) as r:
-                data = json.loads(r.read().decode('utf-8'))
+            params = {'city': city, 'state': region, 'countrycodes': iso.lower(), 'format': 'jsonv2', 'limit': 1}
+            data = _get_json(NOMINATIM_URL + '?' + urllib.parse.urlencode(params))
         finally:
             _last_geo_call[0] = time.time()
     if data:
@@ -163,14 +217,16 @@ def geocode(city: str, region: str, iso: str):
     cache = _load_geo_cache()
     if key in cache:
         return tuple(cache[key])
-    cc = iso.lower()
-    attempts = [
-        {'city': city, 'state': region, 'countrycodes': cc},
-        {'q': f'{city}, {region}, {SUPPORTED.get(iso, iso)}', 'countrycodes': cc},
-        {'q': f'{city}, {SUPPORTED.get(iso, iso)}', 'countrycodes': cc},
-    ]
-    for params in attempts:
-        hit = _nominatim(params)
+    errors = []
+    # Ordem: Photon (considera a provincia) -> Wikidata -> Nominatim. Se um servico limitar (HTTP 429), tenta o proximo.
+    for name, fn in (('Photon', lambda: _photon(city, region, iso)),
+                     ('Wikidata', lambda: _wikidata(city, iso)),
+                     ('Nominatim', lambda: _nominatim(city, region, iso))):
+        try:
+            hit = fn()
+        except Exception as exc:
+            errors.append(f'{name}: {type(exc).__name__}: {exc}')
+            continue
         if hit:
             cache[key] = list(hit)
             try:
@@ -178,7 +234,8 @@ def geocode(city: str, region: str, iso: str):
             except Exception:
                 pass
             return hit
-    raise LookupError(f'Cidade não encontrada: {city} / {region} ({iso}). Confira a grafia ou escolha outra cidade.')
+        errors.append(f'{name}: sem resultado')
+    raise LookupError(f'Não foi possível localizar {city} / {region} ({iso}). Detalhes: ' + ' | '.join(errors))
 
 
 # ---------------------------------------------------------------- utilidades
