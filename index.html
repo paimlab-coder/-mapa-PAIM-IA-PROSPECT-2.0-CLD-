@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>PAIM IA Prospect · VER56 · Bertolini BSA</title>
+        <title>PAIM IA Prospect · VER57 · Bertolini BSA</title>
         <style>
             :root {
                 --b: #06418a;
@@ -734,7 +734,7 @@
             <aside class="side">
                 <div class="brand">
                     <b>PAIM IA PROSPECT</b>
-                    <small>Bertolini Intralogística · VER56 LATAM</small>
+                    <small>Bertolini Intralogística · VER57 LATAM</small>
                 </div>
                 <nav class="nav" id="nav">
                     <div class="nav-group">Visão geral</div>
@@ -2792,6 +2792,8 @@
                 async function explainFailure(e, p) {
                     if (e.name === 'AbortError')
                         return `A busca excedeu 12 minutos e foi cancelada. Tente um limite menor (${p.limit} → 200) ou um raio menor; no plano gratuito do Render, buscas grandes podem estourar a memória.`;
+                    if (/\b429\b|too many requests/i.test(e.message || ''))
+                        return 'Um serviço gratuito de localização de cidades limitou as consultas por alguns instantes (HTTP 429). Aguarde 1 a 2 minutos e tente de novo; buscas repetidas na mesma cidade usam o cache e não consultam o serviço outra vez.';
                     if (e.name !== 'TypeError')
                         return e.message;
                     const alive = await (async () => {
