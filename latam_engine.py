@@ -29,8 +29,11 @@ SUPPORTED = {
     'MX': 'Mexico', 'PY': 'Paraguay', 'PE': 'Peru', 'UY': 'Uruguay',
 }
 
+WANTED_COLUMNS = ('id', 'names', 'categories', 'basic_category', 'taxonomy', 'confidence',
+                  'websites', 'emails', 'phones', 'addresses', 'geometry', 'bbox')
+
 # Teto de seguranca para o plano gratuito do Render (512 MB).
-MAX_SCANNED = int(os.environ.get('LATAM_MAX_SCANNED', '250000'))
+MAX_SCANNED = int(os.environ.get('LATAM_MAX_SCANNED', '150000'))
 
 # A politica do Nominatim exige um User-Agent que identifique o app e um contato.
 NOMINATIM_URL = os.environ.get('NOMINATIM_URL', 'https://nominatim.openstreetmap.org/search')
@@ -263,6 +266,10 @@ def prospect(iso, region, city, segment, segment_es='', km=60, limit=50, min_sco
     rows = []
 
     for batch in reader:
+        # So as colunas usadas: reduz bastante a memoria no plano gratuito (512 MB).
+        cols = [c for c in WANTED_COLUMNS if c in batch.schema.names]
+        if cols:
+            batch = batch.select(cols)
         for rec in batch.to_pylist():
             if scanned >= MAX_SCANNED:
                 truncated = True
