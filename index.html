@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>PAIM IA PROSPECT VER46 GITHUB GET · LIMITE 1500 · Bertolini BSA</title>
+        <title>PAIM IA Prospect · VER51 · Bertolini BSA</title>
         <style>
             :root {
                 --b: #06418a;
@@ -566,35 +566,150 @@
                 margin-top: 6px
             }
         </style>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style id="ver49-executive">
+            :root {
+                --b: #0a3d7a;
+                --n: #08254a;
+                --o: #f58220;
+                --bg: #eef1f5;
+                --ink: #14202e;
+                --mut: #5d6b7c;
+                --line: #dfe5ec;
+                --surface: #ffffff;
+                --navy-900: #061a33;
+            }
+            body { font: 14px/1.5 "IBM Plex Sans", "Segoe UI", system-ui, Arial, sans-serif; font-feature-settings: "tnum" 1; }
+
+            /* Sidebar */
+            .side { width: 248px; flex: 0 0 248px; background: var(--navy-900); display: flex; flex-direction: column; }
+            .brand { background: transparent; padding: 22px 18px 18px; border-bottom: 1px solid #ffffff1a; }
+            .brand b { font-size: 15px; font-weight: 700; letter-spacing: .02em; }
+            .brand b::before { content: ""; display: inline-block; width: 8px; height: 8px; background: var(--o); border-radius: 2px; margin-right: 8px; vertical-align: 1px; }
+            .brand small { display: block; margin-top: 4px; color: #9fb2c9; font-size: 11.5px; }
+            .nav { padding: 12px 10px; flex: 1; overflow: auto; }
+            .nav button { display: flex; align-items: center; gap: 10px; color: #c3d0df; font-weight: 500; font-size: 13.5px; padding: 9px 10px; border-radius: 6px; position: relative; }
+            .nav button .ico { width: 18px; text-align: center; color: #7f95ae; font-size: 13px; }
+            .nav button:hover { background: #ffffff0f; color: #fff; }
+            .nav button.active { background: #ffffff14; color: #fff; }
+            .nav button.active::before { content: ""; position: absolute; left: -10px; top: 8px; bottom: 8px; width: 3px; background: var(--o); border-radius: 0 3px 3px 0; }
+            .nav button.active .ico { color: var(--o); }
+            .nav-group { font-size: 11px; color: #6f86a1; padding: 14px 10px 6px; font-weight: 600; }
+            .sf { padding: 0 18px 12px; font-size: 11px; color: #8ea3bb; }
+
+            /* Créditos no rodapé da barra lateral */
+            .dev-card { margin: 0 12px 14px; padding: 12px; border: 1px solid #ffffff1a; border-radius: 10px; background: #ffffff08; display: flex; gap: 10px; align-items: center; }
+            .dev-card img, .dev-card .mono { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex: 0 0 40px; border: 2px solid #ffffff33; }
+            .dev-card small { display: block; color: #8ea3bb; font-size: 10.5px; line-height: 1.3; }
+            .dev-card b { display: block; color: #fff; font-size: 12.5px; font-weight: 600; line-height: 1.3; }
+            .mono { display: grid; place-items: center; background: var(--b); color: #fff; font-weight: 700; font-size: 12px; }
+
+            /* Cabeçalho */
+            .main { background: var(--bg); }
+            .top { height: 64px; flex: 0 0 64px; padding: 0 24px; background: var(--surface); box-shadow: 0 1px 0 var(--line); }
+            .top-title b { display: block; color: var(--ink); font-size: 15px; font-weight: 600; }
+            .top-title small { color: var(--mut); font-size: 12px; }
+            .top-right { display: flex; align-items: center; gap: 18px; }
+            .status-pill { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: #1f5132; background: #e9f6ee; border: 1px solid #c9e8d4; padding: 5px 10px; border-radius: 99px; }
+            .status-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #2f9a5a; }
+            .consult { display: flex; align-items: center; gap: 10px; padding-left: 18px; border-left: 1px solid var(--line); }
+            .consult img, .consult .mono { width: 36px; height: 36px; border-radius: 8px; object-fit: contain; background: #fff; border: 1px solid var(--line); }
+            .consult small { display: block; color: var(--mut); font-size: 10.5px; line-height: 1.2; }
+            .consult b { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink); line-height: 1.25; }
+
+            /* Conteúdo */
+            .content { padding: 26px 28px 40px; }
+            h1 { font-size: 24px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; margin: 0 0 4px; }
+            .sub { font-size: 13px; margin: 0 0 18px; }
+            .card { border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; margin: 0 0 16px; box-shadow: 0 1px 2px #0a1e3a0a; }
+            .card h2, .card-header-flex h3 { font-size: 15px; font-weight: 600; color: var(--ink); }
+            .notice { background: #fff; border: 1px solid var(--line); border-left: 3px solid var(--o); border-radius: 8px; }
+            .filter-summary { background: transparent; padding: 0; color: var(--mut); font-weight: 500; font-size: 12.5px; }
+
+            /* KPIs */
+            .kpis { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 12px; margin: 16px 0 18px; }
+            .kpi { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 2px #0a1e3a0a; }
+            .kpi span { font-size: 12px; color: var(--mut); font-weight: 500; }
+            .kpi b { font-size: 28px; font-weight: 600; color: var(--n); margin-top: 4px; letter-spacing: -.01em; }
+            .kpi:first-child { background: var(--n); border-color: var(--n); }
+            .kpi:first-child span { color: #a9bdd4; }
+            .kpi:first-child b { color: #fff; }
+
+            /* Botões e campos */
+            .btn { border-radius: 6px; font-weight: 600; font-size: 13px; padding: 9px 14px; background: var(--n); }
+            .btn:hover { filter: brightness(1.12); }
+            .btn.orange { background: var(--o); }
+            .btn.light { background: #fff; color: var(--n); box-shadow: inset 0 0 0 1px #c9d3df; }
+            .filters label, .map-controls label { font-size: 11.5px; font-weight: 600; color: var(--mut); }
+            .filters input, .filters select, .map-controls input, .map-controls select { border: 1px solid #cfd8e3; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: 13px; }
+            .filters input:focus, .filters select:focus, .map-controls input:focus, .map-controls select:focus { outline: 2px solid #0a3d7a33; border-color: var(--b); }
+            :focus-visible { outline: 2px solid var(--o); outline-offset: 2px; }
+            .map-note { background: #fff; border: 1px solid var(--line); border-left: 3px solid var(--o); }
+
+            /* Tabelas */
+            .tablebox { border-radius: 8px; }
+            th { background: #f4f6f9; color: var(--mut); font-weight: 600; font-size: 11.5px; border-bottom: 1px solid var(--line); padding: 10px; }
+            td { padding: 9px 10px; border-bottom: 1px solid #edf1f5; }
+            tr:nth-child(even) td { background: #fff; }
+            tbody tr:hover td { background: #f7f9fc; }
+
+            #mGoogle { background: #fff; color: var(--n); box-shadow: inset 0 0 0 1px #c9d3df; }
+            .status-pill.off { color: #8a3b12; background: #fdf0e6; border-color: #f6d3b8; }
+            .status-pill.off::before { background: var(--o); }
+            .status-pill.warm { color: #6b5310; background: #fdf7e3; border-color: #f0e2b0; }
+            .status-pill.warm::before { background: #d9a400; }
+            @media (max-width: 900px) {
+                .app { flex-direction: column; }
+                .side { width: 100%; flex: none; }
+                .consult div { display: none; }
+                .top-title small { display: none; }
+            }
+            @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+        </style>
     </head>
     <body>
         <div class="app">
             <aside class="side">
                 <div class="brand">
                     <b>PAIM IA PROSPECT</b>
-                    <small>Bertolini Intralogística · VER46 DEFINITIVO</small>
+                    <small>Bertolini Intralogística · VER51 LATAM</small>
                 </div>
                 <nav class="nav" id="nav">
-                    <button class="active" data-tab="dash">▦ Dashboard Principal</button>
-                    <button data-tab="bases">⇧ Central de Bases</button>
-                    <button data-tab="search">⌕ Busca & Mercado (Hub)</button>
-                    <button data-tab="geomapbase">◉ Mapa Hub Base</button>
-                    <button data-tab="profile">▣ Empresa 360°</button>
-                    <button data-tab="geomap">◉ Mapa de Prospecção</button>
-                    <button data-tab="cnae">☷ CNAE & Segmentos</button>
-                    <button data-tab="radar">◉ Radar de Mercado</button>
-                    <button data-tab="icp">⚙ ICP & Score</button>
-                    <button data-tab="opp">◎ Fila de Oportunidades</button>
-                    <button data-tab="bdr">☷ Listas para BDR</button>
-                    <button data-tab="sources">◌ Fontes Monitoradas</button>
-                    <button data-tab="gov">◇ Configurações & Governança</button>
+                    <div class="nav-group">Visão geral</div>
+                    <button class="active" data-tab="dash"><span class="ico">▦</span>Dashboard Principal</button>
+                    <button data-tab="bases"><span class="ico">⇧</span>Central de Bases</button>
+                    <button data-tab="search"><span class="ico">⌕</span>Busca & Mercado (Hub)</button>
+                    <button data-tab="geomapbase"><span class="ico">◉</span>Mapa Hub Base</button>
+                    <button data-tab="profile"><span class="ico">▣</span>Empresa 360°</button>
+                    <div class="nav-group">Prospecção</div>
+                    <button data-tab="geomap"><span class="ico">◉</span>Mapa de Prospecção</button>
+                    <button data-tab="cnae"><span class="ico">☷</span>CNAE & Segmentos</button>
+                    <button data-tab="radar"><span class="ico">◉</span>Radar de Mercado</button>
+                    <button data-tab="icp"><span class="ico">⚙</span>ICP & Score</button>
+                    <div class="nav-group">Pipeline</div>
+                    <button data-tab="opp"><span class="ico">◎</span>Fila de Oportunidades</button>
+                    <button data-tab="bdr"><span class="ico">☷</span>Listas para BDR</button>
+                    <div class="nav-group">Administração</div>
+                    <button data-tab="sources"><span class="ico">◌</span>Fontes Monitoradas</button>
+                    <button data-tab="gov"><span class="ico">◇</span>Configurações & Governança</button>
                 </nav>
                 <div class="sf">Dados na memória da página. Exporte antes de fechar.</div>
+                <div class="dev-card">
+                    <img src="https://media.licdn.com/dms/image/v2/D4D03AQGg0pmvygVbBQ/profile-displayphoto-scale_200_200/B4DaBdg.K6KkAc-/0/1788275320478?e=1796256000&v=beta&t=_0xess2pxEsI7nb2Tmc0OxTWPiD9YJBm42B3MULfiyw" alt="Foto do desenvolvedor" referrerpolicy="no-referrer" onerror="this.outerHTML='&lt;span class=&quot;mono&quot;&gt;DEV&lt;/span&gt;'" >
+                    <div><small>Desenvolvido por</small><b>Paim Business Intelligence</b><small>Desenvolvedor Front &amp; Back-End</small></div>
+                </div>
             </aside>
             <div class="main">
                 <header class="top">
-                    <b>PAIM IA PROSPECT · MOTOR B2B BSA</b>
-                    <span class="tag" id="topStatus">Nenhuma base carregada</span>
+                    <div class="top-title"><b>PAIM IA Prospect</b><small>Motor de inteligência B2B · Bertolini BSA · Brasil e América Latina</small></div>
+                    <div class="top-right">
+                        <span class="status-pill" id="topStatus">Nenhuma base carregada</span>
+                        <div class="consult">
+                            <img src="https://media.licdn.com/dms/image/v2/D4D0BAQEBjeh4uT91Pw/company-logo_100_100/B4DZyZPXLDG8AQ-/0/1772097468349?e=1796256000&v=beta&t=WruyhgV759uZkK0Gin3M7PdYLZeXZp6y16-q9x5A2hw" alt="Logo Paim Business Intelligence Consultant" referrerpolicy="no-referrer" onerror="this.outerHTML='&lt;span class=&quot;mono&quot;&gt;PBI&lt;/span&gt;'" >
+                            <div><small>Consultoria</small><b>Paim Business Intelligence Consultant</b></div>
+                        </div>
+                    </div>
                 </header>
                 <main class="content">
                     <!-- DASHBOARD -->
@@ -709,7 +824,7 @@
                                     </select>
                                 </label>
                                 <label>
-                                    Busca livre<input id="fText" placeholder="Empresa, CNPJ...">
+                                    Busca livre<input id="fText" placeholder="Empresa, CNPJ, CUIT, RUT, RUC...">
                                 </label>
                             </div>
                             <div class="row" style="margin-top:10px">
@@ -852,19 +967,9 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label>CÓDIGO CNAE</label>
+                                    <label id="mCnaeLabel">CÓDIGO CNAE</label>
                                     <select id="mCnae">
                                         <option value="">Todos os CNAEs</option>
-                                        <option value="5210-9/99">5210-9/99 · Depósitos para terceiros</option>
-                                        <option value="5210-9/01">5210-9/01 · Armazéns gerais (warrant)</option>
-                                        <option value="5250-8/04">5250-8/04 · Logística e transporte de carga</option>
-                                        <option value="5210-9/02">5210-9/02 · Guarda-móveis e contêineres</option>
-                                        <option value="4930-2/02">4930-2/02 · Transporte rodoviário de carga</option>
-                                        <option value="1099-6/99">1099-6/99 · Alimentos</option>
-                                        <option value="1113-5/02">1113-5/02 · Bebidas e Cervejas</option>
-                                        <option value="3101-2/00">3101-2/00 · Moveleira</option>
-                                        <option value="2121-1/01">2121-1/01 · Farmacêutica</option>
-                                        <option value="4790-3/02">4790-3/02 · E-commerce / Varejo online</option>
                                     </select>
                                 </div>
                                 <div>
@@ -901,7 +1006,7 @@
                                 <button class="btn orange" id="mAddBdr">Adicionar selecionados à Lista BDR</button>
                                 <button class="btn light" onclick="clearMapFilters()">Limpar Filtros</button>
                             </div>
-                            <div class="map-note" id="mStatus">Selecione Estado, Cidade e Segmento ou CNAE. A prospecção usa Overture Maps, sem Google, API Key ou Overpass.</div>
+                            <div class="map-note" id="mStatus">Selecione País, Estado/Província, Cidade e Segmento ou CNAE/CIIU. A prospecção usa Overture Maps, sem Google, API Key ou Overpass.</div>
                         </div>
                         <div class="map-layout">
                             <div id="prospectMap" style="height:550px;border-radius:8px"></div>
@@ -941,13 +1046,13 @@
 
                     <!-- CNAE & SEGMENTOS -->
                     <section class="view" id="v-cnae">
-                        <h1>CNAE &amp; Mapeamento de Segmentos</h1>
+                        <h1>CNAE / CIIU &amp; Mapeamento de Segmentos</h1>
                         <p class="sub">Catálogo de atividades econômicas prioritárias e cruzamento com o motor de prospecção da Bertolini BSA.</p>
                         <div class="card">
                             <div class="filters">
                                 <label>
                                     Buscar CNAE ou Descrição
-                                    <input id="fCnaeText" placeholder="Ex: 5210-9, Depósitos, Logística..." oninput="renderCnaeTable()">
+                                    <input id="fCnaeText" placeholder="Ex: 5211-7, 5210, Depósitos, Logística..." oninput="renderCnaeTable()">
                                 </label>
                                 <label>
                                     Filtro de Relevância BSA
@@ -967,6 +1072,7 @@
                                         <tr>
                                             <th>Código CNAE</th>
                                             <th>Denominação / Descrição da Atividade</th>
+                                            <th>CIIU Rev.4 (LATAM)</th>
                                             <th>Segmento Mapeado no Motor</th>
                                             <th>Relevância BSA</th>
                                         </tr>
@@ -1134,7 +1240,8 @@
         <script id="paim-ver46-github">
             (function() {
                 'use strict';
-                const API_BASE = 'https://paim-prospect-ia.onrender.com';
+                // Backend 2.0 (Brasil + América Latina). Troque aqui se o Render der outra URL ao serviço.
+                const API_BASE = 'https://paim-prospect-ia-latam.onrender.com';
                 const apiUrl = path => API_BASE + path;
                 const $ = id => document.getElementById(id)
                   , norm = v => String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
@@ -1195,20 +1302,274 @@
                     "SP": ["Adamantina", "Adolfo", "Aguaí", "Agudos", "Alambari", "Alfredo Marcondes", "Altair", "Altinópolis", "Alto Alegre", "Alumínio", "Alvinlândia", "Americana", "Amparo", "Américo Brasiliense", "Américo de Campos", "Analândia", "Andradina", "Angatuba", "Anhembi", "Anhumas", "Aparecida", "Aparecida d'Oeste", "Apiaí", "Aramina", "Arandu", "Arapeí", "Araraquara", "Araras", "Araçariguama", "Araçatuba", "Araçoiaba da Serra", "Arco-Íris", "Arealva", "Areias", "Areiópolis", "Ariranha", "Artur Nogueira", "Arujá", "Aspásia", "Assis", "Atibaia", "Auriflama", "Avanhandava", "Avaré", "Avaí", "Bady Bassitt", "Balbinos", "Bananal", "Barbosa", "Bariri", "Barra Bonita", "Barra do Chapéu", "Barra do Turvo", "Barretos", "Barrinha", "Barueri", "Barão de Antonina", "Bastos", "Batatais", "Bauru", "Bebedouro", "Bento de Abreu", "Bernardino de Campos", "Bertioga", "Bilac", "Birigui", "Biritiba-Mirim", "Boa Esperança do Sul", "Bocaina", "Bofete", "Boituva", "Bom Jesus dos Perdões", "Bom Sucesso de Itararé", "Boracéia", "Borborema", "Borebi", "Borá", "Botucatu", "Bragança Paulista", "Braúna", "Brejo Alegre", "Brodowski", "Brotas", "Buri", "Buritama", "Buritizal", "Bálsamo", "Cabreúva", "Cabrália Paulista", "Cachoeira Paulista", "Caconde", "Cafelândia", "Caiabu", "Caieiras", "Caiuá", "Cajamar", "Cajati", "Cajobi", "Cajuru", "Campina do Monte Alegre", "Campinas", "Campo Limpo Paulista", "Campos do Jordão", "Campos Novos Paulista", "Cananéia", "Canas", "Canitar", "Capela do Alto", "Capivari", "Capão Bonito", "Caraguatatuba", "Carapicuíba", "Cardoso", "Casa Branca", "Castilho", "Catanduva", "Catiguá", "Caçapava", "Cedral", "Cerqueira César", "Cerquilho", "Cesário Lange", "Charqueada", "Chavantes", "Clementina", "Colina", "Colômbia", "Conchal", "Conchas", "Cordeirópolis", "Coroados", "Coronel Macedo", "Corumbataí", "Cosmorama", "Cosmópolis", "Cotia", "Cravinhos", "Cristais Paulista", "Cruzeiro", "Cruzália", "Cubatão", "Cunha", "Cássia dos Coqueiros", "Cândido Mota", "Cândido Rodrigues", "Descalvado", "Diadema", "Dirce Reis", "Divinolândia", "Dobrada", "Dois Córregos", "Dolcinópolis", "Dourado", "Dracena", "Duartina", "Dumont", "Echaporã", "Eldorado", "Elias Fausto", "Elisiário", "Embaúba", "Embu das Artes", "Embu-Guaçu", "Emilianópolis", "Engenheiro Coelho", "Espírito Santo do Pinhal", "Espírito Santo do Turvo", "Estiva Gerbi", "Estrela d'Oeste", "Estrela do Norte", "Euclides da Cunha Paulista", "Fartura", "Fernando Prestes", "Fernandópolis", "Fernão", "Ferraz de Vasconcelos", "Flora Rica", "Floreal", "Florínia", "Flórida Paulista", "Franca", "Francisco Morato", "Franco da Rocha", "Gabriel Monteiro", "Garça", "Gastão Vidigal", "Gavião Peixoto", "General Salgado", "Getulina", "Glicério", "Guaimbê", "Guaiçara", "Guapiara", "Guapiaçu", "Guaraci", "Guarani d'Oeste", "Guarantã", "Guararapes", "Guararema", "Guaratinguetá", "Guaraçaí", "Guareí", "Guariba", "Guarujá", "Guarulhos", "Guará", "Guatapará", "Guaíra", "Guzolândia", "Gália", "Herculândia", "Holambra", "Hortolândia", "Iacanga", "Iacri", "Iaras", "Ibaté", "Ibirarema", "Ibirá", "Ibitinga", "Ibiúna", "Icém", "Iepê", "Igarapava", "Igaratá", "Igaraçu do Tietê", "Iguape", "Ilha Comprida", "Ilha Solteira", "Ilhabela", "Indaiatuba", "Indiana", "Indiaporã", "Inúbia Paulista", "Ipaussu", "Iperó", "Ipeúna", "Ipiguá", "Iporanga", "Ipuã", "Iracemápolis", "Irapuru", "Irapuã", "Itaberá", "Itajobi", "Itaju", "Itanhaém", "Itapecerica da Serra", "Itapetininga", "Itapeva", "Itapevi", "Itapira", "Itapirapuã Paulista", "Itaporanga", "Itapura", "Itapuí", "Itaquaquecetuba", "Itararé", "Itariri", "Itatiba", "Itatinga", "Itaí", "Itaóca", "Itirapina", "Itirapuã", "Itobi", "Itu", "Itupeva", "Ituverava", "Itápolis", "Jaborandi", "Jaboticabal", "Jacareí", "Jaci", "Jacupiranga", "Jaguariúna", "Jales", "Jambeiro", "Jandira", "Jardinópolis", "Jarinu", "Jaú", "Jeriquara", "Joanópolis", "José Bonifácio", "João Ramalho", "Jumirim", "Jundiaí", "Junqueirópolis", "Juquitiba", "Juquiá", "Júlio Mesquita", "Lagoinha", "Laranjal Paulista", "Lavrinhas", "Lavínia", "Leme", "Lençóis Paulista", "Limeira", "Lindóia", "Lins", "Lorena", "Lourdes", "Louveira", "Lucianópolis", "Lucélia", "Luiziânia", "Lupércio", "Lutécia", "Luís Antônio", "Macatuba", "Macaubal", "Macedônia", "Magda", "Mairinque", "Mairiporã", "Manduri", "Marabá Paulista", "Maracaí", "Marapoama", "Marinópolis", "Mariápolis", "Martinópolis", "Marília", "Matão", "Mauá", "Mendonça", "Meridiano", "Mesópolis", "Miguelópolis", "Mineiros do Tietê", "Mira Estrela", "Miracatu", "Mirandópolis", "Mirante do Paranapanema", "Mirassol", "Mirassolândia", "Mococa", "Mogi das Cruzes", "Mogi Guaçu", "Mogi Mirim", "Mombuca", "Mongaguá", "Monte Alegre do Sul", "Monte Alto", "Monte Aprazível", "Monte Azul Paulista", "Monte Castelo", "Monte Mor", "Monteiro Lobato", "Monções", "Morro Agudo", "Morungaba", "Motuca", "Murutinga do Sul", "Nantes", "Narandiba", "Natividade da Serra", "Nazaré Paulista", "Neves Paulista", "Nhandeara", "Nipoã", "Nova Aliança", "Nova Campina", "Nova Canaã Paulista", "Nova Castilho", "Nova Europa", "Nova Granada", "Nova Guataporanga", "Nova Independência", "Nova Luzitânia", "Nova Odessa", "Novais", "Novo Horizonte", "Nuporanga", "Ocauçu", "Olímpia", "Onda Verde", "Oriente", "Orindiúva", "Orlândia", "Osasco", "Oscar Bressane", "Osvaldo Cruz", "Ourinhos", "Ouro Verde", "Ouroeste", "Pacaembu", "Palestina", "Palmares Paulista", "Palmeira d'Oeste", "Palmital", "Panorama", "Paraguaçu Paulista", "Paraibuna", "Paranapanema", "Paranapuã", "Parapuã", "Paraíso", "Pardinho", "Pariquera-Açu", "Parisi", "Patrocínio Paulista", "Paulicéia", "Paulistânia", "Paulo de Faria", "Paulínia", "Pederneiras", "Pedra Bela", "Pedranópolis", "Pedregulho", "Pedreira", "Pedrinhas Paulista", "Pedro de Toledo", "Penápolis", "Pereira Barreto", "Pereiras", "Peruíbe", "Piacatu", "Piedade", "Pilar do Sul", "Pindamonhangaba", "Pindorama", "Pinhalzinho", "Piquerobi", "Piquete", "Piracaia", "Piracicaba", "Piraju", "Pirajuí", "Pirangi", "Pirapora do Bom Jesus", "Pirapozinho", "Pirassununga", "Piratininga", "Pitangueiras", "Planalto", "Platina", "Poloni", "Pompéia", "Pongaí", "Pontal", "Pontalinda", "Pontes Gestal", "Populina", "Porangaba", "Porto Feliz", "Porto Ferreira", "Potim", "Potirendaba", "Poá", "Pracinha", "Pradópolis", "Praia Grande", "Pratânia", "Presidente Alves", "Presidente Bernardes", "Presidente Epitácio", "Presidente Prudente", "Presidente Venceslau", "Promissão", "Quadra", "Quatá", "Queiroz", "Queluz", "Quintana", "Rafard", "Rancharia", "Redenção da Serra", "Regente Feijó", "Reginópolis", "Registro", "Restinga", "Ribeira", "Ribeirão Bonito", "Ribeirão Branco", "Ribeirão Corrente", "Ribeirão do Sul", "Ribeirão dos Índios", "Ribeirão Grande", "Ribeirão Pires", "Ribeirão Preto", "Rifaina", "Rincão", "Rinópolis", "Rio Claro", "Rio das Pedras", "Rio Grande da Serra", "Riolândia", "Riversul", "Rosana", "Roseira", "Rubinéia", "Rubiácea", "Sabino", "Sagres", "Sales", "Sales Oliveira", "Salesópolis", "Salmourão", "Saltinho", "Salto", "Salto de Pirapora", "Salto Grande", "Sandovalina", "Santa Adélia", "Santa Albertina", "Santa Branca", "Santa Bárbara d'Oeste", "Santa Clara d'Oeste", "Santa Cruz da Conceição", "Santa Cruz da Esperança", "Santa Cruz das Palmeiras", "Santa Cruz do Rio Pardo", "Santa Ernestina", "Santa Fé do Sul", "Santa Gertrudes", "Santa Isabel", "Santa Lúcia", "Santa Maria da Serra", "Santa Mercedes", "Santa Rita d'Oeste", "Santa Rita do Passa Quatro", "Santa Rosa de Viterbo", "Santa Salete", "Santana da Ponte Pensa", "Santana de Parnaíba", "Santo Anastácio", "Santo André", "Santo Antônio da Alegria", "Santo Antônio de Posse", "Santo Antônio do Aracanguá", "Santo Antônio do Jardim", "Santo Antônio do Pinhal", "Santo Expedito", "Santos", "Santópolis do Aguapeí", "Sarapuí", "Sarutaiá", "Sebastianópolis do Sul", "Serra Azul", "Serra Negra", "Serrana", "Sertãozinho", "Sete Barras", "Severínia", "Silveiras", "Socorro", "Sorocaba", "Sud Mennucci", "Sumaré", "Suzano", "Suzanápolis", "São Bento do Sapucaí", "São Bernardo do Campo", "São Caetano do Sul", "São Carlos", "São Francisco", "São Joaquim da Barra", "São José da Bela Vista", "São José do Barreiro", "São José do Rio Pardo", "São José do Rio Preto", "São José dos Campos", "São João da Boa Vista", "São João das Duas Pontes", "São João de Iracema", "São João do Pau d'Alho", "São Lourenço da Serra", "São Luiz do Paraitinga", "São Manuel", "São Miguel Arcanjo", "São Paulo", "São Pedro", "São Pedro do Turvo", "São Roque", "São Sebastião", "São Sebastião da Grama", "São Simão", "São Vicente", "Tabapuã", "Tabatinga", "Taboão da Serra", "Taciba", "Taguaí", "Taiaçu", "Taiúva", "Tambaú", "Tanabi", "Tapiratiba", "Tapiraí", "Taquaral", "Taquaritinga", "Taquarituba", "Taquarivaí", "Tarabai", "Tarumã", "Tatuí", "Taubaté", "Tejupá", "Teodoro Sampaio", "Terra Roxa", "Tietê", "Timburi", "Torre de Pedra", "Torrinha", "Trabiju", "Tremembé", "Três Fronteiras", "Tuiuti", "Tupi Paulista", "Tupã", "Turiúba", "Turmalina", "Ubarana", "Ubatuba", "Ubirajara", "Uchoa", "União Paulista", "Uru", "Urupês", "Urânia", "Valentim Gentil", "Valinhos", "Valparaíso", "Vargem", "Vargem Grande do Sul", "Vargem Grande Paulista", "Vera Cruz", "Vinhedo", "Viradouro", "Vista Alegre do Alto", "Vitória Brasil", "Votorantim", "Votuporanga", "Várzea Paulista", "Zacarias", "Águas da Prata", "Águas de Lindóia", "Águas de Santa Bárbara", "Águas de São Pedro", "Álvares Florence", "Álvares Machado", "Álvaro de Carvalho", "Óleo"],
                     "TO": ["Abreulândia", "Aguiarnópolis", "Aliança do Tocantins", "Almas", "Alvorada", "Ananás", "Angico", "Aparecida do Rio Negro", "Aragominas", "Araguacema", "Araguanã", "Araguatins", "Araguaçu", "Araguaína", "Arapoema", "Arraias", "Augustinópolis", "Aurora do Tocantins", "Axixá do Tocantins", "Babaçulândia", "Bandeirantes do Tocantins", "Barra do Ouro", "Barrolândia", "Bernardo Sayão", "Bom Jesus do Tocantins", "Brasilândia do Tocantins", "Brejinho de Nazaré", "Buriti do Tocantins", "Cachoeirinha", "Campos Lindos", "Cariri do Tocantins", "Carmolândia", "Carrasco Bonito", "Caseara", "Centenário", "Chapada da Natividade", "Chapada de Areia", "Colinas do Tocantins", "Colméia", "Combinado", "Conceição do Tocantins", "Couto Magalhães", "Cristalândia", "Crixás do Tocantins", "Darcinópolis", "Dianópolis", "Divinópolis do Tocantins", "Dois Irmãos do Tocantins", "Dueré", "Esperantina", "Figueirópolis", "Filadélfia", "Formoso do Araguaia", "Fortaleza do Tabocão", "Fátima", "Goianorte", "Goiatins", "Guaraí", "Gurupi", "Ipueiras", "Itacajá", "Itaguatins", "Itapiratins", "Itaporã do Tocantins", "Jaú do Tocantins", "Juarina", "Lagoa da Confusão", "Lagoa do Tocantins", "Lajeado", "Lavandeira", "Lizarda", "Luzinópolis", "Marianópolis do Tocantins", "Mateiros", "Maurilândia do Tocantins", "Miracema do Tocantins", "Miranorte", "Monte do Carmo", "Monte Santo do Tocantins", "Muricilândia", "Natividade", "Nazaré", "Nova Olinda", "Nova Rosalândia", "Novo Acordo", "Novo Alegre", "Novo Jardim", "Oliveira de Fátima", "Palmas", "Palmeirante", "Palmeiras do Tocantins", "Palmeirópolis", "Paranã", "Paraíso do Tocantins", "Pau D'Arco", "Pedro Afonso", "Peixe", "Pequizeiro", "Pindorama do Tocantins", "Piraquê", "Pium", "Ponte Alta do Bom Jesus", "Ponte Alta do Tocantins", "Porto Alegre do Tocantins", "Porto Nacional", "Praia Norte", "Presidente Kennedy", "Pugmil", "Recursolândia", "Riachinho", "Rio da Conceição", "Rio dos Bois", "Rio Sono", "Sampaio", "Sandolândia", "Santa Fé do Araguaia", "Santa Maria do Tocantins", "Santa Rita do Tocantins", "Santa Rosa do Tocantins", "Santa Tereza do Tocantins", "Santa Terezinha do Tocantins", "Silvanópolis", "Sucupira", "São Bento do Tocantins", "São Félix do Tocantins", "São Miguel do Tocantins", "São Salvador do Tocantins", "São Sebastião do Tocantins", "São Valério", "Sítio Novo do Tocantins", "Taguatinga", "Taipas do Tocantins", "Talismã", "Tocantinópolis", "Tocantínia", "Tupirama", "Tupiratins", "Wanderlândia", "Xambioá"]
                 };
+                // ===== LATAM: países, províncias e principais cidades (VER48) =====
+                const LATAM = {
+                    "Argentina": { iso: "AR", regionLabel: "Província", taxId: "CUIT", loc: {
+                        "Buenos Aires": ["La Plata", "Mar del Plata", "Bahía Blanca", "Tandil", "Pilar", "Campana", "Zárate"],
+                        "Ciudad Autónoma de Buenos Aires": ["Buenos Aires"],
+                        "Catamarca": ["San Fernando del Valle de Catamarca"],
+                        "Chaco": ["Resistencia"],
+                        "Chubut": ["Rawson", "Comodoro Rivadavia", "Trelew", "Puerto Madryn"],
+                        "Córdoba": ["Córdoba", "Río Cuarto", "Villa María", "San Francisco"],
+                        "Corrientes": ["Corrientes", "Goya"],
+                        "Entre Ríos": ["Paraná", "Concordia", "Gualeguaychú"],
+                        "Formosa": ["Formosa"],
+                        "Jujuy": ["San Salvador de Jujuy"],
+                        "La Pampa": ["Santa Rosa", "General Pico"],
+                        "La Rioja": ["La Rioja"],
+                        "Mendoza": ["Mendoza", "Godoy Cruz", "Luján de Cuyo", "San Rafael"],
+                        "Misiones": ["Posadas", "Oberá", "Eldorado"],
+                        "Neuquén": ["Neuquén", "Cutral Có"],
+                        "Río Negro": ["Viedma", "San Carlos de Bariloche", "General Roca", "Cipolletti"],
+                        "Salta": ["Salta"],
+                        "San Juan": ["San Juan"],
+                        "San Luis": ["San Luis", "Villa Mercedes"],
+                        "Santa Cruz": ["Río Gallegos", "Caleta Olivia"],
+                        "Santa Fe": ["Rosario", "Santa Fe", "Rafaela", "Venado Tuerto", "Reconquista"],
+                        "Santiago del Estero": ["Santiago del Estero", "La Banda"],
+                        "Tierra del Fuego": ["Ushuaia", "Río Grande"],
+                        "Tucumán": ["San Miguel de Tucumán"]
+                    }},
+                    "Bolívia": { iso: "BO", regionLabel: "Departamento", taxId: "NIT", loc: {
+                        "Beni": ["Trinidad", "Riberalta"],
+                        "Chuquisaca": ["Sucre"],
+                        "Cochabamba": ["Cochabamba", "Quillacollo", "Sacaba"],
+                        "La Paz": ["La Paz", "El Alto"],
+                        "Oruro": ["Oruro"],
+                        "Pando": ["Cobija"],
+                        "Potosí": ["Potosí"],
+                        "Santa Cruz": ["Santa Cruz de la Sierra", "Montero", "Warnes"],
+                        "Tarija": ["Tarija", "Yacuiba"]
+                    }},
+                    "Chile": { iso: "CL", regionLabel: "Região", taxId: "RUT", loc: {
+                        "Arica y Parinacota": ["Arica"],
+                        "Tarapacá": ["Iquique", "Alto Hospicio"],
+                        "Antofagasta": ["Antofagasta", "Calama"],
+                        "Atacama": ["Copiapó", "Vallenar"],
+                        "Coquimbo": ["La Serena", "Coquimbo", "Ovalle"],
+                        "Valparaíso": ["Valparaíso", "Viña del Mar", "San Antonio", "Quilpué", "Los Andes"],
+                        "Metropolitana de Santiago": ["Santiago", "Puente Alto", "Maipú", "Quilicura", "Pudahuel", "San Bernardo", "Lampa"],
+                        "O'Higgins": ["Rancagua", "San Fernando"],
+                        "Maule": ["Talca", "Curicó", "Linares"],
+                        "Ñuble": ["Chillán"],
+                        "Biobío": ["Concepción", "Talcahuano", "Los Ángeles", "Coronel"],
+                        "La Araucanía": ["Temuco"],
+                        "Los Ríos": ["Valdivia"],
+                        "Los Lagos": ["Puerto Montt", "Osorno"],
+                        "Aysén": ["Coyhaique"],
+                        "Magallanes": ["Punta Arenas"]
+                    }},
+                    "Colômbia": { iso: "CO", regionLabel: "Departamento", taxId: "NIT", loc: {
+                        "Amazonas": ["Leticia"],
+                        "Antioquia": ["Medellín", "Bello", "Itagüí", "Envigado", "Rionegro", "Apartadó"],
+                        "Arauca": ["Arauca"],
+                        "Atlántico": ["Barranquilla", "Soledad", "Malambo"],
+                        "Bogotá D.C.": ["Bogotá"],
+                        "Bolívar": ["Cartagena"],
+                        "Boyacá": ["Tunja", "Duitama", "Sogamoso"],
+                        "Caldas": ["Manizales"],
+                        "Caquetá": ["Florencia"],
+                        "Casanare": ["Yopal"],
+                        "Cauca": ["Popayán"],
+                        "Cesar": ["Valledupar"],
+                        "Chocó": ["Quibdó"],
+                        "Córdoba": ["Montería"],
+                        "Cundinamarca": ["Soacha", "Funza", "Mosquera", "Facatativá", "Zipaquirá", "Chía", "Cota", "Tocancipá"],
+                        "Guainía": ["Inírida"],
+                        "Guaviare": ["San José del Guaviare"],
+                        "Huila": ["Neiva"],
+                        "La Guajira": ["Riohacha"],
+                        "Magdalena": ["Santa Marta"],
+                        "Meta": ["Villavicencio"],
+                        "Nariño": ["Pasto", "Ipiales", "Tumaco"],
+                        "Norte de Santander": ["Cúcuta"],
+                        "Putumayo": ["Mocoa"],
+                        "Quindío": ["Armenia"],
+                        "Risaralda": ["Pereira", "Dosquebradas"],
+                        "San Andrés y Providencia": ["San Andrés"],
+                        "Santander": ["Bucaramanga", "Floridablanca", "Girón", "Barrancabermeja"],
+                        "Sucre": ["Sincelejo"],
+                        "Tolima": ["Ibagué"],
+                        "Valle del Cauca": ["Cali", "Palmira", "Yumbo", "Buenaventura", "Tuluá", "Buga"],
+                        "Vaupés": ["Mitú"],
+                        "Vichada": ["Puerto Carreño"]
+                    }},
+                    "Equador": { iso: "EC", regionLabel: "Província", taxId: "RUC", loc: {
+                        "Azuay": ["Cuenca"],
+                        "Bolívar": ["Guaranda"],
+                        "Cañar": ["Azogues"],
+                        "Carchi": ["Tulcán"],
+                        "Chimborazo": ["Riobamba"],
+                        "Cotopaxi": ["Latacunga"],
+                        "El Oro": ["Machala"],
+                        "Esmeraldas": ["Esmeraldas"],
+                        "Galápagos": ["Puerto Baquerizo Moreno"],
+                        "Guayas": ["Guayaquil", "Durán", "Samborondón", "Daule"],
+                        "Imbabura": ["Ibarra"],
+                        "Loja": ["Loja"],
+                        "Los Ríos": ["Babahoyo", "Quevedo"],
+                        "Manabí": ["Portoviejo", "Manta"],
+                        "Morona Santiago": ["Macas"],
+                        "Napo": ["Tena"],
+                        "Orellana": ["Puerto Francisco de Orellana"],
+                        "Pastaza": ["Puyo"],
+                        "Pichincha": ["Quito"],
+                        "Santa Elena": ["Santa Elena", "La Libertad", "Salinas"],
+                        "Santo Domingo de los Tsáchilas": ["Santo Domingo"],
+                        "Sucumbíos": ["Nueva Loja"],
+                        "Tungurahua": ["Ambato"],
+                        "Zamora Chinchipe": ["Zamora"]
+                    }},
+                    "México": { iso: "MX", regionLabel: "Estado", taxId: "RFC", loc: {
+                        "Aguascalientes": ["Aguascalientes"],
+                        "Baja California": ["Tijuana", "Mexicali", "Ensenada"],
+                        "Baja California Sur": ["La Paz", "Los Cabos"],
+                        "Campeche": ["Campeche", "Ciudad del Carmen"],
+                        "Chiapas": ["Tuxtla Gutiérrez", "Tapachula"],
+                        "Chihuahua": ["Chihuahua", "Ciudad Juárez"],
+                        "Ciudad de México": ["Ciudad de México"],
+                        "Coahuila": ["Saltillo", "Torreón", "Monclova", "Ramos Arizpe"],
+                        "Colima": ["Colima", "Manzanillo"],
+                        "Durango": ["Durango", "Gómez Palacio"],
+                        "Estado de México": ["Toluca", "Naucalpan", "Tlalnepantla", "Ecatepec", "Cuautitlán Izcalli", "Tultitlán"],
+                        "Guanajuato": ["León", "Irapuato", "Celaya", "Silao", "Guanajuato"],
+                        "Guerrero": ["Acapulco", "Chilpancingo"],
+                        "Hidalgo": ["Pachuca", "Tula de Allende"],
+                        "Jalisco": ["Guadalajara", "Zapopan", "Tlaquepaque", "Tlajomulco de Zúñiga", "Puerto Vallarta"],
+                        "Michoacán": ["Morelia", "Uruapan", "Lázaro Cárdenas"],
+                        "Morelos": ["Cuernavaca"],
+                        "Nayarit": ["Tepic"],
+                        "Nuevo León": ["Monterrey", "San Nicolás de los Garza", "Apodaca", "Guadalupe", "Santa Catarina", "Escobedo"],
+                        "Oaxaca": ["Oaxaca de Juárez"],
+                        "Puebla": ["Puebla", "Tehuacán"],
+                        "Querétaro": ["Querétaro", "San Juan del Río", "El Marqués"],
+                        "Quintana Roo": ["Cancún", "Playa del Carmen", "Chetumal"],
+                        "San Luis Potosí": ["San Luis Potosí"],
+                        "Sinaloa": ["Culiacán", "Mazatlán", "Los Mochis"],
+                        "Sonora": ["Hermosillo", "Ciudad Obregón", "Nogales"],
+                        "Tabasco": ["Villahermosa"],
+                        "Tamaulipas": ["Reynosa", "Matamoros", "Nuevo Laredo", "Tampico", "Ciudad Victoria"],
+                        "Tlaxcala": ["Tlaxcala", "Apizaco"],
+                        "Veracruz": ["Veracruz", "Xalapa", "Coatzacoalcos", "Córdoba"],
+                        "Yucatán": ["Mérida"],
+                        "Zacatecas": ["Zacatecas", "Fresnillo"]
+                    }},
+                    "Paraguai": { iso: "PY", regionLabel: "Departamento", taxId: "RUC", loc: {
+                        "Asunción": ["Asunción"],
+                        "Alto Paraguay": ["Fuerte Olimpo"],
+                        "Alto Paraná": ["Ciudad del Este", "Hernandarias", "Presidente Franco"],
+                        "Amambay": ["Pedro Juan Caballero"],
+                        "Boquerón": ["Filadelfia"],
+                        "Caaguazú": ["Coronel Oviedo", "Caaguazú"],
+                        "Caazapá": ["Caazapá"],
+                        "Canindeyú": ["Salto del Guairá"],
+                        "Central": ["San Lorenzo", "Luque", "Capiatá", "Lambaré", "Fernando de la Mora", "Limpio", "Mariano Roque Alonso"],
+                        "Concepción": ["Concepción"],
+                        "Cordillera": ["Caacupé"],
+                        "Guairá": ["Villarrica"],
+                        "Itapúa": ["Encarnación"],
+                        "Misiones": ["San Juan Bautista"],
+                        "Ñeembucú": ["Pilar"],
+                        "Paraguarí": ["Paraguarí"],
+                        "Presidente Hayes": ["Villa Hayes"],
+                        "San Pedro": ["San Pedro de Ycuamandiyú"]
+                    }},
+                    "Peru": { iso: "PE", regionLabel: "Departamento", taxId: "RUC", loc: {
+                        "Amazonas": ["Chachapoyas"],
+                        "Áncash": ["Huaraz", "Chimbote"],
+                        "Apurímac": ["Abancay"],
+                        "Arequipa": ["Arequipa"],
+                        "Ayacucho": ["Ayacucho"],
+                        "Cajamarca": ["Cajamarca"],
+                        "Callao": ["Callao"],
+                        "Cusco": ["Cusco"],
+                        "Huancavelica": ["Huancavelica"],
+                        "Huánuco": ["Huánuco"],
+                        "Ica": ["Ica", "Chincha Alta", "Pisco"],
+                        "Junín": ["Huancayo"],
+                        "La Libertad": ["Trujillo"],
+                        "Lambayeque": ["Chiclayo"],
+                        "Lima": ["Lima", "Huacho", "Cañete"],
+                        "Loreto": ["Iquitos"],
+                        "Madre de Dios": ["Puerto Maldonado"],
+                        "Moquegua": ["Moquegua", "Ilo"],
+                        "Pasco": ["Cerro de Pasco"],
+                        "Piura": ["Piura", "Sullana", "Paita"],
+                        "Puno": ["Puno", "Juliaca"],
+                        "San Martín": ["Tarapoto", "Moyobamba"],
+                        "Tacna": ["Tacna"],
+                        "Tumbes": ["Tumbes"],
+                        "Ucayali": ["Pucallpa"]
+                    }},
+                    "Uruguai": { iso: "UY", regionLabel: "Departamento", taxId: "RUT", loc: {
+                        "Artigas": ["Artigas"],
+                        "Canelones": ["Canelones", "Ciudad de la Costa", "Las Piedras", "Pando"],
+                        "Cerro Largo": ["Melo"],
+                        "Colonia": ["Colonia del Sacramento", "Carmelo", "Nueva Helvecia"],
+                        "Durazno": ["Durazno"],
+                        "Flores": ["Trinidad"],
+                        "Florida": ["Florida"],
+                        "Lavalleja": ["Minas"],
+                        "Maldonado": ["Maldonado", "Punta del Este", "San Carlos"],
+                        "Montevideo": ["Montevideo"],
+                        "Paysandú": ["Paysandú"],
+                        "Río Negro": ["Fray Bentos", "Young"],
+                        "Rivera": ["Rivera"],
+                        "Rocha": ["Rocha"],
+                        "Salto": ["Salto"],
+                        "San José": ["San José de Mayo", "Ciudad del Plata"],
+                        "Soriano": ["Mercedes"],
+                        "Tacuarembó": ["Tacuarembó"],
+                        "Treinta y Tres": ["Treinta y Tres"]
+                    }}
+                };
+                const COUNTRIES = Object.assign({ "Brasil": { iso: "BR", regionLabel: "Estado / UF", taxId: "CNPJ", loc: LOC } }, LATAM);
+                const OTHER_CITY = '__outra__';
+                const countryOf = prefix => $(prefix + 'Country')?.value || '';
+                const countryCfg = prefix => COUNTRIES[countryOf(prefix)] || null;
+                const isBR = prefix => countryOf(prefix) === 'Brasil';
+                // Termos em espanhol enviados ao backend e usados na busca do Google fora do Brasil
+                const SEG_ES = {
+                    "Depósitos de mercadorias para terceiros, exceto armazéns gerais e guarda-móveis": "depósito de mercaderías almacén",
+                    "Operador logístico": "operador logístico",
+                    "Centro de distribuição": "centro de distribución",
+                    "Transportadora": "transporte de carga",
+                    "Alimentos": "fábrica de alimentos",
+                    "Bebidas": "fábrica de bebidas",
+                    "Eletrodomésticos": "electrodomésticos",
+                    "Autopeças": "autopartes",
+                    "Metalúrgica": "metalúrgica",
+                    "Moveleira": "fábrica de muebles",
+                    "Farmacêutica": "laboratorio farmacéutico",
+                    "Atacadista": "mayorista distribuidora",
+                    "Supermercado": "supermercado",
+                    "E-commerce": "comercio electrónico",
+                    "Agronegócio": "agroindustria",
+                    "Fertilizantes": "fertilizantes",
+                    "Papel e celulose": "papel y celulosa",
+                    "Plásticos": "plásticos",
+                    "Química": "industria química",
+                    "Têxtil": "textil",
+                    "Construção": "construcción",
+                    "Siderurgia": "siderurgia"
+                };
                 const SEG = ["Depósitos de mercadorias para terceiros, exceto armazéns gerais e guarda-móveis", "Operador logístico", "Centro de distribuição", "Transportadora", "Alimentos", "Bebidas", "Eletrodomésticos", "Autopeças", "Metalúrgica", "Moveleira", "Farmacêutica", "Atacadista", "Supermercado", "E-commerce", "Agronegócio", "Fertilizantes", "Papel e celulose", "Plásticos", "Química", "Têxtil", "Construção", "Siderurgia"];
                 
                 const CNAE_LIST = [
-                    { code: "5210-9/99", desc: "Depósitos de mercadorias para terceiros, exceto armazéns gerais e guarda-móveis", seg: "Depósitos de mercadorias para terceiros, exceto armazéns gerais e guarda-móveis", priority: "Alta" },
-                    { code: "5210-9/01", desc: "Armazéns gerais - emissão de warrant", seg: "Operador logístico", priority: "Alta" },
-                    { code: "5250-8/04", desc: "Organização do logística do transporte de carga", seg: "Operador logístico", priority: "Alta" },
-                    { code: "5210-9/02", desc: "Ocupação de contêineres e guarda-móveis", seg: "Centro de distribuição", priority: "Média" },
-                    { code: "4930-2/02", desc: "Transporte rodoviário de carga, exceto perigosa, intermunicipal e estadual", seg: "Transportadora", priority: "Alta" },
-                    { code: "1099-6/99", desc: "Fabricação de outros produtos alimentícios não especificados anteriormente", seg: "Alimentos", priority: "Alta" },
-                    { code: "1113-5/02", desc: "Fabricação de cervejas e chopes", seg: "Bebidas", priority: "Alta" },
-                    { code: "3101-2/00", desc: "Fabricação de móveis com predominância de madeira", seg: "Moveleira", priority: "Alta" },
-                    { code: "2121-1/01", desc: "Fabricação de medicamentos alopáticos para uso humano", seg: "Farmacêutica", priority: "Alta" },
-                    { code: "4790-3/02", desc: "Comércio varejista de mercadorias em geral via internet (E-commerce)", seg: "E-commerce", priority: "Alta" }
+                    { code: "5211-7/99", desc: "Depósitos de mercadorias para terceiros, exceto armazéns gerais e guarda-móveis", seg: "Depósitos de mercadorias para terceiros, exceto armazéns gerais e guarda-móveis", priority: "Alta", ciiu: "5210", ciiuDesc: "Almacenamiento y depósito" },
+                    { code: "5211-7/01", desc: "Armazéns gerais - emissão de warrant", seg: "Operador logístico", priority: "Alta", ciiu: "5210", ciiuDesc: "Almacenamiento y depósito" },
+                    { code: "5250-8/04", desc: "Organização logística do transporte de carga", seg: "Operador logístico", priority: "Alta", ciiu: "5229", ciiuDesc: "Otras actividades de apoyo al transporte" },
+                    { code: "5211-7/02", desc: "Guarda-móveis", seg: "Centro de distribuição", priority: "Média", ciiu: "5210", ciiuDesc: "Almacenamiento y depósito" },
+                    { code: "4930-2/02", desc: "Transporte rodoviário de carga, exceto perigosa, intermunicipal e estadual", seg: "Transportadora", priority: "Alta", ciiu: "4923", ciiuDesc: "Transporte de carga por carretera" },
+                    { code: "1099-6/99", desc: "Fabricação de outros produtos alimentícios não especificados anteriormente", seg: "Alimentos", priority: "Alta", ciiu: "1079", ciiuDesc: "Elaboración de otros productos alimenticios n.c.p." },
+                    { code: "1113-5/02", desc: "Fabricação de cervejas e chopes", seg: "Bebidas", priority: "Alta", ciiu: "1103", ciiuDesc: "Elaboración de bebidas malteadas y de malta" },
+                    { code: "3101-2/00", desc: "Fabricação de móveis com predominância de madeira", seg: "Moveleira", priority: "Alta", ciiu: "3100", ciiuDesc: "Fabricación de muebles" },
+                    { code: "2121-1/01", desc: "Fabricação de medicamentos alopáticos para uso humano", seg: "Farmacêutica", priority: "Alta", ciiu: "2100", ciiuDesc: "Fabricación de productos farmacéuticos" },
+                    { code: "4790-3/02", desc: "Comércio varejista de mercadorias em geral via internet (E-commerce)", seg: "E-commerce", priority: "Alta", ciiu: "4791", ciiuDesc: "Venta al por menor por correo y por Internet" }
                 ];
+                // Compatibilidade: o backend atual pode conhecer apenas os códigos antigos (5210-9/xx).
+                // Remover este mapa quando o /api/prospect for atualizado para 5211-7/xx.
+                const CNAE_BACKEND = { "5211-7/99": "5210-9/99", "5211-7/01": "5210-9/01", "5211-7/02": "5210-9/02" };
 
                 const Hub = {
                     rows: [],
@@ -1225,54 +1586,101 @@
                     HubMapModule: Hub,
                     ProspectMapModule: Prospect
                 };
-                function option(v) {
-                    return `<option value="${esc(v)}">${esc(v)}</option>`
+                function option(v, label) {
+                    return `<option value="${esc(v)}">${esc(label ?? v)}</option>`
                 }
                 function fill(prefix) {
-                    const country = $(prefix + 'Country')
-                      , uf = $(prefix + 'Uf')
-                      , city = $(prefix + 'City');
+                    const country = $(prefix + 'Country');
                     if (country) {
-                        country.innerHTML = option('Brasil');
+                        const all = prefix === 'm' ? '' : '<option value="">Todos os países</option>';
+                        country.innerHTML = all + Object.keys(COUNTRIES).map(c => option(c)).join('');
                         country.value = 'Brasil'
                     }
-                    if (uf) {
-                        uf.innerHTML = '<option value="">Todos os Estados</option>' + Object.keys(LOC).map(option).join('')
-                    }
+                    states(prefix)
+                }
+                function states(prefix) {
+                    const cfg = countryCfg(prefix)
+                      , uf = $(prefix + 'Uf')
+                      , city = $(prefix + 'City');
+                    if (uf)
+                        uf.innerHTML = '<option value="">Todos</option>' + (cfg ? Object.keys(cfg.loc).map(k => option(k)).join('') : '');
                     if (city)
-                        city.innerHTML = '<option value="">Selecione uma cidade</option>'
+                        city.innerHTML = '<option value="">Selecione uma cidade</option>';
+                    const lbl = uf?.closest('div,label')?.querySelector('label') || null;
+                    if (lbl && prefix !== 'f')
+                        lbl.textContent = cfg ? cfg.regionLabel.toUpperCase() : 'ESTADO / PROVÍNCIA';
+                    if (prefix === 'm')
+                        renderCnaeSelect()
                 }
                 function cities(prefix) {
                     const u = $(prefix + 'Uf')
-                      , c = $(prefix + 'City');
+                      , c = $(prefix + 'City')
+                      , cfg = countryCfg(prefix);
                     if (!c)
                         return;
-                    c.innerHTML = '<option value="">Selecione uma cidade</option>' + ((LOC[u?.value] || []).map(option).join(''))
+                    const list = (cfg && cfg.loc[u?.value]) || [];
+                    c.innerHTML = '<option value="">Selecione uma cidade</option>' + list.map(x => option(x)).join('') + (u?.value ? option(OTHER_CITY, '✎ Outra cidade…') : '')
+                }
+                function pickOtherCity(prefix) {
+                    const c = $(prefix + 'City');
+                    if (!c || c.value !== OTHER_CITY)
+                        return;
+                    const name = (prompt('Digite o nome da cidade:') || '').trim();
+                    if (!name) {
+                        c.value = '';
+                        return
+                    }
+                    if (![...c.options].some(o => o.value === name))
+                        c.insertAdjacentHTML('beforeend', option(name));
+                    c.value = name
+                }
+                function renderCnaeSelect() {
+                    const s = $('mCnae');
+                    if (!s)
+                        return;
+                    const br = isBR('m')
+                      , cur = s.value;
+                    s.innerHTML = `<option value="">${br ? 'Todos os CNAEs' : 'Todas as atividades (CIIU)'}</option>` + CNAE_LIST.map(i => option(i.code, br ? `${i.code} · ${i.desc}` : `CIIU ${i.ciiu} · ${i.ciiuDesc}`)).join('');
+                    s.value = cur;
+                    if ($('mCnaeLabel'))
+                        $('mCnaeLabel').textContent = br ? 'CÓDIGO CNAE' : 'ATIVIDADE (CIIU REV.4)'
                 }
                 function setup() {
                     ['f', 'm', 'mb'].forEach(fill);
                     ['fSegment', 'mSegment', 'mbSegment'].forEach(id => {
                         if ($(id))
-                            $(id).innerHTML = '<option value="">Todos os Segmentos</option>' + SEG.map(option).join('')
+                            $(id).innerHTML = '<option value="">Todos os Segmentos</option>' + SEG.map(x => option(x)).join('')
                     }
                     );
-                    window.loadSearchStates = () => {}
+                    window.loadSearchStates = () => {
+                        states('f');
+                        renderHubViews()
+                    }
                     ;
                     window.loadSearchCities = () => {
                         cities('f');
                         renderHubViews()
                     }
                     ;
-                    window.loadMapStates = () => {}
+                    window.loadMapStates = () => {
+                        states('m');
+                        Prospect.rows = [];
+                        renderProspects()
+                    }
                     ;
                     window.loadMapCities = () => cities('m');
-                    window.loadHbStates = () => {}
+                    window.loadHbStates = () => {
+                        states('mb');
+                        renderHubMap()
+                    }
                     ;
                     window.loadHbCities = () => {
                         cities('mb');
                         renderHubMap()
                     }
                     ;
+                    ['f', 'm', 'mb'].forEach(p => $(p + 'City')?.addEventListener('change', () => pickOtherCity(p)));
+                    window.renderCnaeTable = renderCnaeTable;
                 }
                 function g(o, names) {
                     for (const n of names) {
@@ -1290,8 +1698,9 @@
                     return {
                         id: 'hub-' + i,
                         empresa: g(o, ['empresa', 'razao social', 'razão social', 'nome fantasia', 'cliente', 'conta', 'company']) || `Registro ${i + 1}`,
-                        cnpj: g(o, ['cnpj', 'documento']),
-                        uf: String(g(o, ['uf', 'estado', 'state'])).toUpperCase(),
+                        cnpj: g(o, ['cnpj', 'documento', 'cuit', 'rut', 'ruc', 'nit', 'rfc', 'tax id', 'id fiscal']),
+                        pais: g(o, ['pais', 'país', 'country']),
+                        uf: String(g(o, ['uf', 'estado', 'provincia', 'província', 'departamento', 'region', 'região', 'state'])).toUpperCase(),
                         cidade: g(o, ['cidade', 'municipio', 'município', 'city']),
                         segmento: g(o, ['segmento', 'setor', 'ramo', 'industry', 'cnae']) || 'Não informado',
                         telefone: g(o, ['telefone', 'phone', 'celular', 'whatsapp']),
@@ -1366,11 +1775,13 @@
                     renderAll()
                 }
                 function filter(prefix, rows) {
-                    const uf = $(prefix + 'Uf')?.value || ''
+                    const pais = $(prefix + 'Country')?.value || ''
+                      , uf = $(prefix + 'Uf')?.value || ''
                       , city = $(prefix + 'City')?.value || ''
                       , seg = $(prefix + 'Segment')?.value || ''
                       , text = $(prefix + 'Text')?.value || '';
-                    return rows.filter(r => (!uf || norm(r.uf) === norm(uf)) && (!city || norm(r.cidade) === norm(city)) && (!seg || norm(r.segmento) === norm(seg)) && (!text || norm(Object.values(r).join(' ')).includes(norm(text))))
+                    const samePais = r => !pais || norm(r.pais) === norm(pais) || (pais === 'Brasil' && !r.pais);
+                    return rows.filter(r => samePais(r) && (!uf || norm(r.uf) === norm(uf)) && (!city || norm(r.cidade) === norm(city)) && (!seg || norm(r.segmento) === norm(seg)) && (!text || norm(Object.values(r).join(' ')).includes(norm(text))))
                 }
                 function renderPreview() {
                     if ($('dynamicHeaders'))
@@ -1475,7 +1886,11 @@
                     return Hub.rows.some(x => norm(x.empresa) === n || (site && norm(x.website) === site))
                 }
                 async function prospect() {
+                    const cfg = countryCfg('m')
+                      , cnaeItem = CNAE_LIST.find(i => i.code === ($('mCnae')?.value || ''));
                     const p = {
+                        country: countryOf('m') || 'Brasil',
+                        country_iso: cfg?.iso || 'BR',
                         uf: $('mUf').value,
                         city: $('mCity').value,
                         segment: $('mSegment').value,
@@ -1484,49 +1899,61 @@
                         limit: +$('mLimit').value,
                         min_score: +$('mScore').value
                     };
-                    if (!p.uf || !p.city || (!p.segment && !p.cnae)) {
-                        $('mStatus').textContent = 'Selecione Estado, Cidade e um Segmento ou CNAE.';
+                    if (!p.uf || !p.city || p.city === OTHER_CITY || (!p.segment && !p.cnae)) {
+                        $('mStatus').textContent = `Selecione ${cfg?.regionLabel || 'Estado'}, Cidade e um Segmento ou ${p.country_iso === 'BR' ? 'CNAE' : 'Atividade'}.`;
                         return
                     }
                     $('mSearch').disabled = true;
-                    $('mStatus').innerHTML = `Consultando Overture Maps em blocos para ${p.km} km. Buscas amplas podem levar alguns minutos...<div class="progress"><i style="width:35%"></i></div>`;
                     try {
-                        const qs = new URLSearchParams({
+                        if (!Backend.up) {
+                            $('mStatus').textContent = 'Acordando o servidor do Render (pode levar até 1 minuto)…';
+                            if (!(await health()))
+                                throw Error('O servidor do Render está indisponível no momento.')
+                        }
+                        $('mStatus').innerHTML = `Consultando Overture Maps em blocos para ${p.km} km. Buscas amplas podem levar alguns minutos...<div class="progress"><i style="width:35%"></i></div>`;
+                        // Brasil: exatamente os parâmetros da versão que funciona. Demais países: + país e CIIU.
+                        const base = {
                             uf: p.uf,
                             city: p.city,
                             segment: p.segment,
-                            cnae: p.cnae,
+                            cnae: CNAE_BACKEND[p.cnae] || p.cnae,
                             km: String(p.km),
                             limit: String(p.limit),
                             min_score: String(p.min_score)
-                        });
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 12 * 60 * 1000);
-                        const r = await fetch(apiUrl('/api/prospect') + '?' + qs.toString(), {
-                            method: 'GET',
-                            cache: 'no-store',
-                            signal: controller.signal
-                        });
-                        clearTimeout(timeoutId);
-                        const text = await r.text();
+                        };
+                        const extra = p.country_iso === 'BR' ? {} : {
+                            country: p.country,
+                            country_iso: p.country_iso,
+                            segment_es: SEG_ES[p.segment] || '',
+                            ciiu: cnaeItem?.ciiu || ''
+                        };
+                        const qs = new URLSearchParams(Object.assign({}, extra, base));
+                        const r = await fetchT(apiUrl('/api/prospect') + '?' + qs.toString(), 12 * 60 * 1000)
+                          , text = await r.text();
                         let d;
                         try {
                             d = JSON.parse(text)
                         } catch (_) {
-                            throw Error(text.slice(0, 200) || 'Resposta inválida')
+                            throw Error(r.ok ? 'Resposta inválida do servidor.' : `Erro HTTP ${r.status} do servidor. ` + (text.replace(/<[^>]+>/g, ' ').trim().slice(0, 160)))
                         }
-                        if (!r.ok || !d.ok)
-                            throw Error(d.error || `HTTP ${r.status}`);
+                        if (!r.ok || !d.ok) {
+                            if (p.country_iso !== 'BR' && /Munic[ií]pio n[aã]o configurado/i.test(d.error || ''))
+                                throw Error(`${d.error}. Este front está falando com um backend sem suporte a ${p.country} (${API_BASE}, versão ${Backend.version || 'desconhecida'}). Confira o API_BASE no index.html e se o deploy da versão 50-latam terminou.`);
+                            throw Error(d.error || `HTTP ${r.status}`)
+                        }
+                        if (p.country_iso !== 'BR' && d.country_iso && d.country_iso !== p.country_iso)
+                            throw Error(`o backend respondeu para ${d.country_iso}, não para ${p.country_iso}. Atualize o /api/prospect para aceitar o parâmetro country_iso.`);
                         Prospect.rows = d.rows.map( (x, i) => ({
                             ...x,
+                            pais: x.pais || x.country || p.country,
                             _id: x.id || `prospect-${i}`,
                             situacao: existing(x) ? 'Já existe na base' : 'Nova empresa'
                         }));
                         Prospect.selected.clear();
                         renderProspects();
-                        $('mStatus').textContent = `${Prospect.rows.length} prospects exibidos em ${d.radius_km || p.km} km. ${d.scanned} locais examinados; ${d.matched} compatíveis; ${d.tiles_processed || 1}/${d.tiles_total || 1} blocos processados. ${p.city}/${p.uf}. Fonte: Overture Maps.${d.partial ? ' Resultado parcial: alguns blocos falharam.' : ''}`
+                        $('mStatus').textContent = `${Prospect.rows.length} prospects exibidos em ${d.radius_km || d.requested_km || p.km} km. ${d.scanned} locais examinados; ${d.matched} compatíveis` + (d.tiles_total ? `; ${d.tiles_processed || 0}/${d.tiles_total} blocos processados` : `; ${d.rejected || 0} rejeitados pelo filtro`) + `. ${p.city}/${p.uf} · ${p.country}. Fonte: Overture Maps.` + (d.partial ? ' Resultado parcial: alguns blocos falharam.' : '') + (d.truncated ? ' Área muito grande: a leitura parou no teto de segurança; reduza o raio para cobrir tudo.' : '') + (p.country_iso !== 'BR' && !d.country_iso ? ' Atenção: o backend não confirmou suporte a países fora do Brasil; confira se os resultados são da cidade certa.' : '')
                     } catch (e) {
-                        $('mStatus').textContent = e.name === 'AbortError' ? 'Falha: a busca excedeu 12 minutos. Reduza o raio ou o limite e tente novamente.' : 'Falha: ' + e.message;
+                        $('mStatus').textContent = 'Falha: ' + await explainFailure(e, p);
                         console.error(e)
                     } finally {
                         $('mSearch').disabled = false
@@ -1562,7 +1989,7 @@
                     if (!tbody) return;
 
                     const filtered = CNAE_LIST.filter(item => {
-                        const matchTxt = !txt || norm(item.code).includes(txt) || norm(item.desc).includes(txt) || norm(item.seg).includes(txt);
+                        const matchTxt = !txt || [item.code, item.desc, item.seg, item.ciiu, item.ciiuDesc].some(v => norm(v).includes(txt));
                         const matchPrio = !prio || item.priority === prio;
                         return matchTxt && matchPrio;
                     });
@@ -1571,10 +1998,11 @@
                         <tr>
                             <td><b>${esc(item.code)}</b></td>
                             <td>${esc(item.desc)}</td>
+                            <td><b>${esc(item.ciiu)}</b><br><small>${esc(item.ciiuDesc)}</small></td>
                             <td><span class="pill high" style="background:#e0f2fe; color:#0369a1;">${esc(item.seg)}</span></td>
                             <td><span class="pill ${item.priority === 'Alta' ? 'high' : ''}">${esc(item.priority)}</span></td>
                         </tr>
-                    `).join('') : '<tr><td colspan="4" class="empty">Nenhum CNAE encontrado.</td></tr>';
+                    `).join('') : '<tr><td colspan="5" class="empty">Nenhum CNAE encontrado.</td></tr>';
                 }
 
                 function renderIcpReport() {
@@ -1621,6 +2049,7 @@
                         Segmento: r.segmento,
                         Categoria: r.categoria || '',
                         Endereco: r.endereco || '',
+                        Pais: r.pais || '',
                         Cidade: r.cidade,
                         UF: r.uf,
                         CEP: r.cep || '',
@@ -1660,23 +2089,81 @@
                     renderProspects();
                     renderCnaeTable();
                     renderIcpReport();
-                    if ($('topStatus'))
-                        $('topStatus').textContent = Hub.rows.length ? `Base local: ${Hub.rows.length} registros` : 'Motor Overture conectado'
                 }
-                async function health() {
+                // ===== Rede resiliente (VER50) =====
+                const sleep = ms => new Promise(r => setTimeout(r, ms));
+                const Backend = { up: false, checking: null };
+                async function fetchT(url, ms) {
+                    const c = new AbortController()
+                      , t = setTimeout( () => c.abort(), ms);
                     try {
-                        const r = await fetch(apiUrl('/api/health'))
-                          , d = await r.json();
-                        if (!d.ok)
-                            throw Error();
-                        if ($('topStatus'))
-                            $('topStatus').textContent = 'Overture Maps conectado';
-                        return true
-                    } catch (e) {
+                        return await fetch(url, { method: 'GET', cache: 'no-store', signal: c.signal })
+                    } finally {
+                        clearTimeout(t)
+                    }
+                }
+                function setPill(text, mode) {
+                    const el = $('topStatus');
+                    if (!el)
+                        return;
+                    el.textContent = text;
+                    el.classList.toggle('off', mode === 'off');
+                    el.classList.toggle('warm', mode === 'warm')
+                }
+                // O plano gratuito do Render dorme após ~15 min; a primeira chamada pode levar 50 s ou mais.
+                function health() {
+                    if (Backend.checking)
+                        return Backend.checking;
+                    Backend.checking = (async () => {
+                        setPill('Conectando ao motor…', 'warm');
+                        for (let i = 0; i < 3; i++) {
+                            try {
+                                const r = await fetchT(apiUrl('/api/health'), 75000)
+                                  , d = await r.json();
+                                if (d && d.ok) {
+                                    Backend.up = true;
+                                    Backend.version = d.version || '';
+                                    setPill('Motor de prospecção online' + (d.version ? ` · v${d.version}` : ''), '');
+                                    return true
+                                }
+                            } catch (e) {}
+                            if (i < 2) {
+                                setPill(`Acordando o servidor… tentativa ${i + 2} de 3`, 'warm');
+                                await sleep(4000)
+                            }
+                        }
+                        Backend.up = false;
+                        setPill('Motor de prospecção offline', 'off');
                         if ($('mStatus'))
-                            $('mStatus').textContent = 'Backend Render indisponível. Verifique https://paim-prospect-ia.onrender.com/api/health';
+                            $('mStatus').textContent = `O servidor do Render não respondeu após 3 tentativas. Abra ${API_BASE}/api/health para conferir e veja Events/Logs no painel do Render.`;
                         return false
                     }
+                    )().finally( () => Backend.checking = null);
+                    return Backend.checking
+                }
+                // Traduz falhas de rede em mensagens úteis
+                async function explainFailure(e, p) {
+                    if (e.name === 'AbortError')
+                        return `A busca excedeu 12 minutos e foi cancelada. Tente um limite menor (${p.limit} → 200) ou um raio menor; no plano gratuito do Render, buscas grandes podem estourar a memória.`;
+                    if (e.name !== 'TypeError')
+                        return e.message;
+                    const alive = await (async () => {
+                        try {
+                            const r = await fetchT(apiUrl('/api/health'), 20000);
+                            return (await r.json()).ok
+                        } catch (_) {
+                            return false
+                        }
+                    }
+                    )();
+                    if (!alive) {
+                        Backend.up = false;
+                        setPill('Motor de prospecção offline', 'off');
+                        return 'O servidor caiu ou reiniciou durante a busca (comum quando falta memória no plano gratuito). Aguarde 1 minuto e tente com limite menor.'
+                    }
+                    if (p.country_iso !== 'BR')
+                        return `O servidor está online, mas deu erro interno (500) ao buscar em ${p.city}/${p.uf} · ${p.country}. Provável causa: o Render ainda está com o app.py antigo; confirme se o deploy com latam_engine.py terminou (/api/health deve mostrar version 50-latam).`;
+                    return `O servidor está online, mas deu erro interno (500) ao processar ${p.city}/${p.uf}. Veja o traceback nos Logs do Render; se for falta de memória, reduza o limite (atual: ${p.limit}).`
                 }
 
                 function init() {
@@ -1732,7 +2219,11 @@
                         const cnae = $('mCnae')?.value || '';
                         const city = $('mCity')?.value || '';
                         const uf = $('mUf')?.value || '';
-                        window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([cnae, seg, city, uf, 'Brasil'].filter(Boolean).join(' ')), '_blank', 'noopener');
+                        const pais = countryOf('m') || 'Brasil';
+                        const item = CNAE_LIST.find(i => i.code === cnae);
+                        const termo = pais === 'Brasil' ? [cnae, seg] : [SEG_ES[seg] || (item ? item.ciiuDesc : '')];
+                        const cidade = city === OTHER_CITY ? '' : city;
+                        window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([...termo, cidade, uf, pais].filter(Boolean).join(' ')), '_blank', 'noopener');
                     }
                     );
 
