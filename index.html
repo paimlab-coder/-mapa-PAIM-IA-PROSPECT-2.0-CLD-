@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>PAIM IA Prospect · VER53 · Bertolini BSA</title>
+        <title>PAIM IA Prospect · VER56 · Bertolini BSA</title>
         <style>
             :root {
                 --b: #06418a;
@@ -426,6 +426,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
         <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.js"></script>
         <style id="ver30-map-styles">
             .native-map {
                 position: relative;
@@ -601,6 +602,10 @@
             .nav button.active { background: #ffffff14; color: #fff; }
             .nav button.active::before { content: ""; position: absolute; left: -10px; top: 8px; bottom: 8px; width: 3px; background: var(--o); border-radius: 0 3px 3px 0; }
             .nav button.active .ico { color: var(--o); }
+            .nav-tip { position: fixed; z-index: 3000; max-width: 240px; padding: 7px 10px; border-radius: 6px; background: #fff; color: var(--ink); font-size: 12px; line-height: 1.35; box-shadow: 0 4px 16px #06182e40; pointer-events: none; opacity: 0; transform: translateX(-4px); transition: opacity .12s, transform .12s; }
+            .nav-tip.on { opacity: 1; transform: none; }
+            .nav-tip::before { content: ""; position: absolute; left: -5px; top: 50%; margin-top: -5px; border: 5px solid transparent; border-left: 0; border-right-color: #fff; }
+            @media (prefers-reduced-motion: reduce) { .nav-tip { transition: none; } }
             .nav-group { font-size: 11px; color: #6f86a1; padding: 14px 10px 6px; font-weight: 600; }
             .sf { padding: 0 18px 12px; font-size: 11px; color: #8ea3bb; }
 
@@ -675,6 +680,41 @@
             .marker-cluster.cl-internal div { background: var(--b); }
             .kv { display: grid; grid-template-columns: minmax(160px, 240px) 1fr; gap: 6px 16px; font-size: 13px; }
             .kv span { color: var(--mut); }
+            .intel { margin-top: 16px; }
+            .intel .kpis { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+            @media (min-width: 1000px) { .intel .kpis { grid-template-columns: repeat(4, 1fr); } .intel-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+            .intel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; margin-top: 6px; }
+            .chartbox { border: 1px solid var(--line); border-radius: 10px; padding: 14px; background: #fff; position: relative; }
+            .chartbox h4 { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--ink); }
+            .chartbox .cv { position: relative; height: 230px; }
+            .chart-empty { position: absolute; inset: 40px 14px 14px; display: none; place-items: center; text-align: center; color: var(--mut); font-size: 12.5px; }
+            .intel .kpi b { font-size: 22px; }
+            .intel .kpi small { display: block; color: var(--mut); font-size: 11px; margin-top: 2px; }
+            .intel-read { margin-top: 14px; padding: 14px 16px; border-left: 3px solid var(--o); background: #fff; border-radius: 8px; border: 1px solid var(--line); border-left-width: 3px; }
+            .intel-read b { display: block; margin-bottom: 6px; color: var(--ink); }
+            .intel-read ul { margin: 0; padding-left: 18px; }
+            .intel-read li { margin: 3px 0; }
+            .linkbtn { background: none; border: 0; padding: 0; color: var(--b); font: inherit; font-weight: 700; cursor: pointer; text-align: left; }
+            .linkbtn:hover { text-decoration: underline; }
+            .st { display: inline-block; margin-top: 4px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: #eef2f7; color: var(--mut); }
+            .st.ok { background: #e6f5ec; color: #1f6b3d; }
+            .st.no { background: #fdecea; color: #9a2a1d; }
+            .drawer-back { position: fixed; inset: 0; background: #06182e66; z-index: 1990; display: none; }
+            .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100%); background: var(--bg); z-index: 2000; transform: translateX(100%); transition: transform .2s ease; display: flex; flex-direction: column; box-shadow: -8px 0 30px #06182e33; }
+            .drawer.open { transform: none; }
+            .drawer-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 18px 20px; background: #fff; border-bottom: 1px solid var(--line); }
+            .drawer-head h2 { margin: 2px 0 0; font-size: 19px; color: var(--ink); }
+            .drawer-head small { color: var(--mut); font-size: 12px; }
+            .drawer-body { padding: 16px 20px 30px; overflow: auto; flex: 1; }
+            .d-sec { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+            .d-sec h3 { margin: 0 0 10px; font-size: 13.5px; font-weight: 600; color: var(--ink); }
+            .d-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+            .d-score li { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed #e6ebf1; }
+            .d-score { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+            .d-row { display: flex; gap: 8px; }
+            .d-row input, .d-sec textarea { flex: 1; padding: 8px 10px; border: 1px solid #cfd8e3; border-radius: 6px; font: inherit; font-size: 13px; width: 100%; }
+            .d-sec textarea { min-height: 80px; resize: vertical; }
+            @media (prefers-reduced-motion: reduce) { .drawer { transition: none; } }
             #mGoogle { background: #fff; color: var(--n); box-shadow: inset 0 0 0 1px #c9d3df; }
             .status-pill.off { color: #8a3b12; background: #fdf0e6; border-color: #f6d3b8; }
             .status-pill.off::before { background: var(--o); }
@@ -694,26 +734,26 @@
             <aside class="side">
                 <div class="brand">
                     <b>PAIM IA PROSPECT</b>
-                    <small>Bertolini Intralogística · VER53 LATAM</small>
+                    <small>Bertolini Intralogística · VER56 LATAM</small>
                 </div>
                 <nav class="nav" id="nav">
                     <div class="nav-group">Visão geral</div>
-                    <button class="active" data-tab="dash"><span class="ico">▦</span>Dashboard Principal</button>
-                    <button data-tab="bases"><span class="ico">⇧</span>Central de Bases</button>
-                    <button data-tab="search"><span class="ico">⌕</span>Busca & Mercado (Hub)</button>
-                    <button data-tab="geomapbase"><span class="ico">◉</span>Mapa Hub Base</button>
-                    <button data-tab="profile"><span class="ico">▣</span>Empresa 360°</button>
+                    <button class="active" data-tab="dash" data-tip="Resumo dos indicadores da base do Hub" aria-label="Dashboard Principal: Resumo dos indicadores da base do Hub"><span class="ico">▦</span>Dashboard Principal</button>
+                    <button data-tab="bases" data-tip="Importar planilhas XLSX/CSV para a base" aria-label="Central de Bases: Importar planilhas XLSX/CSV para a base"><span class="ico">⇧</span>Central de Bases</button>
+                    <button data-tab="search" data-tip="Filtrar e pesquisar empresas da base" aria-label="Busca & Mercado (Hub): Filtrar e pesquisar empresas da base"><span class="ico">⌕</span>Busca & Mercado (Hub)</button>
+                    <button data-tab="geomapbase" data-tip="Mapa das empresas da base do Hub" aria-label="Mapa Hub Base: Mapa das empresas da base do Hub"><span class="ico">◉</span>Mapa Hub Base</button>
                     <div class="nav-group">Prospecção</div>
-                    <button data-tab="geomap"><span class="ico">◉</span>Mapa de Prospecção</button>
-                    <button data-tab="cnae"><span class="ico">☷</span>CNAE & Segmentos</button>
-                    <button data-tab="radar"><span class="ico">◉</span>Radar de Mercado</button>
-                    <button data-tab="icp"><span class="ico">⚙</span>ICP & Score</button>
+                    <button data-tab="geomap" data-tip="Buscar empresas novas por cidade e segmento" aria-label="Mapa de Prospecção: Buscar empresas novas por cidade e segmento"><span class="ico">◉</span>Mapa de Prospecção</button>
+                    <button data-tab="profile" data-tip="Ficha completa da empresa: contato, score, CNPJ e decisão" aria-label="Empresa 360°: Ficha completa da empresa: contato, score, CNPJ e decisão"><span class="ico">▣</span>Empresa 360°</button>
+                    <button data-tab="cnae" data-tip="Tabela CNAE/CIIU dos segmentos-alvo" aria-label="CNAE & Segmentos: Tabela CNAE/CIIU dos segmentos-alvo"><span class="ico">☷</span>CNAE & Segmentos</button>
+                    <button data-tab="radar" data-tip="Empresas novas que ainda não estão na base" aria-label="Radar de Mercado: Empresas novas que ainda não estão na base"><span class="ico">◉</span>Radar de Mercado</button>
+                    <button data-tab="icp" data-tip="Ranking das empresas pelo score de contato" aria-label="ICP & Score: Ranking das empresas pelo score de contato"><span class="ico">⚙</span>ICP & Score</button>
                     <div class="nav-group">Pipeline</div>
-                    <button data-tab="opp"><span class="ico">◎</span>Fila de Oportunidades</button>
-                    <button data-tab="bdr"><span class="ico">☷</span>Listas para BDR</button>
+                    <button data-tab="opp" data-tip="Empresas com score 70+ para priorizar" aria-label="Fila de Oportunidades: Empresas com score 70+ para priorizar"><span class="ico">◎</span>Fila de Oportunidades</button>
+                    <button data-tab="bdr" data-tip="Contas aprovadas para abordagem do BDR" aria-label="Listas para BDR: Contas aprovadas para abordagem do BDR"><span class="ico">☷</span>Listas para BDR</button>
                     <div class="nav-group">Administração</div>
-                    <button data-tab="sources"><span class="ico">◌</span>Fontes Monitoradas</button>
-                    <button data-tab="gov"><span class="ico">◇</span>Configurações & Governança</button>
+                    <button data-tab="sources" data-tip="Status e data das fontes de dados" aria-label="Fontes Monitoradas: Status e data das fontes de dados"><span class="ico">◌</span>Fontes Monitoradas</button>
+                    <button data-tab="gov" data-tip="Backend, versão e regras da sessão" aria-label="Configurações & Governança: Backend, versão e regras da sessão"><span class="ico">◇</span>Configurações & Governança</button>
                 </nav>
                 <div class="sf">Dados na memória da página. Exporte antes de fechar.</div>
                 <div class="dev-card">
@@ -953,6 +993,7 @@
                     <!-- EMPRESA 360 -->
                     <section class="view" id="v-profile">
                         <h1>Empresa 360°</h1>
+                        <p class="sub">Escolha uma empresa da última prospecção para abrir a ficha completa (contato, score, CNPJ e decisão de BDR), ou uma empresa da base do Hub.</p>
                         <div class="card">
                             <select id="profileSelect" class="file" style="width:100%">
                                 <option value="">Selecione uma empresa</option>
@@ -1063,6 +1104,21 @@
                                     </table>
                                 </div>
                             </aside>
+                        </div>
+                        <div class="card intel" id="intelCard">
+                            <div class="card-header-flex">
+                                <h3>Inteligência da praça</h3>
+                                <span class="tag" id="intelSource">Faça uma prospecção para carregar os indicadores da cidade.</span>
+                            </div>
+                            <div class="kpis" id="intelKpis"></div>
+                            <div class="intel-grid">
+                                <div class="chartbox"><h4>Score de contato dos prospects</h4><div class="cv"><canvas id="chScore"></canvas></div></div>
+                                <div class="chartbox"><h4>Cobertura de canais de contato</h4><div class="cv"><canvas id="chContact"></canvas></div></div>
+                                <div class="chartbox"><h4>Principais categorias encontradas</h4><div class="cv"><canvas id="chCats"></canvas></div></div>
+                                <div class="chartbox"><h4 id="chEconTitle">Economia local</h4><div class="cv"><canvas id="chEcon"></canvas></div><div class="chart-empty" id="chEconEmpty"></div></div>
+                            </div>
+                            <div class="intel-read" id="intelRead"></div>
+                            <div class="source-note" id="intelNotes"></div>
                         </div>
                     </section>
 
@@ -1259,6 +1315,18 @@
                 </main>
             </div>
         </div>
+        <div class="nav-tip" id="navTip" role="tooltip"></div>
+        <div class="drawer-back" id="e360Back"></div>
+        <aside class="drawer" id="e360" aria-hidden="true" aria-labelledby="e360Name">
+            <div class="drawer-head">
+                <div>
+                    <small id="e360Seg"></small>
+                    <h2 id="e360Name">Empresa 360°</h2>
+                </div>
+                <button class="btn light" id="e360Close">Fechar</button>
+            </div>
+            <div class="drawer-body" id="e360Body"></div>
+        </aside>
         <script id="paim-ver46-github">
             (function() {
                 'use strict';
@@ -1835,7 +1903,7 @@
                     if ($('segments'))
                         $('segments').innerHTML = Object.entries(c).sort( (a, b) => b[1] - a[1]).slice(0, 12).map( ([k,v]) => `<div style="display:flex;justify-content:space-between;padding:5px"><span>${esc(k)}</span><b>${v}</b></div>`).join('') || '<div class="empty">Importe uma base.</div>';
                     if ($('profileSelect'))
-                        $('profileSelect').innerHTML = '<option value="">Selecione uma empresa</option>' + Hub.rows.map(r => `<option value="${r.id}">${esc(r.empresa)}</option>`).join('');
+                        renderProfileSelect();
                     if ($('oppRows'))
                         $('oppRows').innerHTML = rows.filter(r => r.score >= 70).map( (r, i) => `<tr><td>${i + 1}</td><td>${esc(r.empresa)}</td><td>${esc(r.cidade + '/' + r.uf)}</td><td>${r.score}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">Nenhuma oportunidade.</td></tr>';
                     renderBDR();
@@ -1872,7 +1940,8 @@
                 }
                 // ===== Mapa real (Leaflet) — VER52 =====
                 const LMaps = {};
-                const TILE_URL = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+                // Mapa base do OpenStreetMap (gratuito, sem chave). A CARTO passou a exigir API key.
+                const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
                 function lmap(id) {
                     if (!window.L)
                         return null;
@@ -1886,8 +1955,7 @@
                         const map = L.map(box, { zoomControl: true }).setView([-15, -60], 3);
                         L.tileLayer(TILE_URL, {
                             maxZoom: 19,
-                            subdomains: 'abcd',
-                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                         }).addTo(map);
                         const overlay = document.createElement('div');
                         overlay.className = 'map-overlay';
@@ -1917,7 +1985,7 @@
                 function popupHtml(r) {
                     const site = safeUrl(r.website)
                       , local = [r.cidade, r.uf, r.pais].filter(Boolean).join(' / ');
-                    return `<div class="pop"><b>${esc(r.empresa)}</b><small>${esc(r.categoria || r.segmento || '')}</small>` + (r.endereco ? `${esc(r.endereco)}<br>` : '') + (local ? `${esc(local)}<br>` : '') + (r.telefone ? `Tel: ${esc(r.telefone)}<br>` : '') + (r.email ? `E-mail: ${esc(r.email)}<br>` : '') + (site ? `<a href="${esc(site)}" target="_blank" rel="noopener">${esc(site.replace(/^https?:\/\//, '').slice(0, 60))}</a><br>` : '') + `<span class="sc">Score ${esc(r.score || 0)}</span></div>`
+                    return `<div class="pop"><b>${esc(r.empresa)}</b><small>${esc(r.categoria || r.segmento || '')}</small>` + (r.endereco ? `${esc(r.endereco)}<br>` : '') + (local ? `${esc(local)}<br>` : '') + (r.telefone ? `Tel: ${esc(r.telefone)}<br>` : '') + (r.email ? `E-mail: ${esc(r.email)}<br>` : '') + (site ? `<a href="${esc(site)}" target="_blank" rel="noopener">${esc(site.replace(/^https?:\/\//, '').slice(0, 60))}</a><br>` : '') + `<span class="sc">Score ${esc(r.score || 0)}</span>` + (r._id && Prospect.rows.indexOf(r) >= 0 ? `<br><button class="btn" style="margin-top:8px;padding:6px 10px;font-size:12px" data-open="${esc(r._id)}">Abrir Empresa 360°</button>` : '') + '</div>'
                 }
                 const geoRows = rows => rows.filter(r => Number.isFinite(+r.latitude) && Number.isFinite(+r.longitude) && r.latitude !== null && r.longitude !== null && !(+r.latitude === 0 && +r.longitude === 0));
                 function drawLeaflet(id, rows, opts) {
@@ -2089,6 +2157,8 @@
                             ...x,
                             pais: x.pais || x.country || p.country,
                             _id: x.id || `prospect-${i}`,
+                            status: 'Pendente',
+                            nota: '',
                             situacao: existing(x) ? 'Já existe na base' : 'Nova empresa'
                         }));
                         Prospect.selected.clear();
@@ -2100,6 +2170,7 @@
                         renderRadar();
                         renderSources();
                         renderGov();
+                        loadIntel(p);
                         $('mStatus').textContent = `${Prospect.rows.length} prospects exibidos em ${d.radius_km || d.requested_km || p.km} km. ${d.scanned} locais examinados; ${d.matched} compatíveis` + (d.tiles_total ? `; ${d.tiles_processed || 0}/${d.tiles_total} blocos processados` : `; ${d.rejected || 0} rejeitados pelo filtro`) + `. ${p.city}/${p.uf} · ${p.country}. Fonte: Overture Maps.` + (d.partial ? ' Resultado parcial: alguns blocos falharam.' : '') + (d.truncated ? ' Área muito grande: a leitura parou no teto de segurança; reduza o raio para cobrir tudo.' : '') + (p.country_iso !== 'BR' && !d.country_iso ? ' Atenção: o backend não confirmou suporte a países fora do Brasil; confira se os resultados são da cidade certa.' : '')
                     } catch (e) {
                         $('mStatus').textContent = 'Falha: ' + await explainFailure(e, p);
@@ -2130,10 +2201,7 @@
                         h += '<div class="map-loading">Selecione os filtros e clique em Prospectar com Overture Maps.</div>';
                     box.innerHTML = h;
                     }
-                    const tb = $('mapCompanyTableBody');
-                    if (tb)
-                        tb.innerHTML = a.length ? a.map(r => `<tr><td><input class="prospectCheck" type="checkbox" data-id="${esc(r._id)}"></td><td><b>${esc(r.empresa)}</b><br><small>${esc(r.endereco || '-')}</small></td><td>${esc(r.origem)}<br><span class="${r.situacao === 'Nova empresa' ? 'prospect-new' : 'prospect-existing'}">${esc(r.situacao)}</span></td><td>${esc(r.segmento)}<br><small>${esc(r.categoria)}</small></td><td>${esc((r.cidade || '-') + '/' + (r.uf || '-'))}</td><td>${esc([r.telefone, r.email, r.website].filter(Boolean).join(' · ') || '-')}</td><td>${r.score}</td></tr>`).join('') : '<tr><td colspan="7" class="empty">Nenhum prospect externo.</td></tr>';
-                    document.querySelectorAll('.prospectCheck').forEach(c => c.addEventListener('change', () => c.checked ? Prospect.selected.add(c.dataset.id) : Prospect.selected.delete(c.dataset.id)));
+                    renderProspectTable();
                     renderIcpReport();
                 }
 
@@ -2235,10 +2303,355 @@
                 }
                 function renderBDR() {
                     if ($('bdrRows'))
-                        $('bdrRows').innerHTML = BDR.map(r => `<tr><td>${esc(r.empresa)}</td><td>Pendente</td><td>${esc(r.telefone || r.email || r.website || '-')}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">Nenhuma conta.</td></tr>'
+                        $('bdrRows').innerHTML = BDR.map(r => `<tr><td>${esc(r.empresa)}</td><td>${esc(r.status || 'Pendente')}${r.nota ? ' · ' + esc(r.nota) : ''}</td><td>${esc(r.telefone || r.email || r.website || '-')}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">Nenhuma conta.</td></tr>'
                 }
-                function sendToHub() {
-                    const sel = Prospect.rows.filter(r => Prospect.selected.has(r._id))
+                // ===== Empresa 360° + Inteligência da praça (VER55) =====
+                const Intel = { charts: {}, cache: {}, token: 0 };
+                const fmtN = (v, d = 0) => v == null || !isFinite(v) ? '—' : Number(v).toLocaleString('pt-BR', { maximumFractionDigits: d });
+                const fmtMoney = (v, cur) => v == null || !isFinite(v) ? '—' : Number(v).toLocaleString('pt-BR', { style: 'currency', currency: cur, maximumFractionDigits: 0 });
+                const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+                async function getJSON(url, ms) {
+                    const r = await fetchT(url, ms || 20000);
+                    if (!r.ok)
+                        throw Error('HTTP ' + r.status);
+                    return r.json()
+                }
+                // --- Brasil: IBGE (os IDs das variáveis são descobertos pelos metadados de cada tabela)
+                const IBGE = 'https://servicodados.ibge.gov.br/api';
+                async function ibgeMunicipio(uf, city) {
+                    const k = 'mun:' + uf;
+                    if (!Intel.cache[k])
+                        Intel.cache[k] = await getJSON(`${IBGE}/v1/localidades/estados/${encodeURIComponent(uf)}/municipios`);
+                    return Intel.cache[k].find(m => norm(m.nome) === norm(city)) || null
+                }
+                async function ibgeVars(table) {
+                    const k = 'meta:' + table;
+                    if (!Intel.cache[k])
+                        Intel.cache[k] = await getJSON(`${IBGE}/v3/agregados/${table}/metadados`);
+                    return Intel.cache[k].variaveis || []
+                }
+                async function ibgeValues(table, ids, code, period) {
+                    const d = await getJSON(`${IBGE}/v3/agregados/${table}/periodos/${period || '-1'}/variaveis/${ids.join('|')}?localidades=N6[${code}]`);
+                    const out = {};
+                    (d || []).forEach(v => {
+                        const s = v.resultados && v.resultados[0] && v.resultados[0].series && v.resultados[0].series[0];
+                        const ano = s ? Object.keys(s.serie || {}).sort().pop() : null;
+                        const val = ano ? parseFloat(String(s.serie[ano]).replace(',', '.')) : NaN;
+                        out[v.id] = { nome: v.variavel, unidade: v.unidade, ano, valor: isFinite(val) ? val : null }
+                    }
+                    );
+                    return out
+                }
+                const pickVar = (vars, test) => (vars.find(v => test(norm(v.nome), norm(v.unidade || ''))) || {}).id;
+                async function ibgePopulation(code, period) {
+                    for (const [table,rx] of [[6579, /populacao residente estimada/], [4709, /populacao residente/]]) {
+                        try {
+                            const id = pickVar(await ibgeVars(table), n => rx.test(n));
+                            if (!id)
+                                continue;
+                            const v = (await ibgeValues(table, [id], code, period))[id];
+                            if (v && v.valor)
+                                return { ...v, tabela: table }
+                        } catch (_) {}
+                    }
+                    return null
+                }
+                async function brazilIndicators(uf, city) {
+                    const mun = await ibgeMunicipio(uf, city);
+                    if (!mun)
+                        throw Error(`município ${city}/${uf} não encontrado no IBGE`);
+                    const out = { municipio: mun.nome, codigo: mun.id };
+                    out.pop = await ibgePopulation(mun.id);
+                    try {
+                        const vars = await ibgeVars(5938);
+                        const mil = (n, u) => !n.startsWith('participacao') && u.includes('mil');
+                        const ids = {
+                            pib: pickVar(vars, (n, u) => mil(n, u) && n.startsWith('produto interno bruto a precos correntes')),
+                            agro: pickVar(vars, (n, u) => mil(n, u) && n.includes('valor adicionado bruto') && n.includes('agropecuaria')),
+                            ind: pickVar(vars, (n, u) => mil(n, u) && n.includes('valor adicionado bruto') && n.includes('industria')),
+                            serv: pickVar(vars, (n, u) => mil(n, u) && n.includes('valor adicionado bruto') && n.includes('servicos') && n.includes('exclusive')),
+                            adm: pickVar(vars, (n, u) => mil(n, u) && n.includes('valor adicionado bruto') && n.includes('administracao') && !n.includes('exclusive'))
+                        };
+                        const list = Object.values(ids).filter(Boolean);
+                        if (list.length) {
+                            const v = await ibgeValues(5938, list, mun.id);
+                            const g = k => ids[k] && v[ids[k]] ? v[ids[k]].valor : null;
+                            out.pibAno = ids.pib && v[ids.pib] ? v[ids.pib].ano : null;
+                            out.pib = g('pib') != null ? g('pib') * 1000 : null;
+                            out.vab = { 'Agropecuária': g('agro'), 'Indústria': g('ind'), 'Serviços': g('serv'), 'Adm. pública': g('adm') };
+                            const popPib = out.pibAno ? await ibgePopulation(mun.id, out.pibAno) : null;
+                            const base = (popPib && popPib.valor) || (out.pop && out.pop.valor);
+                            out.pibPc = out.pib && base ? out.pib / base : null
+                        }
+                    } catch (e) {
+                        out.pibErro = e.message
+                    }
+                    return out
+                }
+                // --- América Latina: população da cidade (Wikidata) + indicadores do país (Banco Mundial)
+                const COUNTRY_QID = { BR: 'Q155', AR: 'Q414', BO: 'Q750', CL: 'Q298', CO: 'Q739', EC: 'Q736', MX: 'Q96', PY: 'Q733', PE: 'Q419', UY: 'Q77' };
+                async function wikiCityPop(city, iso) {
+                    const W = 'https://www.wikidata.org/w/api.php';
+                    const s = await getJSON(`${W}?action=wbsearchentities&search=${encodeURIComponent(city)}&language=es&uselang=es&type=item&limit=8&format=json&origin=*`);
+                    const ids = (s.search || []).map(x => x.id);
+                    if (!ids.length)
+                        return null;
+                    const e = await getJSON(`${W}?action=wbgetentities&ids=${ids.join('|')}&props=claims&format=json&origin=*`);
+                    for (const id of ids) {
+                        const c = (e.entities && e.entities[id] && e.entities[id].claims) || {};
+                        const inCountry = (c.P17 || []).some(x => x.mainsnak && x.mainsnak.datavalue && x.mainsnak.datavalue.value.id === COUNTRY_QID[iso]);
+                        const pops = (c.P1082 || []).map(x => ({ v: Number(x.mainsnak && x.mainsnak.datavalue && x.mainsnak.datavalue.value.amount), t: (x.qualifiers && x.qualifiers.P585 && x.qualifiers.P585[0].datavalue.value.time) || '' })).filter(x => isFinite(x.v) && x.v > 0);
+                        if (inCountry && pops.length) {
+                            pops.sort( (a, b) => b.t.localeCompare(a.t));
+                            return { valor: pops[0].v, ano: (pops[0].t.match(/\d{4}/) || [''])[0], qid: id }
+                        }
+                    }
+                    return null
+                }
+                async function wbSeries(iso, ind) {
+                    const d = await getJSON(`https://api.worldbank.org/v2/country/${iso}/indicator/${ind}?format=json&per_page=40&date=2010:2026`);
+                    return ((d && d[1]) || []).filter(x => x.value != null).map(x => ({ ano: +x.date, valor: x.value })).sort( (a, b) => a.ano - b.ano)
+                }
+                const last = s => s && s.length ? s[s.length - 1] : null;
+                async function latamIndicators(iso, city) {
+                    const out = {};
+                    const [pop,gdp,gni,unemp,infl] = await Promise.allSettled([wikiCityPop(city, iso), wbSeries(iso, 'NY.GDP.PCAP.CD'), wbSeries(iso, 'NY.GNP.PCAP.CD'), wbSeries(iso, 'SL.UEM.TOTL.ZS'), wbSeries(iso, 'FP.CPI.TOTL.ZG')]);
+                    out.pop = pop.status === 'fulfilled' ? pop.value : null;
+                    out.gdpSeries = gdp.status === 'fulfilled' ? gdp.value : [];
+                    out.gdp = last(out.gdpSeries);
+                    out.gni = gni.status === 'fulfilled' ? last(gni.value) : null;
+                    out.unemp = unemp.status === 'fulfilled' ? last(unemp.value) : null;
+                    out.infl = infl.status === 'fulfilled' ? last(infl.value) : null;
+                    return out
+                }
+                // --- Gráficos
+                function chart(id, cfg) {
+                    if (!window.Chart)
+                        return;
+                    if (Intel.charts[id])
+                        Intel.charts[id].destroy();
+                    const el = $(id);
+                    if (!el)
+                        return;
+                    cfg.options = Object.assign({ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }, cfg.options || {});
+                    Intel.charts[id] = new Chart(el,cfg)
+                }
+                const prettyCat = c => String(c || 'sem categoria').replace(/_/g, ' ');
+                function prospectStats(rows) {
+                    const n = rows.length
+                      , tel = rows.filter(r => r.telefone).length
+                      , mail = rows.filter(r => r.email).length
+                      , site = rows.filter(r => r.website).length
+                      , telSite = rows.filter(r => r.telefone && r.website).length;
+                    const bands = [rows.filter(r => (r.score || 0) < 45).length, rows.filter(r => (r.score || 0) >= 45 && (r.score || 0) < 70).length, rows.filter(r => (r.score || 0) >= 70).length];
+                    const cats = {};
+                    rows.forEach(r => {
+                        const c = prettyCat(r.categoria);
+                        cats[c] = (cats[c] || 0) + 1
+                    }
+                    );
+                    const top = Object.entries(cats).sort( (a, b) => b[1] - a[1]).slice(0, 8);
+                    const avg = n ? rows.reduce( (s, r) => s + (+r.score || 0), 0) / n : 0;
+                    const hot = rows.filter(r => (r.score || 0) >= 70 && r.telefone).length;
+                    return { n, tel, mail, site, telSite, bands, top, avg, hot }
+                }
+                function kpi(label, value, note) {
+                    return `<div class="kpi"><span>${esc(label)}</span><b>${value}</b>${note ? `<small>${esc(note)}</small>` : ''}</div>`
+                }
+                function renderIntel(ctx) {
+                    const st = ctx.stats
+                      , ind = ctx.ind || {}
+                      , br = ctx.iso === 'BR';
+                    const popV = ind.pop && ind.pop.valor;
+                    const k = [kpi('Empresas compatíveis', fmtN(st.n), `${ctx.city} · raio ${ctx.km} km`), kpi('Por 100 mil habitantes', popV ? fmtN(st.n / popV * 1e5, 1) : '—', popV ? 'densidade do segmento' : 'aguardando população'), kpi('Com telefone direto', st.n ? pct(st.tel, st.n) + '%' : '—', `${fmtN(st.tel)} empresas`), kpi('Com website', st.n ? pct(st.site, st.n) + '%' : '—', `${fmtN(st.site)} empresas`), kpi('Score médio', fmtN(st.avg, 0), `${fmtN(st.hot)} com score 70+ e telefone`), kpi('População da cidade', popV ? fmtN(popV) : (ctx.loading ? '…' : '—'), ind.pop ? (br ? `IBGE ${ind.pop.ano || ''}` : `Wikidata ${ind.pop.ano || ''}`) : '')];
+                    if (br) {
+                        k.push(kpi('PIB per capita', ind.pibPc ? fmtMoney(ind.pibPc, 'BRL') : (ctx.loading ? '…' : '—'), ind.pibAno ? `IBGE ${ind.pibAno} · proxy de renda` : ''));
+                        k.push(kpi('PIB do município', ind.pib ? 'R$ ' + Number(ind.pib).toLocaleString('pt-BR', { notation: 'compact', maximumFractionDigits: 1 }) : (ctx.loading ? '…' : '—'), ind.pibAno ? `IBGE ${ind.pibAno}` : ''))
+                    } else {
+                        k.push(kpi(`PIB per capita · ${ctx.country}`, ind.gdp ? fmtMoney(ind.gdp.valor, 'USD') : (ctx.loading ? '…' : '—'), ind.gdp ? `Banco Mundial ${ind.gdp.ano} · país` : ''));
+                        k.push(kpi(`Renda (RNB) per capita · ${ctx.country}`, ind.gni ? fmtMoney(ind.gni.valor, 'USD') : (ctx.loading ? '…' : '—'), ind.gni ? `Banco Mundial ${ind.gni.ano} · país` : ''));
+                        k.push(kpi(`Desemprego · ${ctx.country}`, ind.unemp ? fmtN(ind.unemp.valor, 1) + '%' : (ctx.loading ? '…' : '—'), ind.unemp ? `Banco Mundial ${ind.unemp.ano}` : ''));
+                        k.push(kpi(`Inflação · ${ctx.country}`, ind.infl ? fmtN(ind.infl.valor, 1) + '%' : (ctx.loading ? '…' : '—'), ind.infl ? `Banco Mundial ${ind.infl.ano}` : ''))
+                    }
+                    $('intelKpis').innerHTML = k.join('');
+                    $('intelSource').textContent = `${ctx.city}/${ctx.uf} · ${ctx.country}` + (ctx.loading ? ' · carregando indicadores…' : '');
+                    // gráficos dos prospects
+                    chart('chScore', { type: 'bar', data: { labels: ['Até 44', '45 a 69', '70 ou mais'], datasets: [{ data: st.bands, backgroundColor: ['#c9d3df', '#f5b26b', '#f58220'], borderRadius: 6 }] }, options: { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } } });
+                    chart('chContact', { type: 'bar', data: { labels: ['Telefone', 'E-mail', 'Website', 'Telefone + site'], datasets: [{ data: [st.tel, st.mail, st.site, st.telSite].map(v => pct(v, st.n)), backgroundColor: '#0a3d7a', borderRadius: 6 }] }, options: { indexAxis: 'y', scales: { x: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.raw + '% dos prospects' } } } } });
+                    chart('chCats', { type: 'bar', data: { labels: st.top.map(t => t[0].length > 28 ? t[0].slice(0, 27) + '…' : t[0]), datasets: [{ data: st.top.map(t => t[1]), backgroundColor: '#f58220', borderRadius: 6 }] }, options: { indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } } });
+                    // gráfico econômico
+                    const empty = $('chEconEmpty');
+                    let econOk = false;
+                    if (br && ind.vab && Object.values(ind.vab).some(v => v)) {
+                        $('chEconTitle').textContent = `Composição da economia (VAB) · IBGE ${ind.pibAno || ''}`;
+                        const labels = Object.keys(ind.vab)
+                          , vals = labels.map(l => ind.vab[l] || 0)
+                          , tot = vals.reduce( (a, b) => a + b, 0) || 1;
+                        chart('chEcon', { type: 'doughnut', data: { labels, datasets: [{ data: vals, backgroundColor: ['#7aa65a', '#0a3d7a', '#f58220', '#9aa8b8'] }] }, options: { plugins: { legend: { display: true, position: 'right' }, tooltip: { callbacks: { label: c => `${c.label}: ${Math.round(c.raw / tot * 100)}%` } } } } });
+                        econOk = true
+                    } else if (!br && ind.gdpSeries && ind.gdpSeries.length) {
+                        $('chEconTitle').textContent = `PIB per capita · ${ctx.country} (US$, Banco Mundial)`;
+                        chart('chEcon', { type: 'line', data: { labels: ind.gdpSeries.map(x => x.ano), datasets: [{ data: ind.gdpSeries.map(x => Math.round(x.valor)), borderColor: '#0a3d7a', backgroundColor: '#0a3d7a22', fill: true, tension: .25, pointRadius: 2 }] }, options: { scales: { y: { ticks: { callback: v => 'US$ ' + Number(v).toLocaleString('pt-BR') } } } } });
+                        econOk = true
+                    }
+                    if (!econOk) {
+                        if (Intel.charts.chEcon) {
+                            Intel.charts.chEcon.destroy();
+                            delete Intel.charts.chEcon
+                        }
+                        $('chEconTitle').textContent = 'Economia local';
+                        empty.textContent = ctx.loading ? 'Carregando dados econômicos…' : (ctx.err ? `Não foi possível carregar os dados econômicos (${ctx.err}).` : 'Sem dados econômicos para esta cidade.');
+                    }
+                    empty.style.display = econOk ? 'none' : 'grid';
+                    // leitura para o BDR
+                    const tips = [];
+                    if (st.n)
+                        tips.push(`${fmtN(st.n)} empresas compatíveis com o segmento em ${ctx.km} km; ${pct(st.tel, st.n)}% têm telefone direto e ${pct(st.site, st.n)}% têm website.`);
+                    if (popV && st.n)
+                        tips.push(`Densidade de ${fmtN(st.n / popV * 1e5, 1)} empresas do segmento por 100 mil habitantes (população ${fmtN(popV)}).`);
+                    if (br && ind.vab) {
+                        const e = Object.entries(ind.vab).filter(x => x[1]).sort( (a, b) => b[1] - a[1]);
+                        const tot = e.reduce( (s, x) => s + x[1], 0);
+                        if (e.length && tot)
+                            tips.push(`Economia local puxada por ${e[0][0].toLowerCase()} (${Math.round(e[0][1] / tot * 100)}% do valor adicionado); indústria responde por ${Math.round((ind.vab['Indústria'] || 0) / tot * 100)}%.`)
+                    }
+                    if (!br && ind.gdp)
+                        tips.push(`Contexto do país: PIB per capita de ${fmtMoney(ind.gdp.valor, 'USD')} (${ind.gdp.ano})` + (ind.unemp ? `, desemprego de ${fmtN(ind.unemp.valor, 1)}%` : '') + '.');
+                    if (st.hot)
+                        tips.push(`Sugestão de início: ${fmtN(st.hot)} prospects com score 70+ e telefone direto.`);
+                    const ap = Prospect.rows.filter(r => r.status === 'Aprovado').length
+                      , dc = Prospect.rows.filter(r => r.status === 'Descartado').length;
+                    if (ap || dc)
+                        tips.push(`Sua triagem: ${ap} aprovado(s), ${dc} descartado(s), ${Prospect.rows.length - ap - dc} pendente(s).`);
+                    $('intelRead').innerHTML = tips.length ? `<b>Leitura para BDR / IM</b><ul>${tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : '';
+                    $('intelNotes').textContent = br ? 'Fontes: IBGE (população estimada/Censo e PIB dos Municípios). PIB per capita é usado como proxy de renda; os dados de PIB municipal saem com cerca de dois anos de defasagem.' : 'Fontes: Wikidata (população da cidade) e Banco Mundial (indicadores nacionais; não há série municipal padronizada para a América Latina).'
+                }
+                async function loadIntel(p) {
+                    const t = ++Intel.token;
+                    const ctx = { iso: p.country_iso, country: p.country, city: p.city, uf: p.uf, km: p.km, stats: prospectStats(Prospect.rows), loading: true };
+                    Intel.last = ctx;
+                    renderIntel(ctx);
+                    try {
+                        ctx.ind = ctx.iso === 'BR' ? await brazilIndicators(p.uf, p.city) : await latamIndicators(ctx.iso, p.city)
+                    } catch (e) {
+                        ctx.err = e.message
+                    }
+                    if (t !== Intel.token)
+                        return;
+                    ctx.loading = false;
+                    renderIntel(ctx)
+                }
+                function refreshIntel() {
+                    if (Intel.last) {
+                        Intel.last.stats = prospectStats(Prospect.rows);
+                        renderIntel(Intel.last)
+                    }
+                }
+                // --- Empresa 360° dentro da prospecção
+                function open360(id) {
+                    const i = Prospect.rows.findIndex(r => r._id === id);
+                    if (i < 0)
+                        return;
+                    Intel.cur = i;
+                    const r = Prospect.rows[i]
+                      , site = safeUrl(r.website)
+                      , br = (r.pais || 'Brasil') === 'Brasil';
+                    const gm = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([r.empresa, r.endereco, r.cidade, r.uf, r.pais].filter(Boolean).join(' '));
+                    const stCls = r.status === 'Aprovado' ? 'ok' : r.status === 'Descartado' ? 'no' : '';
+                    const sc = [['Telefone direto', 30, !!r.telefone], ['E-mail', 25, !!r.email], ['Website', 20, !!r.website], ['Segmento alvo', 25, !!r.segmento]];
+                    $('e360Seg').textContent = [r.segmento, prettyCat(r.categoria)].filter(Boolean).join(' · ');
+                    $('e360Name').textContent = r.empresa;
+                    $('e360Body').innerHTML = `
+                        <div class="d-sec"><h3>Decisão do analista <span class="st ${stCls}">${esc(r.status || 'Pendente')}</span></h3>
+                            <div class="d-actions"><button class="btn" data-act="Aprovado">Aprovar para BDR</button><button class="btn light" data-act="Descartado">Descartar</button><button class="btn light" data-act="Pendente">Voltar a pendente</button></div>
+                            <textarea id="e360Nota" placeholder="Notas: decisor, contexto, próximo passo..." style="margin-top:10px">${esc(r.nota || '')}</textarea></div>
+                        <div class="d-sec"><h3>Contato</h3><div class="kv">
+                            <span>Telefone</span><div>${r.telefone ? `<a href="tel:${esc(String(r.telefone).replace(/[^\d+]/g, ''))}">${esc(r.telefone)}</a>` : '—'}</div>
+                            <span>E-mail</span><div>${r.email ? `<a href="mailto:${esc(r.email)}">${esc(r.email)}</a>` : '—'}</div>
+                            <span>Website</span><div>${site ? `<a href="${esc(site)}" target="_blank" rel="noopener">${esc(site.replace(/^https?:\/\//, ''))}</a>` : '—'}</div>
+                            <span>Google Maps</span><div><a href="${esc(gm)}" target="_blank" rel="noopener">Ver no Google Maps</a></div></div></div>
+                        <div class="d-sec"><h3>Localização</h3><div class="kv">
+                            <span>Endereço</span><div>${esc(r.endereco || '—')}</div>
+                            <span>Cidade</span><div>${esc([r.cidade, r.uf, r.pais].filter(Boolean).join(' / ') || '—')}</div>
+                            <span>CEP</span><div>${esc(r.cep || '—')}</div>
+                            <span>Distância do centro</span><div>${r.distancia_km != null ? esc(r.distancia_km) + ' km' : '—'}</div></div></div>
+                        <div class="d-sec"><h3>Score de contato: ${esc(r.score || 0)}</h3><ul class="d-score">${sc.map(x => `<li><span>${x[2] ? '✓' : '✗'} ${x[0]}</span><b>${x[2] ? '+' + x[1] : '0'}</b></li>`).join('')}</ul></div>
+                        <div class="d-sec"><h3>Classificação</h3><div class="kv">
+                            <span>Segmento BSA</span><div>${esc(r.segmento || '—')}</div>
+                            <span>Categoria Overture</span><div>${esc(prettyCat(r.categoria))}</div>
+                            <span>Origem</span><div>${esc(r.origem || 'Overture Maps')}</div>
+                            <span>Na base do Hub</span><div>${esc(r.situacao || '—')}</div></div></div>
+                        <div class="d-sec"><h3>Dados cadastrais ${br ? '(CNPJ)' : ''}</h3>${br ? `<div class="d-row"><input id="e360Cnpj" placeholder="Digite o CNPJ para buscar capital social, porte e CNAE" value="${esc(r.cnpj || '')}"><button class="btn" id="e360CnpjBtn">Consultar</button></div><div id="e360CnpjOut" style="margin-top:10px">${r.cad ? cadHtml(r.cad) : '<span class="small">O Overture não traz CNPJ. Encontre o CNPJ (site da empresa, nota fiscal, Google) e consulte aqui.</span>'}</div>` : '<span class="small">Consulta cadastral automática disponível só para CNPJ brasileiro.</span>'}</div>
+                        <div class="d-sec"><h3>Ações</h3><div class="d-actions"><button class="btn orange" id="e360Bdr">Adicionar à Lista BDR</button><button class="btn light" id="e360Hub">Enviar à base do Hub</button><button class="btn light" id="e360Prev">← Anterior</button><button class="btn light" id="e360Next">Próxima →</button></div></div>`;
+                    $('e360').classList.add('open');
+                    $('e360').setAttribute('aria-hidden', 'false');
+                    $('e360Back').style.display = 'block'
+                }
+                function close360() {
+                    $('e360').classList.remove('open');
+                    $('e360').setAttribute('aria-hidden', 'true');
+                    $('e360Back').style.display = 'none'
+                }
+                function cadHtml(c) {
+                    return `<div class="kv"><span>Razão social</span><div>${esc(c.razao_social || '—')}</div><span>Nome fantasia</span><div>${esc(c.nome_fantasia || '—')}</div><span>Capital social</span><div><b>${c.capital_social != null ? fmtMoney(+c.capital_social, 'BRL') : '—'}</b></div><span>Porte</span><div>${esc(c.porte || c.descricao_porte || '—')}</div><span>Natureza jurídica</span><div>${esc(c.natureza_juridica || '—')}</div><span>CNAE principal</span><div>${esc([c.cnae_fiscal, c.cnae_fiscal_descricao].filter(Boolean).join(' · ') || '—')}</div><span>Abertura</span><div>${esc(c.data_inicio_atividade || '—')}</div><span>Situação</span><div>${esc(c.descricao_situacao_cadastral || '—')}</div><span>Município</span><div>${esc([c.municipio, c.uf].filter(Boolean).join('/') || '—')}</div></div><div class="source-note">Fonte: BrasilAPI (dados públicos da Receita Federal).</div>`
+                }
+                async function consultCnpj() {
+                    const r = Prospect.rows[Intel.cur];
+                    const cnpj = ($('e360Cnpj').value || '').replace(/\D/g, '');
+                    const out = $('e360CnpjOut');
+                    if (cnpj.length !== 14) {
+                        out.textContent = 'Informe um CNPJ com 14 dígitos.';
+                        return
+                    }
+                    out.textContent = 'Consultando…';
+                    try {
+                        const c = await getJSON(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`, 20000);
+                        r.cnpj = cnpj;
+                        r.cad = c;
+                        r.capital_social = c.capital_social;
+                        out.innerHTML = cadHtml(c)
+                    } catch (e) {
+                        out.textContent = `Não foi possível consultar este CNPJ (${e.message}). Confira o número ou tente novamente.`
+                    }
+                }
+                function setStatus(st) {
+                    const r = Prospect.rows[Intel.cur];
+                    if (!r)
+                        return;
+                    r.status = st;
+                    const inB = BDR.findIndex(x => x._id === r._id);
+                    if (st === 'Aprovado' && inB < 0)
+                        BDR.push(r);
+                    if (st === 'Descartado' && inB >= 0)
+                        BDR.splice(inB, 1);
+                    renderBDR();
+                    renderProspectTable();
+                    refreshIntel();
+                    open360(r._id)
+                }
+                function renderProfileSelect() {
+                    const sel = $('profileSelect');
+                    if (!sel)
+                        return;
+                    const cur = sel.value;
+                    sel.innerHTML = '<option value="">Selecione uma empresa</option>' + (Prospect.rows.length ? `<optgroup label="Última prospecção (${Prospect.rows.length})">` + Prospect.rows.map(r => `<option value="p:${esc(r._id)}">${esc(r.empresa)} · ${esc(r.status || 'Pendente')} · score ${esc(r.score || 0)}</option>`).join('') + '</optgroup>' : '') + (Hub.rows.length ? `<optgroup label="Base do Hub (${Hub.rows.length})">` + Hub.rows.map(r => `<option value="h:${esc(r.id)}">${esc(r.empresa)}</option>`).join('') + '</optgroup>' : '');
+                    sel.value = cur
+                }
+                function renderProspectTable() {
+                    const a = Prospect.rows
+                      , tb = $('mapCompanyTableBody');
+                    if (!tb)
+                        return;
+                    tb.innerHTML = a.length ? a.map(r => {
+                        const cls = r.status === 'Aprovado' ? 'ok' : r.status === 'Descartado' ? 'no' : '';
+                        return `<tr><td><input class="prospectCheck" type="checkbox" data-id="${esc(r._id)}"${Prospect.selected.has(r._id) ? ' checked' : ''}></td><td><button class="linkbtn" data-open="${esc(r._id)}" title="Abrir Empresa 360°">${esc(r.empresa)}</button><br><small>${esc(r.endereco || '-')}</small><br><span class="st ${cls}">${esc(r.status || 'Pendente')}</span></td><td>${esc(r.origem)}<br><span class="${r.situacao === 'Nova empresa' ? 'prospect-new' : 'prospect-existing'}">${esc(r.situacao)}</span></td><td>${esc(r.segmento)}<br><small>${esc(r.categoria)}</small></td><td>${esc((r.cidade || '-') + '/' + (r.uf || '-'))}</td><td>${esc([r.telefone, r.email, r.website].filter(Boolean).join(' · ') || '-')}</td><td>${r.score}</td></tr>`
+                    }
+                    ).join('') : '<tr><td colspan="7" class="empty">Nenhum prospect externo.</td></tr>';
+                    renderProfileSelect();
+                    document.querySelectorAll('.prospectCheck').forEach(c => c.addEventListener('change', () => c.checked ? Prospect.selected.add(c.dataset.id) : Prospect.selected.delete(c.dataset.id)))
+                }
+                function sendToHub(explicit) {
+                    const sel = Array.isArray(explicit) ? explicit : Prospect.rows.filter(r => Prospect.selected.has(r._id))
                       , list = sel.length ? sel : Prospect.rows;
                     if (!list.length) {
                         alert('Faça uma prospecção antes de enviar ao Hub.');
@@ -2309,7 +2722,7 @@
                     if (!el)
                         return;
                     const kv = (k, v) => `<span>${esc(k)}</span><div>${v}</div>`;
-                    el.innerHTML = '<div class="kv">' + kv('Backend', `<a href="${esc(API_BASE)}/api/health" target="_blank" rel="noopener">${esc(API_BASE)}</a>`) + kv('Versão do motor', esc(Backend.version || '—')) + kv('Status', Backend.up ? 'Online' : 'Offline ou dormindo (o plano gratuito do Render desliga após ~15 min sem uso)') + kv('Registros no Hub', `${Hub.rows.length} (${Hub.rows.filter(r => r.source === 'Prospecção Overture').length} vindos da prospecção)`) + kv('Prospects na última busca', `${Prospect.rows.length}`) + kv('Lista BDR', `${BDR.length} contas`) + kv('Armazenamento', 'Somente na memória desta aba. Exporte (CSV/XLSX) antes de fechar ou recarregar a página.') + kv('Mapas', 'OpenStreetMap e CARTO via Leaflet, sem chave de API.') + '</div>'
+                    el.innerHTML = '<div class="kv">' + kv('Backend', `<a href="${esc(API_BASE)}/api/health" target="_blank" rel="noopener">${esc(API_BASE)}</a>`) + kv('Versão do motor', esc(Backend.version || '—')) + kv('Status', Backend.up ? 'Online' : 'Offline ou dormindo (o plano gratuito do Render desliga após ~15 min sem uso)') + kv('Registros no Hub', `${Hub.rows.length} (${Hub.rows.filter(r => r.source === 'Prospecção Overture').length} vindos da prospecção)`) + kv('Prospects na última busca', `${Prospect.rows.length}`) + kv('Lista BDR', `${BDR.length} contas`) + kv('Armazenamento', 'Somente na memória desta aba. Exporte (CSV/XLSX) antes de fechar ou recarregar a página.') + kv('Mapas', 'OpenStreetMap via Leaflet, sem chave de API.') + '</div>'
                 }
                 function renderAll() {
                     renderRadar();
@@ -2467,7 +2880,73 @@
                     }
                     );
 
-                    bind('mToHub', 'click', sendToHub);
+                    bind('mToHub', 'click', () => sendToHub());
+                    // Dica curta ao passar o mouse (ou focar pelo teclado) nas abas
+                    const tip = $('navTip');
+                    const hideTip = () => tip && tip.classList.remove('on');
+                    document.querySelectorAll('.nav button[data-tip]').forEach(btn => {
+                        const show = () => {
+                            if (!tip)
+                                return;
+                            tip.textContent = btn.dataset.tip;
+                            const r = btn.getBoundingClientRect();
+                            const right = r.right + 10 + 240 <= window.innerWidth;
+                            tip.style.left = (right ? r.right + 10 : r.left + 12) + 'px';
+                            tip.style.top = (right ? r.top + r.height / 2 - tip.offsetHeight / 2 : r.bottom + 4) + 'px';
+                            tip.classList.add('on')
+                        };
+                        btn.addEventListener('mouseenter', show);
+                        btn.addEventListener('focus', show);
+                        btn.addEventListener('mouseleave', hideTip);
+                        btn.addEventListener('blur', hideTip);
+                        btn.addEventListener('click', hideTip)
+                    }
+                    );
+                    $('nav')?.addEventListener('scroll', hideTip);
+                    document.addEventListener('click', e => {
+                        const b = e.target.closest('[data-open]');
+                        if (b) {
+                            e.preventDefault();
+                            open360(b.dataset.open)
+                        }
+                    }
+                    );
+                    bind('e360Close', 'click', close360);
+                    bind('e360Back', 'click', close360);
+                    document.addEventListener('keydown', e => {
+                        if (e.key === 'Escape')
+                            close360()
+                    }
+                    );
+                    bind('e360Body', 'input', e => {
+                        if (e.target.id === 'e360Nota' && Prospect.rows[Intel.cur]) {
+                            Prospect.rows[Intel.cur].nota = e.target.value;
+                            renderBDR()
+                        }
+                    }
+                    );
+                    bind('e360Body', 'click', e => {
+                        const t = e.target.closest('button');
+                        if (!t)
+                            return;
+                        const r = Prospect.rows[Intel.cur];
+                        if (t.dataset.act)
+                            setStatus(t.dataset.act);
+                        else if (t.id === 'e360CnpjBtn')
+                            consultCnpj();
+                        else if (t.id === 'e360Bdr' && r) {
+                            if (!BDR.some(x => x._id === r._id))
+                                BDR.push(r);
+                            renderBDR();
+                            t.textContent = 'Na Lista BDR ✓'
+                        } else if (t.id === 'e360Hub' && r)
+                            sendToHub([r]);
+                        else if (t.id === 'e360Prev' && Intel.cur > 0)
+                            open360(Prospect.rows[Intel.cur - 1]._id);
+                        else if (t.id === 'e360Next' && Intel.cur < Prospect.rows.length - 1)
+                            open360(Prospect.rows[Intel.cur + 1]._id)
+                    }
+                    );
                     bind('mAddBdr', 'click', () => {
                         const selected = Prospect.rows.filter(r => Prospect.selected.has(r._id));
                         selected.forEach(r => {
@@ -2493,7 +2972,13 @@
                     }
 
                     bind('profileSelect', 'change', e => {
-                        const r = Hub.rows.find(x => x.id === e.target.value);
+                        const v = e.target.value || '';
+                        if (v.startsWith('p:')) {
+                            open360(v.slice(2));
+                            $('profile').textContent = 'Ficha aberta no painel lateral. Use Anterior/Próxima para seguir a triagem.';
+                            return
+                        }
+                        const r = Hub.rows.find(x => x.id === v.slice(2));
                         const p = $('profile');
                         if (p)
                             p.innerHTML = r ? Object.entries(r).filter( ([k]) => k !== 'raw').map( ([k,v]) => `<div style="padding:7px;border-bottom:1px solid #ddd"><b>${esc(k)}:</b> ${esc(v)}</div>`).join('') : 'Selecione uma empresa.';
