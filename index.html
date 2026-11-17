@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>PAIM IA Prospect · VER52 · Bertolini BSA</title>
+        <title>PAIM IA Prospect · VER53 · Bertolini BSA</title>
         <style>
             :root {
                 --b: #06418a;
@@ -694,7 +694,7 @@
             <aside class="side">
                 <div class="brand">
                     <b>PAIM IA PROSPECT</b>
-                    <small>Bertolini Intralogística · VER52 LATAM</small>
+                    <small>Bertolini Intralogística · VER53 LATAM</small>
                 </div>
                 <nav class="nav" id="nav">
                     <div class="nav-group">Visão geral</div>
@@ -2070,7 +2070,13 @@
                         try {
                             d = JSON.parse(text)
                         } catch (_) {
-                            throw Error(r.ok ? 'Resposta inválida do servidor.' : `Erro HTTP ${r.status} do servidor. ` + (text.replace(/<[^>]+>/g, ' ').trim().slice(0, 160)))
+                            if (r.ok && !text.trim()) {
+                                // O backend responde 200 na hora e manda espaços enquanto busca; se a conexão cai, sobra só espaço em branco.
+                                Backend.up = false;
+                                const alive = await health();
+                                throw Error(alive ? `O servidor começou a busca, mas a conexão caiu antes do resultado. O motor reiniciou, o que costuma ser falta de memória no plano gratuito (512 MB). Tente de novo com raio menor e limite menor (atual: ${p.km} km, limite ${p.limit}).` : 'O servidor caiu durante a busca e ainda não voltou. Aguarde 1 minuto e tente de novo com raio e limite menores.')
+                            }
+                            throw Error(r.ok ? `Resposta incompleta do servidor (${text.trim().length} caracteres recebidos). A conexão provavelmente caiu no meio do envio; tente com limite menor.` : `Erro HTTP ${r.status} do servidor. ` + (text.replace(/<[^>]+>/g, ' ').trim().slice(0, 160)))
                         }
                         if (!r.ok || !d.ok) {
                             if (p.country_iso !== 'BR' && /Munic[ií]pio n[aã]o configurado/i.test(d.error || ''))
