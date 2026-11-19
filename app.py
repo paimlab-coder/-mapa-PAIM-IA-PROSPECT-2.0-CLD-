@@ -1,10 +1,22 @@
 # -*- coding: utf-8 -*-
-"""PAIM IA PROSPECT - app.py VER50: Brasil (paim_engine) + America Latina (latam_engine), CORS e erros em JSON."""
+"""PAIM IA PROSPECT - app.py VER50: Brasil (paim_engine) + America Latina (latam_engine), CORS e erros em JSON.
+
+Alteracoes desta versao (protecao contra queda por memoria no Render Free):
+- Uma busca por vez (lock). Uma segunda busca recebe 429 em vez de empilhar e estourar a RAM.
+- A busca roda em um pool proprio: se o navegador desconectar, o lock so e liberado quando a busca termina de verdade.
+- Teto de raio/limite configuravel por variavel de ambiente (MAX_KM, MAX_LIMIT). Padrao igual ao anterior (250 / 1500).
+- Log de memoria (RSS) no inicio, a cada 15 s e no fim de cada busca, para confirmar estouro de RAM nos logs.
+- Loop de batimento corrigido: um TimeoutError vindo do motor nao e mais confundido com o timeout de espera.
+- /api/health informa 'busy' e 'rss_mb'.
+"""
 from __future__ import annotations
 import os
 import json
+import time
+import logging
 import tempfile
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
+import threading
+from concurrent.futures import ThreadPoolExecutor, wait
 from pathlib import Path
 
 from flask import Flask, Response, jsonify, make_response, request, stream_with_context
@@ -14,6 +26,26 @@ import latam_engine as latam
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
+
+# Sob gunicorn, usa o mesmo handler do gunicorn para que app.logger.info() apareca nos logs do Render.
+if __name__ != '__main__':
+    _gunicorn_logger = logging.getLogger('gunicorn.error')
+    if _gunicorn_logger.handlers:
+        app.logger.handlers = _gunicorn_logger.handlers
+        app.logger.setLevel(_gunicorn_logger.level or logging.INFO)
+
+
+def _env_int(name, default):
+    try:
+        return int(os.environ.get(name, default))
+    except (TypeError, ValueError):
+        return default
+
+
+# Tetos de busca. Padrao = comportamento anterior. No Render Free, reduza via variavel de ambiente
+# (ex.: MAX_KM=60 e MAX_LIMIT=200) se a instancia continuar reiniciando.
+MAX_KM = max(5, _env_int('MAX_KM', 250))
+MAX_LIMIT = max(1, _env_int('MAX_LIMIT', 1500))
 
 # Origem exata do GitHub Pages. Pode ser sobrescrita no Render por CORS_ORIGINS.
 ALLOWED_ORIGINS = {
@@ -39,6 +71,32 @@ try:
     engine.load_municipalities()
 except Exception as exc:
     _startup_error = f'{type(exc).__name__}: {exc}'
+
+# Uma busca por vez. O lock e liberado pela propria thread da busca, ao terminar.
+_search_lock = threading.Lock()
+_search_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='paim-search')
+
+
+def rss_mb():
+    """Memoria residente atual do processo, em MB (Linux). None se indisponivel."""
+    try:
+        with open('/proc/self/status', encoding='ascii', errors='ignore') as fh:
+            for line in fh:
+                if line.startswith('VmRSS:'):
+                    return round(int(line.split()[1]) / 1024)
+    except Exception:
+        pass
+    return None
+
+
+def _run_search(fn, args, label):
+    started = time.time()
+    app.logger.info('prospect INICIO %s | rss=%s MB', label, rss_mb())
+    try:
+        return fn(*args)
+    finally:
+        app.logger.info('prospect FIM %s | %.1fs | rss=%s MB', label, time.time() - started, rss_mb())
+        _search_lock.release()
 
 
 def cors_origin():
@@ -103,6 +161,8 @@ def root():
         'latam_countries': sorted(latam.SUPPORTED),
         'startup_error': _startup_error,
         'allowed_origins': sorted(ALLOWED_ORIGINS),
+        'max_km': MAX_KM,
+        'max_limit': MAX_LIMIT,
     })
 
 
@@ -116,6 +176,8 @@ def health():
         'municipalities': len(engine.CITY),
         'latam_countries': sorted(latam.SUPPORTED),
         'error': _startup_error,
+        'busy': _search_lock.locked(),
+        'rss_mb': rss_mb(),
     }), status
 
 
@@ -133,8 +195,8 @@ def prospect_api():
         if not segment:
             segment = CNAE_TO_SEGMENT.get(str(payload.get('cnae', '')).strip(), '')
         segment_es = str(payload.get('segment_es', '')).strip()
-        km = max(5, min(250, int(payload.get('km', 20))))
-        limit = max(1, min(1500, int(payload.get('limit', 50))))
+        km = max(5, min(MAX_KM, int(payload.get('km', 20))))
+        limit = max(1, min(MAX_LIMIT, int(payload.get('limit', 50))))
         min_score = max(0, min(100, int(payload.get('min_score', 0))))
 
         if not city or not uf or not segment:
@@ -150,26 +212,47 @@ def prospect_api():
         else:
             return jsonify({'ok': False, 'error': f'País não suportado: {iso}.'}), 400
 
+        # Uma busca por vez: evita varias buscas pesadas ao mesmo tempo na mesma instancia (RAM do plano Free).
+        if not _search_lock.acquire(blocking=False):
+            return jsonify({
+                'ok': False,
+                'busy': True,
+                'error': 'Já existe uma busca em andamento no servidor. '
+                         'Aguarde ela terminar (pode levar alguns minutos) e tente de novo.'
+            }), 429
+
+        label = f'{iso}/{uf}/{city}/{segment[:40]} km={km} limit={limit}'
+        try:
+            future = _search_pool.submit(_run_search, task[0], task[1], label)
+        except Exception:
+            _search_lock.release()
+            raise
+
         def generate():
             # Mantém a conexão HTTP ativa durante a busca por blocos.
             # Espaços antes do JSON são válidos e evitam inatividade prolongada.
-            with ThreadPoolExecutor(max_workers=1) as pool:
-                future = pool.submit(task[0], *task[1])
+            try:
                 yield '\n'
                 while True:
-                    try:
-                        data = future.result(timeout=15)
-                        data['requested_km'] = km
-                        yield json.dumps(data, ensure_ascii=False)
-                        break
-                    except FutureTimeoutError:
+                    done, _ = wait([future], timeout=15)
+                    if not done:
+                        app.logger.info('prospect em andamento | rss=%s MB', rss_mb())
                         yield ' '
+                        continue
+                    try:
+                        data = future.result()
+                        data['requested_km'] = km
+                        data['applied_limit'] = limit
+                        yield json.dumps(data, ensure_ascii=False)
                     except Exception as exc:
                         yield json.dumps({
                             'ok': False,
                             'error': f'{type(exc).__name__}: {exc}'
                         }, ensure_ascii=False)
-                        break
+                    break
+            except GeneratorExit:
+                app.logger.warning('prospect: cliente desconectou; a busca segue ate terminar (%s)', label)
+                raise
 
         return Response(
             stream_with_context(generate()),
