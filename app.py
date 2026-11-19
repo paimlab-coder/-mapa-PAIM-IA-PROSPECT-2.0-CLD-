@@ -1,31 +1,42 @@
 # -*- coding: utf-8 -*-
-"""PAIM IA PROSPECT - app.py VER50: Brasil (paim_engine) + America Latina (latam_engine), CORS e erros em JSON.
+"""PAIM IA PROSPECT - app.py VER51: Brasil (paim_engine) + America Latina (latam_engine), CORS, erros em JSON,
+protecao de memoria e LOGIN.
 
-Alteracoes desta versao (protecao contra queda por memoria no Render Free):
-- Uma busca por vez (lock). Uma segunda busca recebe 429 em vez de empilhar e estourar a RAM.
-- A busca roda em um pool proprio: se o navegador desconectar, o lock so e liberado quando a busca termina de verdade.
-- Teto de raio/limite configuravel por variavel de ambiente (MAX_KM, MAX_LIMIT). Padrao igual ao anterior (250 / 1500).
-- Log de memoria (RSS) no inicio, a cada 15 s e no fim de cada busca, para confirmar estouro de RAM nos logs.
-- Loop de batimento corrigido: um TimeoutError vindo do motor nao e mais confundido com o timeout de espera.
-- /api/health informa 'busy' e 'rss_mb'.
+Autenticacao (novo nesta versao):
+- O servidor entrega o index.html SOMENTE depois do login (index.html fica ao lado do app.py, no repositorio).
+- Todas as rotas /api/* exigem sessao, exceto /api/health e o preflight OPTIONS.
+- Usuarios: variavel de ambiente PAIM_USERS (JSON {"usuario": "hash"}). Hash gerado com gerar_hash.py.
+- Sessao: cookie assinado (HttpOnly, Secure, SameSite=Lax). Exige SECRET_KEY fixa no Render.
+- Sem PAIM_USERS valido o sistema fica TRANCADO (ninguem entra). Nunca abre por falta de configuracao.
+
+Protecao de memoria (VER50):
+- Uma busca por vez (lock); segunda busca recebe 429.
+- Teto de raio/limite por variavel de ambiente (MAX_KM, MAX_LIMIT). Padrao 250 / 1500.
+- Log de memoria (RSS) no inicio, a cada 15 s e no fim da busca.
 """
 from __future__ import annotations
 import os
 import json
 import time
+import html
 import logging
+import secrets
 import tempfile
 import threading
+from datetime import timedelta
 from concurrent.futures import ThreadPoolExecutor, wait
 from pathlib import Path
 
-from flask import Flask, Response, jsonify, make_response, request, stream_with_context
+from flask import (Flask, Response, jsonify, make_response, redirect, request,
+                   session, stream_with_context)
 
 import paim_engine as engine
 import latam_engine as latam
 from werkzeug.exceptions import HTTPException
+from werkzeug.security import check_password_hash, generate_password_hash
 
-app = Flask(__name__)
+# static_folder=None: nenhum arquivo do repositorio e servido por acaso (so as rotas abaixo).
+app = Flask(__name__, static_folder=None)
 
 # Sob gunicorn, usa o mesmo handler do gunicorn para que app.logger.info() apareca nos logs do Render.
 if __name__ != '__main__':
@@ -47,6 +58,222 @@ def _env_int(name, default):
 MAX_KM = max(5, _env_int('MAX_KM', 250))
 MAX_LIMIT = max(1, _env_int('MAX_LIMIT', 1500))
 
+# ----------------------------------------------------------------------------------------------
+# AUTENTICACAO
+# ----------------------------------------------------------------------------------------------
+SESSION_HOURS = max(1, _env_int('SESSION_HOURS', 12))
+
+_secret = os.environ.get('SECRET_KEY', '').strip()
+if not _secret:
+    # Sem SECRET_KEY fixa, todo reinicio do Render derruba todas as sessoes.
+    _secret = secrets.token_hex(32)
+    app.logger.warning('SECRET_KEY nao definida: usando chave aleatoria. Defina SECRET_KEY no Render.')
+app.secret_key = _secret
+app.config.update(
+    SESSION_COOKIE_NAME='paim_session',
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    # Render serve HTTPS. Para teste local em http, defina SESSION_COOKIE_SECURE=0.
+    SESSION_COOKIE_SECURE=os.environ.get('SESSION_COOKIE_SECURE', '1') != '0',
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=SESSION_HOURS),
+)
+
+
+def _load_users():
+    raw = os.environ.get('PAIM_USERS', '').strip()
+    if not raw:
+        return {}
+    try:
+        data = json.loads(raw)
+        if not isinstance(data, dict):
+            raise ValueError('esperado um objeto JSON {"usuario": "hash"}')
+        return {str(k).strip().lower(): str(v) for k, v in data.items() if str(k).strip() and v}
+    except Exception as exc:
+        app.logger.error('PAIM_USERS invalido: %s', exc)
+        return {}
+
+
+USERS = _load_users()
+if not USERS:
+    app.logger.error('Nenhum usuario configurado (PAIM_USERS). O sistema ficara trancado ate configurar.')
+
+# Hash falso para gastar o mesmo tempo quando o usuario nao existe (nao revela quais usuarios existem).
+_DUMMY_HASH = generate_password_hash('senha-falsa-para-equalizar-tempo', method='pbkdf2:sha256:600000')
+
+
+def verify_login(username, password):
+    stored = USERS.get(username.strip().lower())
+    if stored is None:
+        check_password_hash(_DUMMY_HASH, password)
+        return False
+    try:
+        return check_password_hash(stored, password)
+    except Exception:
+        return False
+
+
+# Bloqueio de tentativas por usuario: 5 erros em 10 minutos bloqueiam o login desse usuario por 10 minutos.
+MAX_FAILS = 5
+FAIL_WINDOW = 600
+_fails = {}
+_fails_lock = threading.Lock()
+
+
+def _fail_key(username):
+    return username.strip().lower()[:120]
+
+
+def locked_seconds(username):
+    key, now = _fail_key(username), time.time()
+    with _fails_lock:
+        rec = _fails.get(key)
+        if not rec:
+            return 0
+        count, first = rec
+        if now - first > FAIL_WINDOW:
+            _fails.pop(key, None)
+            return 0
+        return int(FAIL_WINDOW - (now - first)) if count >= MAX_FAILS else 0
+
+
+def register_fail(username):
+    key, now = _fail_key(username), time.time()
+    with _fails_lock:
+        if len(_fails) > 2000:
+            for k in [k for k, (_, first) in _fails.items() if now - first > FAIL_WINDOW]:
+                _fails.pop(k, None)
+            if len(_fails) > 2000:
+                _fails.clear()
+        count, first = _fails.get(key, (0, now))
+        if now - first > FAIL_WINDOW:
+            count, first = 0, now
+        _fails[key] = (count + 1, first)
+
+
+def clear_fails(username):
+    with _fails_lock:
+        _fails.pop(_fail_key(username), None)
+
+
+LOGIN_HTML = """<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PAIM IA Prospect · Acesso</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#eef1f5;
+font:14px/1.5 "IBM Plex Sans","Segoe UI",system-ui,Arial,sans-serif;color:#14203a}
+.card{width:100%;max-width:380px;margin:20px;background:#fff;border-radius:14px;padding:32px 28px;
+box-shadow:0 10px 30px rgba(8,37,74,.15);border-top:5px solid #f58220}
+h1{margin:0 0 2px;font-size:20px;color:#08254a;letter-spacing:.3px}
+p.sub{margin:0 0 22px;color:#5b6b85;font-size:13px}
+label{display:block;margin:14px 0 5px;font-weight:600;font-size:12px;color:#08254a;text-transform:uppercase;letter-spacing:.4px}
+input{width:100%;padding:11px 12px;border:1px solid #c5cfdf;border-radius:8px;font:inherit}
+input:focus{outline:2px solid #0a3d7a;border-color:#0a3d7a}
+button{width:100%;margin-top:22px;padding:12px;border:0;border-radius:8px;background:#0a3d7a;color:#fff;
+font:inherit;font-weight:700;cursor:pointer}
+button:hover{background:#08254a}
+.erro{margin-top:16px;padding:10px 12px;border-radius:8px;background:#fdeceb;color:#9b1c1c;font-size:13px}
+.foot{margin-top:20px;text-align:center;font-size:11px;color:#8a97ad}
+</style></head><body>
+<form class="card" method="post" action="/login" autocomplete="on">
+<h1>PAIM IA PROSPECT</h1>
+<p class="sub">Bertolini Intralogística · acesso restrito</p>
+<label for="usuario">Usuário</label>
+<input id="usuario" name="usuario" type="text" autocomplete="username" autofocus required>
+<label for="senha">Senha</label>
+<input id="senha" name="senha" type="password" autocomplete="current-password" required>
+<button type="submit">Entrar</button>
+{{ERRO}}
+<div class="foot">Paim Business Intelligence</div>
+</form></body></html>"""
+
+LOGOUT_SNIPPET = """
+<form method="post" action="/logout" style="position:fixed;right:14px;bottom:14px;z-index:99999;margin:0">
+<button type="submit" title="Encerrar sessão" style="background:#08254a;color:#fff;border:0;border-radius:20px;
+padding:7px 14px;font:600 12px 'IBM Plex Sans','Segoe UI',Arial,sans-serif;cursor:pointer;opacity:.9;
+box-shadow:0 2px 8px rgba(0,0,0,.3)">Sair · {{USUARIO}}</button></form>
+"""
+
+INDEX_PATH = Path(__file__).resolve().with_name('index.html')
+
+# Unicas rotas acessiveis sem login.
+PUBLIC_PATHS = {'/login', '/api/health'}
+
+
+def login_page(message='', status=200):
+    erro = f'<div class="erro">{html.escape(message)}</div>' if message else ''
+    resp = make_response(LOGIN_HTML.replace('{{ERRO}}', erro), status)
+    resp.headers['Content-Type'] = 'text/html; charset=utf-8'
+    resp.headers['Cache-Control'] = 'no-store'
+    return resp
+
+
+@app.before_request
+def require_login():
+    if request.method == 'OPTIONS':  # preflight CORS nao leva cookie
+        return None
+    if request.path in PUBLIC_PATHS or session.get('user'):
+        return None
+    if request.path.startswith('/api/'):
+        return jsonify({
+            'ok': False,
+            'auth': False,
+            'error': 'Sessão expirada ou não autenticada. Entre em /login.'
+        }), 401
+    return redirect('/login')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        if session.get('user'):
+            return redirect('/')
+        return login_page()
+
+    username = (request.form.get('usuario') or '').strip()
+    password = request.form.get('senha') or ''
+    if not USERS:
+        return login_page('Acesso ainda não configurado no servidor. Fale com o administrador.', 503)
+    wait_s = locked_seconds(username)
+    if wait_s:
+        app.logger.warning('login BLOQUEADO usuario=%r', username[:60])
+        return login_page(f'Muitas tentativas. Aguarde {max(1, wait_s // 60)} min e tente de novo.', 429)
+    if verify_login(username, password):
+        clear_fails(username)
+        session.clear()
+        session['user'] = username.strip().lower()
+        session.permanent = True
+        app.logger.info('login OK usuario=%r', username[:60])
+        return redirect('/')
+    register_fail(username)
+    app.logger.warning('login FALHOU usuario=%r', username[:60])
+    return login_page('Usuário ou senha inválidos.', 401)
+
+
+@app.post('/logout')
+def logout():
+    session.clear()
+    return redirect('/login')
+
+
+@app.get('/')
+def index():
+    if not INDEX_PATH.exists():
+        return jsonify({'ok': False, 'error': 'index.html não encontrado ao lado do app.py no servidor.'}), 500
+    page = INDEX_PATH.read_text(encoding='utf-8')
+    snippet = LOGOUT_SNIPPET.replace('{{USUARIO}}', html.escape(session.get('user', '')))
+    pos = page.lower().rfind('</body>')
+    page = page + snippet if pos == -1 else page[:pos] + snippet + page[pos:]
+    resp = make_response(page)
+    resp.headers['Content-Type'] = 'text/html; charset=utf-8'
+    resp.headers['Cache-Control'] = 'no-store'
+    return resp
+
+
+# ----------------------------------------------------------------------------------------------
+# MOTOR
+# ----------------------------------------------------------------------------------------------
 # Origem exata do GitHub Pages. Pode ser sobrescrita no Render por CORS_ORIGINS.
 ALLOWED_ORIGINS = {
     origin.strip().rstrip('/')
@@ -150,8 +377,9 @@ def api_options(any_path):
     return make_response('', 204)
 
 
-@app.get('/')
-def root():
+# Informacoes do servico (antes ficavam em "/"; agora "/" entrega o sistema). Exige login.
+@app.get('/api/info')
+def info():
     return jsonify({
         'ok': True,
         'service': 'PAIM IA PROSPECT API',
@@ -163,6 +391,8 @@ def root():
         'allowed_origins': sorted(ALLOWED_ORIGINS),
         'max_km': MAX_KM,
         'max_limit': MAX_LIMIT,
+        'auth_users': len(USERS),
+        'session_hours': SESSION_HOURS,
     })
 
 
@@ -221,7 +451,7 @@ def prospect_api():
                          'Aguarde ela terminar (pode levar alguns minutos) e tente de novo.'
             }), 429
 
-        label = f'{iso}/{uf}/{city}/{segment[:40]} km={km} limit={limit}'
+        label = f'{iso}/{uf}/{city}/{segment[:40]} km={km} limit={limit} user={session.get("user")}'
         try:
             future = _search_pool.submit(_run_search, task[0], task[1], label)
         except Exception:
