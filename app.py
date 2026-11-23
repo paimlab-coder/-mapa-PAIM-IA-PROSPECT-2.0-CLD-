@@ -7,6 +7,8 @@ Autenticacao (novo nesta versao):
 - Todas as rotas /api/* exigem sessao, exceto /api/health e o preflight OPTIONS.
 - Usuarios: variavel de ambiente PAIM_USERS (JSON {"usuario": "hash"}). Hash gerado com gerar_hash.py.
 - Sessao: cookie assinado (HttpOnly, Secure, SameSite=Lax). Exige SECRET_KEY fixa no Render.
+- Revogacao imediata (VER52): a sessao guarda a impressao digital do hash. Trocou a senha ou removeu o
+  usuario no PAIM_USERS do Render -> o Render reinicia -> a sessao antiga cai no proximo clique.
 - Sem PAIM_USERS valido o sistema fica TRANCADO (ninguem entra). Nunca abre por falta de configuracao.
 
 Protecao de memoria (VER50):
@@ -19,6 +21,7 @@ import os
 import json
 import time
 import html
+import hashlib
 import logging
 import secrets
 import tempfile
@@ -96,6 +99,24 @@ def _load_users():
 USERS = _load_users()
 if not USERS:
     app.logger.error('Nenhum usuario configurado (PAIM_USERS). O sistema ficara trancado ate configurar.')
+
+def _user_fp(stored_hash):
+    """Impressao digital do hash atual do usuario. Vai na sessao: se a senha mudar no Render
+    (ou o usuario for removido), a sessao antiga deixa de valer no proximo clique."""
+    return hashlib.sha256(stored_hash.encode('utf-8')).hexdigest()[:16]
+
+
+def session_still_valid():
+    user = session.get('user')
+    if not user:
+        return False
+    stored = USERS.get(user)
+    if stored is None or session.get('fp') != _user_fp(stored):
+        app.logger.warning('sessao REVOGADA usuario=%r (removido ou senha alterada)', user[:60])
+        session.clear()
+        return False
+    return True
+
 
 # Hash falso para gastar o mesmo tempo quando o usuario nao existe (nao revela quais usuarios existem).
 _DUMMY_HASH = generate_password_hash('senha-falsa-para-equalizar-tempo', method='pbkdf2:sha256:600000')
@@ -213,7 +234,7 @@ def login_page(message='', status=200):
 def require_login():
     if request.method == 'OPTIONS':  # preflight CORS nao leva cookie
         return None
-    if request.path in PUBLIC_PATHS or session.get('user'):
+    if request.path in PUBLIC_PATHS or session_still_valid():
         return None
     if request.path.startswith('/api/'):
         return jsonify({
@@ -227,7 +248,7 @@ def require_login():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        if session.get('user'):
+        if session_still_valid():
             return redirect('/')
         return login_page()
 
@@ -243,6 +264,7 @@ def login():
         clear_fails(username)
         session.clear()
         session['user'] = username.strip().lower()
+        session['fp'] = _user_fp(USERS[session['user']])
         session.permanent = True
         app.logger.info('login OK usuario=%r', username[:60])
         return redirect('/')
