@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-PAIM IA PROSPECT - motor de prospeccao para paises da America Latina (fora do Brasil).
+PAIM IA PROSPECT - motor de prospeccao para paises fora do Brasil.
+VER52-global: alem da America Latina, atende os demais paises do front-end (Americas, Europa, Africa,
+Oriente Medio, Asia e Oceania), com termos de busca em varios idiomas.
 
 Fluxo: geocodifica a cidade (Nominatim/OpenStreetMap, com cache em /tmp) ->
 le os places do Overture Maps dentro do raio -> classifica pelo segmento
@@ -25,9 +27,27 @@ import urllib.request
 from pathlib import Path
 
 SUPPORTED = {
+    # America Latina (original)
     'AR': 'Argentina', 'BO': 'Bolivia', 'CL': 'Chile', 'CO': 'Colombia', 'EC': 'Ecuador',
     'MX': 'Mexico', 'PY': 'Paraguay', 'PE': 'Peru', 'UY': 'Uruguay',
+    # VER52-global: demais paises do front-end (46 no total, contando o Brasil no paim_engine)
+    'VE': 'Venezuela', 'GT': 'Guatemala', 'HN': 'Honduras', 'SV': 'El Salvador', 'NI': 'Nicaragua',
+    'CR': 'Costa Rica', 'PA': 'Panama', 'DO': 'Dominican Republic', 'JM': 'Jamaica', 'TT': 'Trinidad and Tobago',
+    'US': 'United States', 'CA': 'Canada',
+    'PT': 'Portugal', 'ES': 'Spain', 'FR': 'France', 'DE': 'Germany', 'IT': 'Italy', 'GB': 'United Kingdom',
+    'NL': 'Netherlands', 'BE': 'Belgium', 'PL': 'Poland',
+    'AO': 'Angola', 'MZ': 'Mozambique', 'ZA': 'South Africa', 'MA': 'Morocco', 'EG': 'Egypt',
+    'AE': 'United Arab Emirates', 'SA': 'Saudi Arabia', 'TR': 'Turkey',
+    'CN': 'China', 'IN': 'India', 'JP': 'Japan', 'KR': 'South Korea', 'ID': 'Indonesia', 'VN': 'Vietnam',
+    'AU': 'Australia',
 }
+
+# Idioma usado na busca de cidades no Wikidata (fallback da geocodificacao).
+COUNTRY_LANG = {'PT': 'pt', 'AO': 'pt', 'MZ': 'pt', 'FR': 'fr', 'MA': 'fr', 'BE': 'fr', 'DE': 'de', 'IT': 'it',
+                'NL': 'nl', 'PL': 'pl', 'US': 'en', 'CA': 'en', 'GB': 'en', 'JM': 'en', 'TT': 'en', 'ZA': 'en',
+                'EG': 'en', 'AE': 'en', 'SA': 'en', 'TR': 'en', 'CN': 'en', 'IN': 'en', 'JP': 'en', 'KR': 'en',
+                'ID': 'en', 'VN': 'en', 'AU': 'en'}  # demais: 'es'
+
 
 WANTED_COLUMNS = ('id', 'names', 'categories', 'basic_category', 'taxonomy', 'confidence',
                   'websites', 'emails', 'phones', 'addresses', 'geometry', 'bbox')
@@ -123,9 +143,55 @@ SEGMENTS = {
 }
 
 
-def segment_terms(segment: str, segment_es: str = ''):
+# VER52-global: termos de nome em ingles, alemao, frances, italiano, holandes, polones e portugues (Portugal/Africa).
+NAME_TERMS_INTL = {
+    'depositos de mercadorias para terceiros, exceto armazens gerais e guarda-moveis': [
+        'warehous', 'storage', 'logistics', 'lagerhaus', 'logistik', 'entrepot', 'stockage', 'magazzin', 'magazijn',
+        'opslag', 'magazyn', 'armazem', 'armazenagem'],
+    'operador logistico': [
+        'logistics', 'logistik', 'logistique', 'logistica', 'logistiek', 'logistyka', 'spedition', 'freight',
+        'fulfil', 'warehous', '3pl', 'expedition'],
+    'centro de distribuicao': [
+        'distribution', 'distribuzione', 'distributie', 'dystrybuc', 'verteilzentrum', 'logistikzentrum',
+        'warehous', 'centre logistique', 'centro logistico'],
+    'transportadora': [
+        'transport', 'trucking', 'haulage', 'freight', 'spedition', 'transporte', 'trasporti', 'vervoer',
+        'cargo', 'carga'],
+    'alimentos': ['food', 'foods', 'lebensmittel', 'alimentaire', 'alimentari', 'voeding', 'zywnosc', 'meat',
+                  'dairy', 'molkerei', 'bakery', 'alimentar'],
+    'bebidas': ['beverage', 'drinks', 'brewery', 'brauerei', 'getranke', 'brasserie', 'boissons', 'birrificio',
+                'bevande', 'brouwerij', 'browar', 'bottling', 'winery', 'distillery'],
+    'eletrodomesticos': ['appliance', 'hausgerate', 'electromenager', 'elettrodomestic', 'huishoudelijk'],
+    'autopecas': ['auto parts', 'automotive', 'autoteile', 'kfz', 'pieces auto', 'ricambi', 'auto onderdelen',
+                  'czesci', 'pecas auto', 'tyre', 'tire'],
+    'metalurgica': ['metal', 'steel', 'stahl', 'metallbau', 'metallurgie', 'metallurgica', 'metaal', 'stalow',
+                    'foundry', 'giesserei', 'fonderie', 'machining'],
+    'moveleira': ['furniture', 'mobel', 'meubles', 'mobili', 'meubel', 'meble', 'mobiliario', 'woodwork'],
+    'farmaceutica': ['pharma', 'pharmaceutical', 'pharmazie', 'farmaceutic', 'farmaceutisch', 'farmaceutyk',
+                     'laborator', 'medical supply'],
+    'atacadista': ['wholesale', 'grosshandel', 'grossiste', 'ingrosso', 'groothandel', 'hurtownia', 'grossista',
+                   'distributor', 'cash & carry', 'cash and carry'],
+    'supermercado': ['supermarket', 'hypermarket', 'supermarkt', 'supermarche', 'hypermarche', 'ipermercato',
+                     'grocery'],
+    'e-commerce': ['e-commerce', 'ecommerce', 'online shop', 'versandhandel', 'fulfil', 'webshop'],
+    'agronegocio': ['agri', 'agrar', 'agricole', 'agricol', 'landbouw', 'rolnicz', 'grain', 'seed', 'cooperative',
+                    'genossenschaft'],
+    'fertilizantes': ['fertili', 'dunger', 'engrais', 'concimi', 'kunstmest', 'nawozy', 'adubos', 'agrochem'],
+    'papel e celulose': ['paper', 'pulp', 'papier', 'cartiera', 'cartotecnica', 'papel', 'packaging', 'verpackung',
+                         'emballage', 'imballaggi', 'cardboard'],
+    'plasticos': ['plastic', 'kunststoff', 'plastique', 'plastica', 'kunststof', 'tworzyw', 'polymer', 'packaging'],
+    'quimica': ['chemical', 'chemie', 'chimie', 'chimica', 'chemia', 'quimica', 'coatings', 'paints'],
+    'textil': ['textile', 'textil', 'tessile', 'textiel', 'tekstyl', 'garment', 'apparel', 'clothing'],
+    'construcao': ['construction', 'bauunternehmen', 'hochbau', 'tiefbau', 'baustoff', 'batiment', 'costruzion', 'bouw', 'budow', 'building materials',
+                   'construcao'],
+    'siderurgia': ['steel', 'stahlwerk', 'acier', 'acciaieria', 'staal', 'stalownia', 'siderurgia', 'iron'],
+}
+
+
+def segment_terms(segment: str, segment_es: str = '', segment_en: str = ''):
     cats, names = SEGMENTS.get(norm(segment), ([], []))
-    extra = [w for w in re.split(r'[\s,;/]+', norm(segment_es)) if len(w) > 3]
+    names = names + NAME_TERMS_INTL.get(norm(segment), [])
+    extra = [w for w in re.split(r'[\s,;/]+', norm(segment_es) + ' ' + norm(segment_en)) if len(w) > 3]
     if not cats and not names:
         # Segmento desconhecido: usa as palavras do proprio nome do segmento.
         words = [w for w in re.split(r'[\s,;/]+', norm(segment)) if len(w) > 3]
@@ -148,7 +214,13 @@ def _get_json(url, headers=None, timeout=20):
 
 
 COUNTRY_QID = {'AR': 'Q414', 'BO': 'Q750', 'CL': 'Q298', 'CO': 'Q739', 'EC': 'Q736',
-               'MX': 'Q96', 'PY': 'Q733', 'PE': 'Q419', 'UY': 'Q77'}
+               'MX': 'Q96', 'PY': 'Q733', 'PE': 'Q419', 'UY': 'Q77',
+               'VE': 'Q717', 'GT': 'Q774', 'HN': 'Q783', 'SV': 'Q792', 'NI': 'Q811', 'CR': 'Q800', 'PA': 'Q804',
+               'DO': 'Q786', 'JM': 'Q766', 'TT': 'Q754', 'US': 'Q30', 'CA': 'Q16', 'PT': 'Q45', 'ES': 'Q29',
+               'FR': 'Q142', 'DE': 'Q183', 'IT': 'Q38', 'GB': 'Q145', 'NL': 'Q55', 'BE': 'Q31', 'PL': 'Q36',
+               'AO': 'Q916', 'MZ': 'Q1029', 'ZA': 'Q258', 'MA': 'Q1028', 'EG': 'Q79', 'AE': 'Q878', 'SA': 'Q851',
+               'TR': 'Q43', 'CN': 'Q148', 'IN': 'Q668', 'JP': 'Q17', 'KR': 'Q884', 'ID': 'Q252', 'VN': 'Q881',
+               'AU': 'Q408'}
 CITY_TYPES = {'city', 'town', 'village', 'municipality', 'locality', 'district', 'county'}
 
 
@@ -180,13 +252,14 @@ def _photon(city, region, iso):
 def _wikidata(city, iso):
     """Wikidata (CC0): cidade com o pais certo (P17) e coordenadas (P625)."""
     W = 'https://www.wikidata.org/w/api.php?'
-    s = _get_json(W + urllib.parse.urlencode({'action': 'wbsearchentities', 'search': city, 'language': 'es',
+    lang = COUNTRY_LANG.get(iso, 'es')
+    s = _get_json(W + urllib.parse.urlencode({'action': 'wbsearchentities', 'search': city, 'language': lang,
                                                'type': 'item', 'limit': 8, 'format': 'json'}))
     ids = [x['id'] for x in s.get('search') or []]
     if not ids:
         return None
     e = _get_json(W + urllib.parse.urlencode({'action': 'wbgetentities', 'ids': '|'.join(ids), 'props': 'claims|labels',
-                                               'languages': 'es', 'format': 'json'}))
+                                               'languages': lang, 'format': 'json'}))
     for i in ids:
         c = ((e.get('entities') or {}).get(i) or {}).get('claims') or {}
         pais = [x.get('mainsnak', {}).get('datavalue', {}).get('value', {}).get('id') for x in c.get('P17', [])]
@@ -300,7 +373,7 @@ def name_of(rec):
 
 
 # ---------------------------------------------------------------- prospeccao
-def prospect(iso, region, city, segment, segment_es='', km=60, limit=50, min_score=0, reader_factory=None):
+def prospect(iso, region, city, segment, segment_es='', km=60, limit=50, min_score=0, segment_en='', reader_factory=None):
     iso = (iso or '').upper()
     if iso not in SUPPORTED:
         raise ValueError(f'País não suportado: {iso}. Disponíveis: {", ".join(sorted(SUPPORTED))}.')
@@ -317,7 +390,7 @@ def prospect(iso, region, city, segment, segment_es='', km=60, limit=50, min_sco
                 return core.record_batch_reader('place', bbox=b)
 
     reader = reader_factory(bbox)
-    cat_terms, name_terms = segment_terms(segment, segment_es)
+    cat_terms, name_terms = segment_terms(segment, segment_es, segment_en)
     scanned = matched = rejected = 0
     truncated = False
     rows = []
