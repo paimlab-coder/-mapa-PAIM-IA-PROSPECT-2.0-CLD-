@@ -4,7 +4,7 @@
         <script>try{var t=localStorage.getItem("paim_theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>PAIM IA Prospect · VER58</title>
+        <title>PAIM IA Prospect · VER59</title>
         <style>
             :root {
                 --b: #06418a;
@@ -783,7 +783,7 @@
                     <img src="https://media.licdn.com/dms/image/v2/D4D03AQGg0pmvygVbBQ/profile-displayphoto-scale_200_200/B4DaBdg.K6KkAc-/0/1788275320478?e=1796256000&v=beta&t=_0xess2pxEsI7nb2Tmc0OxTWPiD9YJBm42B3MULfiyw" alt="Foto do desenvolvedor" referrerpolicy="no-referrer" onerror="this.outerHTML='&lt;span class=&quot;mono&quot;&gt;DEV&lt;/span&gt;'" >
                     <div><small>Desenvolvido por</small><b>Paim Business Intelligence</b><small>Desenvolvedor Front &amp; Back-End</small></div>
                 </div>
-                    <small class="ver">VER58 · 46 países</small>
+                    <small class="ver">VER59 · 46 países</small>
                 </div>
                 <nav class="nav" id="nav">
                     <div class="nav-group">Visão geral</div>
@@ -2319,6 +2319,82 @@
                       , site = norm(r.website);
                     return Hub.rows.some(x => norm(x.empresa) === n || (site && norm(x.website) === site))
                 }
+                // ===== VER59: países que o motor Overture ainda não atende → busca no OpenStreetMap (Overpass), direto do navegador =====
+                const OSM_W = ['["building"="warehouse"]', '["industrial"~"warehouse|logistics|depot|distributor"]', '["office"="logistics"]'];
+                const OSM_FILTERS = {
+                    "Depósitos de mercadorias para terceiros, exceto armazéns gerais e guarda-móveis": [...OSM_W, '["shop"="storage_rental"]'],
+                    "Operador logístico": [...OSM_W, '["office"="moving_company"]'],
+                    "Centro de distribuição": [...OSM_W, '["shop"="wholesale"]'],
+                    "Transportadora": ['["office"="logistics"]', '["industrial"~"logistics|depot"]', '["office"="moving_company"]'],
+                    "Alimentos": ['["industrial"~"food|bakery|dairy|meat|slaughterhouse"]', '["man_made"="works"]["product"~"food|meat|dairy|bread|sugar|flour",i]', '["craft"~"bakery|confectionery"]'],
+                    "Bebidas": ['["craft"~"brewery|winery|distillery"]', '["industrial"~"brewery|beverage|bottling|distillery|winery"]', '["man_made"="works"]["product"~"beer|beverage|wine|drink|juice",i]'],
+                    "Eletrodomésticos": ['["industrial"~"electronics|electrical|appliance"]', '["man_made"="works"]["product"~"appliance|electronic|electrical",i]'],
+                    "Autopeças": ['["industrial"~"automotive|car|vehicle"]', '["man_made"="works"]["product"~"auto|car|vehicle|parts",i]', '["shop"="car_parts"]'],
+                    "Metalúrgica": ['["industrial"~"metal|machin|foundry"]', '["craft"="metal_construction"]', '["man_made"="works"]["product"~"metal|steel|aluminium",i]'],
+                    "Moveleira": ['["industrial"~"furniture|wood|sawmill"]', '["craft"="carpenter"]', '["man_made"="works"]["product"~"furniture|wood",i]'],
+                    "Farmacêutica": ['["industrial"="pharmaceutical"]', '["man_made"="works"]["product"~"pharma|medic",i]', '["office"="company"]["name"~"pharma|farma|labor",i]'],
+                    "Atacadista": ['["shop"="wholesale"]', '["wholesale"]'],
+                    "Supermercado": ['["shop"~"supermarket|hypermarket"]'],
+                    "E-commerce": [...OSM_W, '["shop"="wholesale"]'],
+                    "Agronegócio": ['["industrial"~"agricultur|grain|silo"]', '["man_made"="silo"]', '["shop"="agrarian"]'],
+                    "Fertilizantes": ['["industrial"~"fertili|chemical"]', '["man_made"="works"]["product"~"fertili",i]', '["shop"="agrarian"]'],
+                    "Papel e celulose": ['["industrial"~"paper|pulp"]', '["man_made"="works"]["product"~"paper|pulp|cardboard",i]'],
+                    "Plásticos": ['["industrial"~"plastic"]', '["man_made"="works"]["product"~"plastic|packaging",i]'],
+                    "Química": ['["industrial"~"chemical"]', '["man_made"="works"]["product"~"chemical",i]'],
+                    "Têxtil": ['["industrial"~"textile|garment"]', '["man_made"="works"]["product"~"textile|cloth|garment",i]'],
+                    "Construção": ['["office"~"construction_company"]', '["industrial"~"construction|concrete|cement"]', '["shop"="trade"]'],
+                    "Siderurgia": ['["industrial"~"steel|metal|foundry"]', '["man_made"="works"]["product"~"steel|iron",i]']
+                };
+                const OSM_ENDPOINTS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+                const distKm = (a, b, c, d) => { const R = 6371, r = x => x * Math.PI / 180, x = Math.sin(r(c - a) / 2) ** 2 + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(r(d - b) / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(x)) };
+                async function overpass(query) {
+                    let last;
+                    for (const ep of OSM_ENDPOINTS) {
+                        try {
+                            const c = new AbortController(), t = setTimeout(() => c.abort(), 120000);
+                            const r = await fetch(ep, { method: 'POST', body: 'data=' + encodeURIComponent(query), headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, signal: c.signal }).finally(() => clearTimeout(t));
+                            if (r.status === 429 || r.status >= 500) { last = Error(`OpenStreetMap ocupado (HTTP ${r.status})`); continue }
+                            if (!r.ok) throw Error(`OpenStreetMap respondeu HTTP ${r.status}`);
+                            return await r.json()
+                        } catch (e) { last = e.name === 'AbortError' ? Error('o OpenStreetMap demorou demais para responder') : e }
+                    }
+                    throw last || Error('OpenStreetMap indisponível')
+                }
+                async function osmProspect(p) {
+                    const item = CNAE_LIST.find(i => i.code === p.cnae);
+                    const seg = p.segment || (item && item.seg) || '';
+                    const filters = OSM_FILTERS[seg] || OSM_W;
+                    const q = [p.city, p.uf, p.country].filter(Boolean).join(', ');
+                    $('mStatus').innerHTML = `O motor Overture ainda não atende ${esc(p.country)}. Localizando ${esc(p.city)} no OpenStreetMap…<div class="progress"><i style="width:45%"></i></div>`;
+                    let g = await getJSON(`https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=pt-BR&countrycodes=${p.country_iso.toLowerCase()}&q=${encodeURIComponent(q)}`, 25000);
+                    if (!g || !g[0]) g = await getJSON(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=${p.country_iso.toLowerCase()}&q=${encodeURIComponent(p.city)}`, 25000);
+                    if (!g || !g[0]) throw Error(`cidade não localizada no OpenStreetMap: ${q}.`);
+                    const lat = +g[0].lat, lon = +g[0].lon, km = Math.min(p.km, 50), R = Math.round(km * 1000);
+                    $('mStatus').innerHTML = `Buscando ${esc(seg || 'empresas')} em ${km} km de ${esc(p.city)} no OpenStreetMap (pode levar até 1 minuto)…<div class="progress"><i style="width:70%"></i></div>`;
+                    const query = `[out:json][timeout:90];(${filters.map(f => `nwr${f}["name"](around:${R},${lat},${lon});`).join('')});out center tags ${Math.min(p.limit * 4, 4000)};`;
+                    const d = await overpass(query);
+                    const els = (d && d.elements) || [], seen = new Set(), rows = [];
+                    els.forEach(e => {
+                        const t = e.tags || {}, la = e.lat ?? (e.center && e.center.lat), lo = e.lon ?? (e.center && e.center.lon);
+                        if (!t.name || la == null) return;
+                        const k = norm(t.name) + '|' + Math.round(la * 200) + '|' + Math.round(lo * 200);
+                        if (seen.has(k)) return;
+                        seen.add(k);
+                        const tel = t.phone || t['contact:phone'] || t['contact:mobile'] || '', mail = t.email || t['contact:email'] || '', site = t.website || t['contact:website'] || t.url || '';
+                        const rua = [t['addr:street'], t['addr:housenumber']].filter(Boolean).join(', ');
+                        const score = (tel ? 30 : 0) + (mail ? 25 : 0) + (site ? 20 : 0) + (seg ? 25 : 0);
+                        rows.push({
+                            id: `osm-${e.type}-${e.id}`, empresa: t.name, razao_social_osm: t.official_name || t['name:en'] || '', operador: t.operator || '', marca: t.brand || '',
+                            categoria: t.industrial || t.shop || t.craft || t.office || t.man_made || t.building || 'empresa', segmento: seg,
+                            endereco: [rua, t['addr:suburb'] || t['addr:district']].filter(Boolean).join(' · '), cep: t['addr:postcode'] || '',
+                            cidade: t['addr:city'] || p.city, uf: p.uf, pais: p.country, telefone: tel, email: mail, website: site,
+                            latitude: la, longitude: lo, distancia_km: +distKm(lat, lon, la, lo).toFixed(1), score, origem: 'OpenStreetMap',
+                            osm_url: `https://www.openstreetmap.org/${e.type}/${e.id}`
+                        })
+                    });
+                    const ok = rows.filter(r => r.score >= p.min_score).sort((a, b) => b.score - a.score || a.distancia_km - b.distancia_km).slice(0, p.limit);
+                    return { ok: true, osm: true, fonte: 'OpenStreetMap (Overpass)', country_iso: p.country_iso, rows: ok, center: { lat, lon }, radius_km: km, requested_km: p.km, scanned: els.length, matched: rows.length, rejected: rows.length - ok.length, capped: p.km > 50 }
+                }
                 async function prospect() {
                     const cfg = countryCfg('m')
                       , cnaeItem = CNAE_LIST.find(i => i.code === ($('mCnae')?.value || ''));
@@ -2377,7 +2453,9 @@
                             }
                             throw Error(r.ok ? `Resposta incompleta do servidor (${text.trim().length} caracteres recebidos). A conexão provavelmente caiu no meio do envio; tente com limite menor.` : `Erro HTTP ${r.status} do servidor. ` + (text.replace(/<[^>]+>/g, ' ').trim().slice(0, 160)))
                         }
-                        if (!r.ok || !d.ok) {
+                        if ((!r.ok || !d || !d.ok) && p.country_iso !== 'BR' && /n[aã]o suportad|not supported|unsupported|Munic[ií]pio n[aã]o configurado/i.test((d && d.error) || ''))
+                            d = await osmProspect(p);
+                        if (!d.osm && (!r.ok || !d.ok)) {
                             if (p.country_iso !== 'BR' && /Munic[ií]pio n[aã]o configurado/i.test(d.error || ''))
                                 throw Error(`${d.error}. Este front está falando com um backend sem suporte a ${p.country} (${API_BASE}, versão ${Backend.version || 'desconhecida'}). Confira o API_BASE no index.html e se o deploy da versão 50-latam terminou.`);
                             throw Error(d.error || `HTTP ${r.status}`)
@@ -2387,6 +2465,7 @@
                         Prospect.rows = d.rows.map( (x, i) => ({
                             ...x,
                             pais: x.pais || x.country || p.country,
+                            origem: x.origem || (d.osm ? 'OpenStreetMap' : x.origem),
                             _id: x.id || `prospect-${i}`,
                             status: 'Pendente',
                             nota: '',
@@ -2403,7 +2482,7 @@
                         renderSources();
                         renderGov();
                         loadIntel(p);
-                        $('mStatus').textContent = `${Prospect.rows.length} prospects exibidos em ${d.radius_km || d.requested_km || p.km} km. ${d.scanned} locais examinados; ${d.matched} compatíveis` + (d.tiles_total ? `; ${d.tiles_processed || 0}/${d.tiles_total} blocos processados` : `; ${d.rejected || 0} rejeitados pelo filtro`) + `. ${p.city}/${p.uf} · ${p.country}. Fonte: Overture Maps.` + (d.partial ? ' Resultado parcial: alguns blocos falharam.' : '') + (d.truncated ? ' Área muito grande: a leitura parou no teto de segurança; reduza o raio para cobrir tudo.' : '') + (p.country_iso !== 'BR' && !d.country_iso ? ' Atenção: o backend não confirmou suporte a países fora do Brasil; confira se os resultados são da cidade certa.' : '')
+                        $('mStatus').textContent = `${Prospect.rows.length} prospects exibidos em ${d.radius_km || d.requested_km || p.km} km. ${d.scanned} locais examinados; ${d.matched} compatíveis` + (d.tiles_total ? `; ${d.tiles_processed || 0}/${d.tiles_total} blocos processados` : `; ${d.rejected || 0} rejeitados pelo filtro`) + `. ${p.city}/${p.uf} · ${p.country}. Fonte: ${d.fonte || 'Overture Maps'}.` + (d.osm ? ` O motor Overture ainda não atende ${p.country}; resultado do OpenStreetMap, que costuma ter menos telefones e e-mails cadastrados.` + (d.capped ? ` Raio limitado a 50 km nesta fonte (pedido: ${p.km} km).` : '') : '') + (d.partial ? ' Resultado parcial: alguns blocos falharam.' : '') + (d.truncated ? ' Área muito grande: a leitura parou no teto de segurança; reduza o raio para cobrir tudo.' : '') + (p.country_iso !== 'BR' && !d.country_iso ? ' Atenção: o backend não confirmou suporte a países fora do Brasil; confira se os resultados são da cidade certa.' : '')
                     } catch (e) {
                         $('mStatus').textContent = 'Falha: ' + await explainFailure(e, p);
                         console.error(e)
@@ -2937,6 +3016,7 @@
                     const rows = [
                         ['Overture Maps · estabelecimentos (via backend)', Backend.up ? 'Ativa' : 'Indisponível no momento', Prospect.lastAt ? `${fmtDate(Prospect.lastAt)} · ${esc(Prospect.lastLabel || '')}` : '—'],
                         ['OpenStreetMap Nominatim · localização de cidades fora do Brasil', Backend.up ? 'Ativa (usada pelo backend)' : 'Indisponível no momento', '—'],
+                        ['OpenStreetMap Overpass · países que o motor Overture ainda não atende (busca direta do navegador)', 'Ativa quando o motor recusa o país', Prospect.lastAt && Prospect.rows.some(r => r.origem === 'OpenStreetMap') ? `${fmtDate(Prospect.lastAt)} · ${esc(Prospect.lastLabel || '')}` : '—'],
                         ['Planilhas importadas (XLSX/CSV)', imp ? `${imp} registros` : 'Nenhuma planilha', fmtDate(Hub.importedAt)],
                         ['Prospects enviados ao Hub', env ? `${env} empresas` : 'Nenhum envio', fmtDate(Hub.sentAt)]
                     ];
