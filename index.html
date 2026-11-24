@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="pt-BR">
     <head>
+        <script>try{var t=localStorage.getItem("paim_theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>PAIM IA Prospect · VER57 · Bertolini BSA</title>
@@ -728,13 +729,54 @@
             }
             @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
         </style>
+        <style id="ver58-themes">
+            :root { --o2: #f5b26b; --side-ink: #c3d0df; --side-mut: #7f95ae; }
+            html[data-theme="verde"] { --b: #1f6b45; --n: #0f3d27; --o: #d99a1e; --o2: #ecc678; --bg: #eef3ef; --ink: #13241b; --mut: #5b6d62; --line: #dbe5de; --navy-900: #0b2a1b; --side-ink: #c5dccd; --side-mut: #86a593; }
+            html[data-theme="grafite"] { --b: #374151; --n: #1f2937; --o: #0e8aa8; --o2: #7cc7da; --bg: #f1f2f4; --ink: #111827; --mut: #5f6672; --line: #e0e2e6; --navy-900: #111827; --side-ink: #d1d5db; --side-mut: #8b93a1; }
+            html[data-theme="vinho"] { --b: #7a1f3d; --n: #4c1027; --o: #b7791f; --o2: #e0b872; --bg: #f6f1f2; --ink: #26141b; --mut: #6e5a62; --line: #eadde1; --navy-900: #2a0a16; --side-ink: #e2cfd6; --side-mut: #a88894; }
+            .nav button { color: var(--side-ink); }
+            .nav button .ico, .nav-group { color: var(--side-mut); }
+            .marker-cluster.cl-internal { background: color-mix(in srgb, var(--b) 25%, transparent); }
+            .filters input:focus, .filters select:focus, .map-controls input:focus, .map-controls select:focus { outline-color: color-mix(in srgb, var(--b) 25%, transparent); }
+            /* Botão de tema */
+            .theme-wrap { position: relative; }
+            .theme-btn { white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface, #fff); color: var(--ink); border-radius: 99px; padding: 5px 12px 5px 6px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
+            .theme-btn:hover { border-color: var(--b); }
+            .theme-btn .dot { width: 20px; height: 20px; border-radius: 50%; background: conic-gradient(var(--navy-900) 0 33%, var(--b) 0 66%, var(--o) 0); border: 2px solid #fff; box-shadow: 0 0 0 1px var(--line); }
+            .theme-menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 2500; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px #06182e26; padding: 6px; min-width: 220px; display: none; }
+            .theme-menu.open { display: block; }
+            .theme-opt { display: flex; align-items: center; gap: 10px; width: 100%; background: none; border: 0; padding: 8px 10px; border-radius: 6px; font: inherit; font-size: 13px; color: var(--ink); cursor: pointer; text-align: left; }
+            .theme-opt:hover { background: #f2f4f7; }
+            .theme-opt[aria-checked="true"] { background: #eef2f7; font-weight: 600; }
+            .theme-opt[aria-checked="true"]::after { content: "✓"; margin-left: auto; color: var(--b); }
+            .theme-opt .sw { display: inline-flex; border-radius: 5px; overflow: hidden; box-shadow: 0 0 0 1px #0000001a; }
+            .theme-opt .sw i { width: 14px; height: 20px; display: block; }
+            /* Radar */
+            .radar-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+            .radar-filters label { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; font-weight: 600; color: var(--mut); }
+            .radar-filters input, .radar-filters select { border: 1px solid #cfd8e3; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: 13px; background: #fff; }
+            .radar-filters .chk { flex-direction: row; align-items: center; gap: 8px; padding-top: 20px; }
+            #v-radar .kpis { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+            #v-radar .kpi small { display: block; color: var(--mut); font-size: 11px; margin-top: 2px; }
+            .kpi:first-child small { color: #ffffffb3 !important; }
+            .cx-cell { min-width: 260px; }
+            .cx { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; font-size: 12.5px; padding: 2px 0; }
+            .cx > span { width: 16px; color: var(--mut); text-align: center; }
+            .cx a { color: var(--b); font-weight: 600; word-break: break-all; }
+            .cx.mail a { font-size: 13px; }
+            .cx.none { color: var(--mut); font-size: 12px; }
+            .cx.none a { font-weight: 500; }
+            .cx-copy { border: 1px solid var(--line); background: #fff; color: var(--mut); border-radius: 4px; font-size: 10.5px; padding: 1px 6px; cursor: pointer; }
+            .cx-copy:hover { color: var(--b); border-color: var(--b); }
+            .map-note.info { margin-top: 8px; font-size: 12px; }
+        </style>
     </head>
     <body>
         <div class="app">
             <aside class="side">
                 <div class="brand">
                     <b>PAIM IA PROSPECT</b>
-                    <small>Bertolini Intralogística · VER57 LATAM</small>
+                    <small>Bertolini Intralogística · VER58 · 46 países</small>
                 </div>
                 <nav class="nav" id="nav">
                     <div class="nav-group">Visão geral</div>
@@ -763,8 +805,9 @@
             </aside>
             <div class="main">
                 <header class="top">
-                    <div class="top-title"><b>PAIM IA Prospect</b><small>Motor de inteligência B2B · Bertolini BSA · Brasil e América Latina</small></div>
+                    <div class="top-title"><b>PAIM IA Prospect</b><small>Motor de inteligência B2B · Bertolini BSA · Brasil + 45 países</small></div>
                     <div class="top-right">
+                        <div class="theme-wrap"><button class="theme-btn" id="themeBtn" aria-haspopup="menu" aria-expanded="false" title="Mudar as cores do painel"><span class="dot"></span>Tema: <span id="themeLabel">Azul Marinho</span></button><div class="theme-menu" id="themeMenu" role="menu"></div></div>
                         <span class="status-pill" id="topStatus">Nenhuma base carregada</span>
                         <div class="consult">
                             <img src="https://media.licdn.com/dms/image/v2/D4D0BAQEBjeh4uT91Pw/company-logo_100_100/B4DZyZPXLDG8AQ-/0/1772097468349?e=1796256000&v=beta&t=WruyhgV759uZkK0Gin3M7PdYLZeXZp6y16-q9x5A2hw" alt="Logo Paim Business Intelligence Consultant" referrerpolicy="no-referrer" onerror="this.outerHTML='&lt;span class=&quot;mono&quot;&gt;PBI&lt;/span&gt;'" >
@@ -1011,6 +1054,14 @@
                                     <select id="mCountry" onchange="loadMapStates()"></select>
                                 </div>
                                 <div>
+                                    <label>IDH DO PAÍS</label>
+                                    <select id="mIdh"><option value="">Todas</option></select>
+                                </div>
+                                <div>
+                                    <label>RENDA PER CAPITA</label>
+                                    <select id="mRenda"><option value="">Todas</option></select>
+                                </div>
+                                <div>
                                     <label>ESTADO / PROVÍNCIA</label>
                                     <select id="mUf" onchange="loadMapCities()">
                                         <option value="">Todos</option>
@@ -1069,6 +1120,7 @@
                                 <button class="btn light" id="mToHub" title="Envia os selecionados (ou todos, se nenhum estiver marcado) para Dashboard, Busca, Mapa Hub Base e Empresa 360°">Enviar à base do Hub</button>
                                 <button class="btn light" onclick="clearMapFilters()">Limpar Filtros</button>
                             </div>
+                            <div class="map-note info" id="mCountryInfo"></div>
                             <div class="map-note" id="mStatus">Selecione País, Estado/Província, Cidade e Segmento ou CNAE/CIIU. A prospecção usa Overture Maps, sem Google, API Key ou Overpass.</div>
                         </div>
                         <div class="map-layout">
@@ -1164,6 +1216,27 @@
                     <!-- RADAR -->
                     <section class="view" id="v-radar">
                         <h1>Radar de Mercado</h1>
+                        <p class="sub">Empresas novas (fora da base do Hub) detectadas nas prospecções de todos os países, com contato imediato e exportação completa.</p>
+                        <div class="card">
+                            <div class="radar-filters">
+                                <label>País<select id="rCountry"><option value="">Todos os países</option></select></label>
+                                <label>Continente / região<select id="rCont"><option value="">Todos</option></select></label>
+                                <label>Faixa de IDH<select id="rIdh"><option value="">Todas</option></select></label>
+                                <label>Renda per capita<select id="rRenda"><option value="">Todas</option></select></label>
+                                <label>Score mínimo<select id="rScore"><option value="0">Todos</option><option value="45">45+</option><option value="70">70+</option></select></label>
+                                <label>Busca livre<input id="rText" placeholder="Empresa, cidade, e-mail, site..."></label>
+                                <label class="chk"><input type="checkbox" id="rOnlyMail"> Só com e-mail</label>
+                            </div>
+                            <div class="row" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
+                                <button class="btn orange" id="rExportXlsx">Exportar todas (XLSX)</button>
+                                <button class="btn light" id="rExportCsv">Exportar todas (CSV)</button>
+                                <button class="btn light" id="rEnrich" title="Consulta razão social, fantasia, matriz/filial, CEP e porte das empresas com CNPJ">Enriquecer CNPJs (BrasilAPI)</button>
+                                <button class="btn light" id="rClearFilters">Limpar filtros</button>
+                                <button class="btn light" id="rClear">Limpar radar</button>
+                            </div>
+                            <div class="status" id="rStatus" style="margin-top:10px">A exportação respeita os filtros acima e traz todas as colunas disponíveis.</div>
+                        </div>
+                        <div class="kpis" id="rKpis"></div>
                         <div class="card">
                             <div class="tablebox">
                                 <table>
@@ -1171,16 +1244,30 @@
                                         <tr>
                                             <th>Empresa</th>
                                             <th>Movimentação</th>
-                                            <th>Local</th>
+                                            <th>Local · País</th>
+                                            <th>Contato imediato</th>
                                         </tr>
                                     </thead>
                                     <tbody id="radarRows">
                                         <tr>
-                                            <td colspan="3" class="empty">Faça uma prospecção para detectar empresas que ainda não estão na base.</td>
+                                            <td colspan="4" class="empty">Faça uma prospecção para detectar empresas que ainda não estão na base.</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header-flex">
+                                <h3>Países monitorados</h3>
+                                <span class="tag" id="rCountryCount"></span>
+                            </div>
+                            <div class="tablebox" style="max-height:460px">
+                                <table>
+                                    <thead><tr><th>País</th><th>Continente</th><th>IDH (2023)</th><th>Renda per capita</th><th>Doc. fiscal</th><th>No radar</th><th></th></tr></thead>
+                                    <tbody id="rCountryRows"></tbody>
+                                </table>
+                            </div>
+                            <div class="source-note">IDH: PNUD, Relatório de Desenvolvimento Humano 2025 (dados de 2023). Faixas PNUD: muito alto ≥ 0,800; alto 0,700–0,799; médio 0,550–0,699; baixo &lt; 0,550. Renda: RNB per capita, método Atlas, Banco Mundial (US$), atualizada pela API ao abrir a página quando houver internet; as faixas de renda são do painel.</div>
                         </div>
                     </section>
                     <!-- ICP -->
@@ -1613,7 +1700,147 @@
                         "Treinta y Tres": ["Treinta y Tres"]
                     }}
                 };
-                const COUNTRIES = Object.assign({ "Brasil": { iso: "BR", regionLabel: "Estado / UF", taxId: "CNPJ", loc: LOC } }, LATAM);
+                // ===== VER58: +37 países (Américas, Europa, África, Ásia e Oceania) =====
+                const WORLD = {
+                    "Venezuela": { iso: "VE", regionLabel: "Estado", taxId: "RIF", lang: "es", loc: {
+                        "Distrito Capital": ["Caracas"], "Miranda": ["Los Teques", "Guarenas", "Petare"], "Carabobo": ["Valencia", "Puerto Cabello"], "Zulia": ["Maracaibo", "Cabimas"], "Lara": ["Barquisimeto"], "Aragua": ["Maracay", "La Victoria"], "Anzoátegui": ["Barcelona", "Puerto La Cruz"], "Bolívar": ["Ciudad Guayana", "Ciudad Bolívar"], "Táchira": ["San Cristóbal"], "La Guaira": ["La Guaira"] } },
+                    "Guatemala": { iso: "GT", regionLabel: "Departamento", taxId: "NIT", lang: "es", loc: {
+                        "Guatemala": ["Ciudad de Guatemala", "Mixco", "Villa Nueva"], "Escuintla": ["Escuintla", "Puerto San José"], "Izabal": ["Puerto Barrios"], "Quetzaltenango": ["Quetzaltenango"], "Sacatepéquez": ["Antigua Guatemala"], "Alta Verapaz": ["Cobán"] } },
+                    "Honduras": { iso: "HN", regionLabel: "Departamento", taxId: "RTN", lang: "es", loc: {
+                        "Francisco Morazán": ["Tegucigalpa"], "Cortés": ["San Pedro Sula", "Puerto Cortés", "Choloma"], "Atlántida": ["La Ceiba"], "Comayagua": ["Comayagua"], "Choluteca": ["Choluteca"] } },
+                    "El Salvador": { iso: "SV", regionLabel: "Departamento", taxId: "NIT", lang: "es", loc: {
+                        "San Salvador": ["San Salvador", "Soyapango"], "La Libertad": ["Santa Tecla", "Antiguo Cuscatlán"], "Santa Ana": ["Santa Ana"], "San Miguel": ["San Miguel"], "La Unión": ["La Unión"], "Sonsonate": ["Sonsonate", "Acajutla"] } },
+                    "Nicarágua": { iso: "NI", regionLabel: "Departamento", taxId: "RUC", lang: "es", loc: {
+                        "Managua": ["Managua", "Tipitapa"], "León": ["León"], "Chinandega": ["Chinandega", "Corinto"], "Masaya": ["Masaya"], "Granada": ["Granada"], "Estelí": ["Estelí"] } },
+                    "Costa Rica": { iso: "CR", regionLabel: "Província", taxId: "Cédula jurídica", lang: "es", loc: {
+                        "San José": ["San José", "Escazú", "Desamparados"], "Alajuela": ["Alajuela", "San Carlos"], "Heredia": ["Heredia", "Belén"], "Cartago": ["Cartago"], "Limón": ["Limón"], "Puntarenas": ["Puntarenas", "Caldera"], "Guanacaste": ["Liberia"] } },
+                    "Panamá": { iso: "PA", regionLabel: "Província", taxId: "RUC", lang: "es", loc: {
+                        "Panamá": ["Ciudad de Panamá", "Tocumen"], "Panamá Oeste": ["La Chorrera", "Arraiján"], "Colón": ["Colón", "Zona Libre de Colón"], "Chiriquí": ["David"], "Coclé": ["Penonomé"] } },
+                    "República Dominicana": { iso: "DO", regionLabel: "Província", taxId: "RNC", lang: "es", loc: {
+                        "Distrito Nacional": ["Santo Domingo"], "Santo Domingo": ["Santo Domingo Este", "Santo Domingo Oeste"], "Santiago": ["Santiago de los Caballeros"], "San Cristóbal": ["San Cristóbal", "Haina"], "La Altagracia": ["Higüey", "Punta Cana"], "La Romana": ["La Romana"] } },
+                    "Jamaica": { iso: "JM", regionLabel: "Paróquia", taxId: "TRN", lang: "en", loc: {
+                        "Kingston": ["Kingston"], "Saint Andrew": ["Half Way Tree"], "Saint Catherine": ["Spanish Town", "Portmore"], "Saint James": ["Montego Bay"], "Manchester": ["Mandeville"] } },
+                    "Trinidad e Tobago": { iso: "TT", regionLabel: "Região", taxId: "BIR", lang: "en", loc: {
+                        "Port of Spain": ["Port of Spain"], "San Fernando": ["San Fernando"], "Chaguanas": ["Chaguanas"], "Couva-Tabaquite-Talparo": ["Couva", "Point Lisas"], "Tobago": ["Scarborough"] } },
+                    "Estados Unidos": { iso: "US", regionLabel: "Estado", taxId: "EIN", lang: "en", loc: {
+                        "California": ["Los Angeles", "Ontario", "Fresno", "San Diego", "Oakland", "Stockton"], "Texas": ["Houston", "Dallas", "Fort Worth", "San Antonio", "Laredo", "Austin"], "Florida": ["Miami", "Orlando", "Jacksonville", "Tampa"], "Georgia": ["Atlanta", "Savannah"], "Illinois": ["Chicago", "Joliet"], "New Jersey": ["Newark", "Edison", "Elizabeth"], "New York": ["New York", "Buffalo"], "Pennsylvania": ["Philadelphia", "Allentown", "Pittsburgh"], "Ohio": ["Columbus", "Cleveland", "Cincinnati"], "Indiana": ["Indianapolis"], "Tennessee": ["Memphis", "Nashville"], "Kentucky": ["Louisville"], "Washington": ["Seattle", "Tacoma"], "Arizona": ["Phoenix"], "North Carolina": ["Charlotte", "Raleigh"], "Michigan": ["Detroit", "Grand Rapids"] } },
+                    "Canadá": { iso: "CA", regionLabel: "Província", taxId: "BN", lang: "en", loc: {
+                        "Ontario": ["Toronto", "Mississauga", "Brampton", "Ottawa", "Hamilton"], "Quebec": ["Montréal", "Laval", "Québec"], "British Columbia": ["Vancouver", "Surrey", "Delta"], "Alberta": ["Calgary", "Edmonton"], "Manitoba": ["Winnipeg"], "Saskatchewan": ["Regina", "Saskatoon"], "Nova Scotia": ["Halifax"] } },
+                    "Portugal": { iso: "PT", regionLabel: "Distrito", taxId: "NIPC", lang: "pt", loc: {
+                        "Lisboa": ["Lisboa", "Loures", "Vila Franca de Xira", "Sintra"], "Porto": ["Porto", "Maia", "Vila Nova de Gaia", "Matosinhos"], "Setúbal": ["Setúbal", "Palmela", "Sines"], "Braga": ["Braga", "Guimarães"], "Aveiro": ["Aveiro", "Santa Maria da Feira"], "Leiria": ["Leiria", "Marinha Grande"], "Coimbra": ["Coimbra"], "Santarém": ["Santarém", "Azambuja"], "Faro": ["Faro"] } },
+                    "Espanha": { iso: "ES", regionLabel: "Comunidade autônoma", taxId: "CIF/NIF", lang: "es", loc: {
+                        "Madrid": ["Madrid", "Getafe", "Alcalá de Henares", "Coslada"], "Cataluña": ["Barcelona", "El Prat de Llobregat", "Tarragona", "Girona"], "Comunidad Valenciana": ["Valencia", "Alicante", "Castellón de la Plana"], "Andalucía": ["Sevilla", "Málaga", "Algeciras", "Córdoba"], "Aragón": ["Zaragoza"], "País Vasco": ["Bilbao", "Vitoria-Gasteiz"], "Castilla-La Mancha": ["Guadalajara", "Toledo"], "Castilla y León": ["Valladolid", "Burgos"], "Galicia": ["Vigo", "A Coruña"], "Murcia": ["Murcia", "Cartagena"] } },
+                    "França": { iso: "FR", regionLabel: "Região", taxId: "SIREN", lang: "fr", loc: {
+                        "Île-de-France": ["Paris", "Roissy-en-France", "Rungis", "Marne-la-Vallée"], "Auvergne-Rhône-Alpes": ["Lyon", "Saint-Étienne", "Grenoble"], "Hauts-de-France": ["Lille", "Dunkerque"], "Provence-Alpes-Côte d'Azur": ["Marseille", "Fos-sur-Mer", "Nice"], "Normandie": ["Le Havre", "Rouen", "Caen"], "Grand Est": ["Strasbourg", "Metz"], "Occitanie": ["Toulouse", "Montpellier"], "Nouvelle-Aquitaine": ["Bordeaux"], "Centre-Val de Loire": ["Orléans", "Tours"], "Pays de la Loire": ["Nantes"] } },
+                    "Alemanha": { iso: "DE", regionLabel: "Estado (Land)", taxId: "USt-IdNr", lang: "de", loc: {
+                        "Nordrhein-Westfalen": ["Köln", "Düsseldorf", "Dortmund", "Duisburg", "Essen"], "Bayern": ["München", "Nürnberg", "Augsburg"], "Baden-Württemberg": ["Stuttgart", "Mannheim", "Karlsruhe"], "Hessen": ["Frankfurt am Main", "Kassel"], "Niedersachsen": ["Hannover", "Wolfsburg"], "Hamburg": ["Hamburg"], "Bremen": ["Bremen", "Bremerhaven"], "Berlin": ["Berlin"], "Sachsen": ["Leipzig", "Dresden"], "Rheinland-Pfalz": ["Mainz", "Ludwigshafen"] } },
+                    "Itália": { iso: "IT", regionLabel: "Região", taxId: "Partita IVA", lang: "it", loc: {
+                        "Lombardia": ["Milano", "Bergamo", "Brescia"], "Piemonte": ["Torino", "Novara"], "Veneto": ["Verona", "Padova", "Venezia"], "Emilia-Romagna": ["Bologna", "Parma", "Piacenza", "Modena"], "Lazio": ["Roma"], "Toscana": ["Firenze", "Livorno"], "Liguria": ["Genova", "La Spezia"], "Campania": ["Napoli", "Salerno"] } },
+                    "Reino Unido": { iso: "GB", regionLabel: "Região", taxId: "Company Number", lang: "en", loc: {
+                        "England - London": ["London"], "England - West Midlands": ["Birmingham", "Coventry"], "England - East Midlands": ["Nottingham", "Leicester", "Northampton"], "England - North West": ["Manchester", "Liverpool"], "England - Yorkshire": ["Leeds", "Sheffield", "Doncaster"], "England - South East": ["Southampton", "Milton Keynes"], "England - East": ["Felixstowe", "Peterborough"], "Scotland": ["Glasgow", "Edinburgh"], "Wales": ["Cardiff"], "Northern Ireland": ["Belfast"] } },
+                    "Países Baixos": { iso: "NL", regionLabel: "Província", taxId: "KvK", lang: "nl", loc: {
+                        "Zuid-Holland": ["Rotterdam", "Den Haag"], "Noord-Holland": ["Amsterdam", "Haarlemmermeer"], "Noord-Brabant": ["Eindhoven", "Tilburg", "Breda", "Venlo"], "Utrecht": ["Utrecht"], "Gelderland": ["Nijmegen", "Arnhem"], "Limburg": ["Venlo", "Maastricht"] } },
+                    "Bélgica": { iso: "BE", regionLabel: "Província", taxId: "BCE/KBO", lang: "nl", loc: {
+                        "Antwerpen": ["Antwerpen", "Mechelen"], "Brussels": ["Bruxelles"], "Oost-Vlaanderen": ["Gent"], "West-Vlaanderen": ["Brugge", "Zeebrugge"], "Liège": ["Liège"], "Hainaut": ["Charleroi", "Mons"], "Limburg": ["Genk", "Hasselt"] } },
+                    "Polônia": { iso: "PL", regionLabel: "Voivodia", taxId: "NIP", lang: "pl", loc: {
+                        "Mazowieckie": ["Warszawa"], "Łódzkie": ["Łódź", "Stryków"], "Śląskie": ["Katowice", "Gliwice"], "Wielkopolskie": ["Poznań"], "Dolnośląskie": ["Wrocław"], "Małopolskie": ["Kraków"], "Pomorskie": ["Gdańsk", "Gdynia"] } },
+                    "Angola": { iso: "AO", regionLabel: "Província", taxId: "NIF", lang: "pt", loc: {
+                        "Luanda": ["Luanda", "Viana", "Cacuaco"], "Benguela": ["Benguela", "Lobito"], "Huíla": ["Lubango"], "Huambo": ["Huambo"], "Cabinda": ["Cabinda"], "Namibe": ["Moçâmedes"] } },
+                    "Moçambique": { iso: "MZ", regionLabel: "Província", taxId: "NUIT", lang: "pt", loc: {
+                        "Maputo Cidade": ["Maputo"], "Maputo": ["Matola"], "Sofala": ["Beira"], "Nampula": ["Nampula", "Nacala"], "Tete": ["Tete"], "Zambézia": ["Quelimane"] } },
+                    "África do Sul": { iso: "ZA", regionLabel: "Província", taxId: "CIPC", lang: "en", loc: {
+                        "Gauteng": ["Johannesburg", "Pretoria", "Ekurhuleni", "Midrand"], "Western Cape": ["Cape Town", "Stellenbosch"], "KwaZulu-Natal": ["Durban", "Pietermaritzburg", "Richards Bay"], "Eastern Cape": ["Port Elizabeth (Gqeberha)", "East London"], "Free State": ["Bloemfontein"], "Mpumalanga": ["Mbombela", "Witbank (eMalahleni)"] } },
+                    "Marrocos": { iso: "MA", regionLabel: "Região", taxId: "ICE", lang: "fr", loc: {
+                        "Casablanca-Settat": ["Casablanca", "Mohammédia", "Settat"], "Tanger-Tétouan-Al Hoceïma": ["Tanger", "Tétouan"], "Rabat-Salé-Kénitra": ["Rabat", "Kénitra", "Salé"], "Fès-Meknès": ["Fès", "Meknès"], "Marrakech-Safi": ["Marrakech", "Safi"], "Souss-Massa": ["Agadir"] } },
+                    "Egito": { iso: "EG", regionLabel: "Província", taxId: "TIN", lang: "en", loc: {
+                        "Cairo": ["Cairo", "New Cairo"], "Giza": ["Giza", "6th of October City"], "Alexandria": ["Alexandria"], "Qalyubia": ["Obour", "Shubra El Kheima"], "Suez": ["Suez", "Ain Sokhna"], "Port Said": ["Port Said"], "Sharqia": ["10th of Ramadan City", "Zagazig"] } },
+                    "China": { iso: "CN", regionLabel: "Província", taxId: "USCC", lang: "en", loc: {
+                        "Guangdong": ["Guangzhou", "Shenzhen", "Dongguan", "Foshan"], "Shanghai": ["Shanghai"], "Beijing": ["Beijing"], "Zhejiang": ["Hangzhou", "Ningbo", "Yiwu"], "Jiangsu": ["Suzhou", "Nanjing", "Wuxi"], "Shandong": ["Qingdao", "Jinan"], "Tianjin": ["Tianjin"], "Sichuan": ["Chengdu"], "Hubei": ["Wuhan"], "Chongqing": ["Chongqing"], "Fujian": ["Xiamen", "Fuzhou"] } },
+                    "Índia": { iso: "IN", regionLabel: "Estado", taxId: "GSTIN", lang: "en", loc: {
+                        "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Bhiwandi"], "Delhi": ["New Delhi"], "Haryana": ["Gurugram", "Faridabad"], "Karnataka": ["Bengaluru"], "Tamil Nadu": ["Chennai", "Coimbatore"], "Telangana": ["Hyderabad"], "Gujarat": ["Ahmedabad", "Surat", "Vadodara"], "West Bengal": ["Kolkata"], "Uttar Pradesh": ["Noida", "Lucknow", "Kanpur"] } },
+                    "Japão": { iso: "JP", regionLabel: "Prefeitura", taxId: "Corporate Number", lang: "en", loc: {
+                        "Tokyo": ["Tokyo"], "Kanagawa": ["Yokohama", "Kawasaki", "Sagamihara"], "Osaka": ["Osaka", "Sakai"], "Aichi": ["Nagoya", "Toyota"], "Saitama": ["Saitama"], "Chiba": ["Chiba", "Narita"], "Hyogo": ["Kobe"], "Fukuoka": ["Fukuoka", "Kitakyushu"] } },
+                    "Coreia do Sul": { iso: "KR", regionLabel: "Província", taxId: "BRN", lang: "en", loc: {
+                        "Seoul": ["Seoul"], "Gyeonggi": ["Suwon", "Incheon", "Pyeongtaek", "Icheon"], "Busan": ["Busan"], "Ulsan": ["Ulsan"], "Daegu": ["Daegu"], "Gyeongsangnam": ["Changwon"], "Chungcheongnam": ["Cheonan", "Asan"] } },
+                    "Emirados Árabes Unidos": { iso: "AE", regionLabel: "Emirado", taxId: "TRN", lang: "en", loc: {
+                        "Dubai": ["Dubai", "Jebel Ali"], "Abu Dhabi": ["Abu Dhabi", "Al Ain"], "Sharjah": ["Sharjah"], "Ajman": ["Ajman"], "Ras Al Khaimah": ["Ras Al Khaimah"] } },
+                    "Arábia Saudita": { iso: "SA", regionLabel: "Província", taxId: "CR", lang: "en", loc: {
+                        "Riyadh": ["Riyadh"], "Makkah": ["Jeddah", "Mecca", "King Abdullah Economic City"], "Eastern Province": ["Dammam", "Al Khobar", "Jubail"], "Madinah": ["Medina", "Yanbu"], "Qassim": ["Buraydah"] } },
+                    "Turquia": { iso: "TR", regionLabel: "Província", taxId: "VKN", lang: "en", loc: {
+                        "İstanbul": ["İstanbul"], "Ankara": ["Ankara"], "İzmir": ["İzmir"], "Bursa": ["Bursa"], "Kocaeli": ["İzmit", "Gebze"], "Antalya": ["Antalya"], "Gaziantep": ["Gaziantep"], "Konya": ["Konya"] } },
+                    "Indonésia": { iso: "ID", regionLabel: "Província", taxId: "NPWP", lang: "en", loc: {
+                        "DKI Jakarta": ["Jakarta"], "Jawa Barat": ["Bandung", "Bekasi", "Bogor", "Cikarang"], "Banten": ["Tangerang", "Cilegon"], "Jawa Timur": ["Surabaya", "Sidoarjo"], "Jawa Tengah": ["Semarang"], "Sumatera Utara": ["Medan"], "Kepulauan Riau": ["Batam"] } },
+                    "Vietnã": { iso: "VN", regionLabel: "Província", taxId: "MST", lang: "en", loc: {
+                        "Hồ Chí Minh": ["Ho Chi Minh City"], "Hà Nội": ["Hanoi"], "Bình Dương": ["Thủ Dầu Một", "Dĩ An"], "Đồng Nai": ["Biên Hòa"], "Hải Phòng": ["Hai Phong"], "Bắc Ninh": ["Bắc Ninh"], "Đà Nẵng": ["Da Nang"] } },
+                    "Austrália": { iso: "AU", regionLabel: "Estado", taxId: "ABN", lang: "en", loc: {
+                        "New South Wales": ["Sydney", "Newcastle", "Wollongong"], "Victoria": ["Melbourne", "Geelong"], "Queensland": ["Brisbane", "Gold Coast", "Townsville"], "Western Australia": ["Perth"], "South Australia": ["Adelaide"], "Tasmania": ["Hobart"], "Northern Territory": ["Darwin"] } }
+                };
+                // IDH: PNUD, Relatório de Desenvolvimento Humano 2025 (dados de 2023).
+                // Renda: RNB per capita, método Atlas (US$ correntes), Banco Mundial; valor de referência embutido,
+                // atualizado ao vivo pela API do Banco Mundial quando a página tem acesso à internet.
+                const COUNTRY_META = {
+                    BR: { cont: "América do Sul", idh: 0.786, rpc: 10550, qid: "Q155", lang: "pt" },
+                    AR: { cont: "América do Sul", idh: 0.865, rpc: 14650, qid: "Q414", lang: "es" },
+                    BO: { cont: "América do Sul", idh: 0.733, rpc: 4420, qid: "Q750", lang: "es" },
+                    CL: { cont: "América do Sul", idh: 0.878, rpc: 16960, qid: "Q298", lang: "es" },
+                    CO: { cont: "América do Sul", idh: 0.788, rpc: 7900, qid: "Q739", lang: "es" },
+                    EC: { cont: "América do Sul", idh: 0.777, rpc: 6890, qid: "Q736", lang: "es" },
+                    MX: { cont: "América do Norte", idh: 0.789, rpc: 13730, qid: "Q96", lang: "es" },
+                    PY: { cont: "América do Sul", idh: 0.756, rpc: 6750, qid: "Q733", lang: "es" },
+                    PE: { cont: "América do Sul", idh: 0.794, rpc: 8430, qid: "Q419", lang: "es" },
+                    UY: { cont: "América do Sul", idh: 0.862, rpc: 24020, qid: "Q77", lang: "es" },
+                    VE: { cont: "América do Sul", idh: 0.709, rpc: 3860, qid: "Q717", lang: "es" },
+                    GT: { cont: "América Central e Caribe", idh: 0.662, rpc: 6360, qid: "Q774", lang: "es" },
+                    HN: { cont: "América Central e Caribe", idh: 0.645, rpc: 3270, qid: "Q783", lang: "es" },
+                    SV: { cont: "América Central e Caribe", idh: 0.678, rpc: 5410, qid: "Q792", lang: "es" },
+                    NI: { cont: "América Central e Caribe", idh: 0.706, rpc: 2850, qid: "Q811", lang: "es" },
+                    CR: { cont: "América Central e Caribe", idh: 0.833, rpc: 17930, qid: "Q800", lang: "es" },
+                    PA: { cont: "América Central e Caribe", idh: 0.839, rpc: 19140, qid: "Q804", lang: "es" },
+                    DO: { cont: "América Central e Caribe", idh: 0.776, rpc: 10620, qid: "Q786", lang: "es" },
+                    JM: { cont: "América Central e Caribe", idh: 0.720, rpc: 7790, qid: "Q766", lang: "en" },
+                    TT: { cont: "América Central e Caribe", idh: 0.807, rpc: 18550, qid: "Q754", lang: "en" },
+                    US: { cont: "América do Norte", idh: 0.938, rpc: 88810, qid: "Q30", lang: "en" },
+                    CA: { cont: "América do Norte", idh: 0.939, rpc: 56420, qid: "Q16", lang: "en" },
+                    PT: { cont: "Europa", idh: 0.890, rpc: 29930, qid: "Q45", lang: "pt" },
+                    ES: { cont: "Europa", idh: 0.918, rpc: 37120, qid: "Q29", lang: "es" },
+                    FR: { cont: "Europa", idh: 0.920, rpc: 48630, qid: "Q142", lang: "fr" },
+                    DE: { cont: "Europa", idh: 0.959, rpc: 60200, qid: "Q183", lang: "de" },
+                    IT: { cont: "Europa", idh: 0.915, rpc: 42080, qid: "Q38", lang: "it" },
+                    GB: { cont: "Europa", idh: 0.946, rpc: 54550, qid: "Q145", lang: "en" },
+                    NL: { cont: "Europa", idh: 0.955, rpc: 68530, qid: "Q55", lang: "nl" },
+                    BE: { cont: "Europa", idh: 0.951, rpc: 59500, qid: "Q31", lang: "nl" },
+                    PL: { cont: "Europa", idh: 0.906, rpc: 25520, qid: "Q36", lang: "pl" },
+                    AO: { cont: "África", idh: 0.616, rpc: 2860, qid: "Q916", lang: "pt" },
+                    MZ: { cont: "África", idh: 0.493, rpc: 570, qid: "Q1029", lang: "pt" },
+                    ZA: { cont: "África", idh: 0.741, rpc: 6270, qid: "Q258", lang: "en" },
+                    MA: { cont: "África", idh: 0.710, rpc: 4360, qid: "Q1028", lang: "fr" },
+                    EG: { cont: "África", idh: 0.754, rpc: 3260, qid: "Q79", lang: "en" },
+                    CN: { cont: "Ásia", idh: 0.797, rpc: 14230, qid: "Q148", lang: "en" },
+                    IN: { cont: "Ásia", idh: 0.685, rpc: 2760, qid: "Q668", lang: "en" },
+                    JP: { cont: "Ásia", idh: 0.925, rpc: 38340, qid: "Q17", lang: "en" },
+                    KR: { cont: "Ásia", idh: 0.937, rpc: 37880, qid: "Q884", lang: "en" },
+                    AE: { cont: "Oriente Médio", idh: 0.940, rpc: 51550, rpcAno: 2024, qid: "Q878", lang: "en" },
+                    SA: { cont: "Oriente Médio", idh: 0.900, rpc: 36070, qid: "Q851", lang: "en" },
+                    TR: { cont: "Oriente Médio", idh: 0.853, rpc: 16300, qid: "Q43", lang: "en" },
+                    ID: { cont: "Ásia", idh: 0.728, rpc: 5120, qid: "Q252", lang: "en" },
+                    VN: { cont: "Ásia", idh: 0.766, rpc: 4970, qid: "Q881", lang: "en" },
+                    AU: { cont: "Oceania", idh: 0.958, rpc: 64120, qid: "Q408", lang: "en" }
+                };
+                Object.values(COUNTRY_META).forEach(m => { m.idhAno = 2023; m.rpcAno = m.rpcAno || 2025; m.rpcFonte = 'referência embutida' });
+                const idhFaixa = v => v == null ? 'Sem dado' : v >= 0.8 ? 'Muito alto' : v >= 0.7 ? 'Alto' : v >= 0.55 ? 'Médio' : 'Baixo';
+                const rendaFaixa = v => v == null ? 'Sem dado' : v >= 40000 ? 'Acima de US$ 40 mil' : v >= 15000 ? 'US$ 15 a 40 mil' : v >= 5000 ? 'US$ 5 a 15 mil' : 'Abaixo de US$ 5 mil';
+                const IDH_FAIXAS = ['Muito alto', 'Alto', 'Médio', 'Baixo'];
+                const RENDA_FAIXAS = ['Acima de US$ 40 mil', 'US$ 15 a 40 mil', 'US$ 5 a 15 mil', 'Abaixo de US$ 5 mil'];
+                // Termos em inglês para países fora da América hispânica (enviados como parâmetro extra; o backend ignora se não conhecer)
+                const SEG_EN = {
+                    "Depósitos de mercadorias para terceiros, exceto armazéns gerais e guarda-móveis": "warehouse storage", "Operador logístico": "logistics service", "Centro de distribuição": "distribution center", "Transportadora": "freight trucking", "Alimentos": "food manufacturer", "Bebidas": "beverage manufacturer", "Eletrodomésticos": "home appliances", "Autopeças": "auto parts", "Metalúrgica": "metal fabrication", "Moveleira": "furniture manufacturer", "Farmacêutica": "pharmaceutical company", "Atacadista": "wholesaler", "Supermercado": "supermarket", "E-commerce": "e-commerce", "Agronegócio": "agribusiness", "Fertilizantes": "fertilizer", "Papel e celulose": "paper mill", "Plásticos": "plastics manufacturer", "Química": "chemical plant", "Têxtil": "textile mill", "Construção": "construction company", "Siderurgia": "steel mill"
+                };
+                const themeC = n => (getComputedStyle(document.documentElement).getPropertyValue('--' + n) || '').trim() || ({ b: themeC('b'), o: themeC('o'), o2: themeC('o2') })[n];
+                const COUNTRIES = (() => {
+                    const all = Object.assign({}, LATAM, WORLD), out = { "Brasil": { iso: "BR", regionLabel: "Estado / UF", taxId: "CNPJ", loc: LOC } };
+                    Object.keys(all).sort((a, b) => a.localeCompare(b, 'pt-BR')).forEach(k => out[k] = all[k]);
+                    return out
+                })();
                 const OTHER_CITY = '__outra__';
                 const countryOf = prefix => $(prefix + 'Country')?.value || '';
                 const countryCfg = prefix => COUNTRIES[countryOf(prefix)] || null;
@@ -2000,7 +2227,7 @@
                     }
                     const geo = geoRows(rows)
                       , mode = opts.mode || 'markers'
-                      , color = opts.cls === 'internal' ? '#0a3d7a' : '#f58220';
+                      , color = opts.cls === 'internal' ? themeC('b') : themeC('o');
                     let layer;
                     if (mode === 'markers' && L.markerClusterGroup) {
                         layer = L.markerClusterGroup({
@@ -2018,7 +2245,7 @@
                         layer = L.featureGroup();
                         geo.forEach(r => {
                             const sc = +r.score || 0;
-                            const style = mode === 'heat' ? { radius: 22, stroke: false, fillColor: '#f58220', fillOpacity: .16 } : mode === 'bubbles' ? { radius: 5 + sc / 8, color: '#fff', weight: 1, fillColor: '#0a3d7a', fillOpacity: .6 } : { radius: 6, color: '#fff', weight: 1.5, fillColor: color, fillOpacity: .95 };
+                            const style = mode === 'heat' ? { radius: 22, stroke: false, fillColor: themeC('o'), fillOpacity: .16 } : mode === 'bubbles' ? { radius: 5 + sc / 8, color: '#fff', weight: 1, fillColor: themeC('b'), fillOpacity: .6 } : { radius: 6, color: '#fff', weight: 1.5, fillColor: color, fillOpacity: .95 };
                             L.circleMarker([+r.latitude, +r.longitude], style).bindPopup( () => popupHtml(r)).addTo(layer)
                         }
                         )
@@ -2026,7 +2253,7 @@
                     layer.addTo(m.map);
                     m.layer = layer;
                     if (opts.center && opts.km)
-                        m.extra = L.circle([opts.center.lat, opts.center.lon], { radius: opts.km * 1000, color: '#0a3d7a', weight: 1.5, fill: false, dashArray: '6 6' }).addTo(m.map);
+                        m.extra = L.circle([opts.center.lat, opts.center.lon], { radius: opts.km * 1000, color: themeC('b'), weight: 1.5, fill: false, dashArray: '6 6' }).addTo(m.map);
                     if (geo.length) {
                         const b = L.latLngBounds(geo.map(r => [+r.latitude, +r.longitude]));
                         if (m.extra)
@@ -2129,6 +2356,7 @@
                             country: p.country,
                             country_iso: p.country_iso,
                             segment_es: SEG_ES[p.segment] || '',
+                            segment_en: SEG_EN[p.segment] || '',
                             ciiu: cnaeItem?.ciiu || ''
                         };
                         const qs = new URLSearchParams(Object.assign({}, extra, base));
@@ -2166,6 +2394,7 @@
                         Prospect.km = p.km;
                         Prospect.lastAt = new Date();
                         Prospect.lastLabel = `${p.city}/${p.uf} · ${p.country}`;
+                        radarIngest(p);
                         renderProspects();
                         renderRadar();
                         renderSources();
@@ -2389,10 +2618,10 @@
                     return out
                 }
                 // --- América Latina: população da cidade (Wikidata) + indicadores do país (Banco Mundial)
-                const COUNTRY_QID = { BR: 'Q155', AR: 'Q414', BO: 'Q750', CL: 'Q298', CO: 'Q739', EC: 'Q736', MX: 'Q96', PY: 'Q733', PE: 'Q419', UY: 'Q77' };
+                const COUNTRY_QID = Object.fromEntries(Object.entries(COUNTRY_META).map(([k, m]) => [k, m.qid]));
                 async function wikiCityPop(city, iso) {
                     const W = 'https://www.wikidata.org/w/api.php';
-                    const s = await getJSON(`${W}?action=wbsearchentities&search=${encodeURIComponent(city)}&language=es&uselang=es&type=item&limit=8&format=json&origin=*`);
+                    const s = await getJSON(`${W}?action=wbsearchentities&search=${encodeURIComponent(city)}&language=${(COUNTRY_META[iso] || {}).lang || 'en'}&uselang=${(COUNTRY_META[iso] || {}).lang || 'en'}&type=item&limit=8&format=json&origin=*`);
                     const ids = (s.search || []).map(x => x.id);
                     if (!ids.length)
                         return null;
@@ -2476,9 +2705,9 @@
                     $('intelKpis').innerHTML = k.join('');
                     $('intelSource').textContent = `${ctx.city}/${ctx.uf} · ${ctx.country}` + (ctx.loading ? ' · carregando indicadores…' : '');
                     // gráficos dos prospects
-                    chart('chScore', { type: 'bar', data: { labels: ['Até 44', '45 a 69', '70 ou mais'], datasets: [{ data: st.bands, backgroundColor: ['#c9d3df', '#f5b26b', '#f58220'], borderRadius: 6 }] }, options: { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } } });
-                    chart('chContact', { type: 'bar', data: { labels: ['Telefone', 'E-mail', 'Website', 'Telefone + site'], datasets: [{ data: [st.tel, st.mail, st.site, st.telSite].map(v => pct(v, st.n)), backgroundColor: '#0a3d7a', borderRadius: 6 }] }, options: { indexAxis: 'y', scales: { x: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.raw + '% dos prospects' } } } } });
-                    chart('chCats', { type: 'bar', data: { labels: st.top.map(t => t[0].length > 28 ? t[0].slice(0, 27) + '…' : t[0]), datasets: [{ data: st.top.map(t => t[1]), backgroundColor: '#f58220', borderRadius: 6 }] }, options: { indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } } });
+                    chart('chScore', { type: 'bar', data: { labels: ['Até 44', '45 a 69', '70 ou mais'], datasets: [{ data: st.bands, backgroundColor: ['#c9d3df', themeC('o2'), themeC('o')], borderRadius: 6 }] }, options: { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } } });
+                    chart('chContact', { type: 'bar', data: { labels: ['Telefone', 'E-mail', 'Website', 'Telefone + site'], datasets: [{ data: [st.tel, st.mail, st.site, st.telSite].map(v => pct(v, st.n)), backgroundColor: themeC('b'), borderRadius: 6 }] }, options: { indexAxis: 'y', scales: { x: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.raw + '% dos prospects' } } } } });
+                    chart('chCats', { type: 'bar', data: { labels: st.top.map(t => t[0].length > 28 ? t[0].slice(0, 27) + '…' : t[0]), datasets: [{ data: st.top.map(t => t[1]), backgroundColor: themeC('o'), borderRadius: 6 }] }, options: { indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } } });
                     // gráfico econômico
                     const empty = $('chEconEmpty');
                     let econOk = false;
@@ -2487,11 +2716,11 @@
                         const labels = Object.keys(ind.vab)
                           , vals = labels.map(l => ind.vab[l] || 0)
                           , tot = vals.reduce( (a, b) => a + b, 0) || 1;
-                        chart('chEcon', { type: 'doughnut', data: { labels, datasets: [{ data: vals, backgroundColor: ['#7aa65a', '#0a3d7a', '#f58220', '#9aa8b8'] }] }, options: { plugins: { legend: { display: true, position: 'right' }, tooltip: { callbacks: { label: c => `${c.label}: ${Math.round(c.raw / tot * 100)}%` } } } } });
+                        chart('chEcon', { type: 'doughnut', data: { labels, datasets: [{ data: vals, backgroundColor: ['#7aa65a', themeC('b'), themeC('o'), '#9aa8b8'] }] }, options: { plugins: { legend: { display: true, position: 'right' }, tooltip: { callbacks: { label: c => `${c.label}: ${Math.round(c.raw / tot * 100)}%` } } } } });
                         econOk = true
                     } else if (!br && ind.gdpSeries && ind.gdpSeries.length) {
                         $('chEconTitle').textContent = `PIB per capita · ${ctx.country} (US$, Banco Mundial)`;
-                        chart('chEcon', { type: 'line', data: { labels: ind.gdpSeries.map(x => x.ano), datasets: [{ data: ind.gdpSeries.map(x => Math.round(x.valor)), borderColor: '#0a3d7a', backgroundColor: '#0a3d7a22', fill: true, tension: .25, pointRadius: 2 }] }, options: { scales: { y: { ticks: { callback: v => 'US$ ' + Number(v).toLocaleString('pt-BR') } } } } });
+                        chart('chEcon', { type: 'line', data: { labels: ind.gdpSeries.map(x => x.ano), datasets: [{ data: ind.gdpSeries.map(x => Math.round(x.valor)), borderColor: themeC('b'), backgroundColor: themeC('b') + '22', fill: true, tension: .25, pointRadius: 2 }] }, options: { scales: { y: { ticks: { callback: v => 'US$ ' + Number(v).toLocaleString('pt-BR') } } } } });
                         econOk = true
                     }
                     if (!econOk) {
@@ -2696,13 +2925,6 @@
                     alert(`${added} empresa(s) enviada(s) à base do Hub.` + (list.length - added ? ` ${list.length - added} já estavam na base.` : '') + (sel.length ? '' : ' (Nenhuma estava marcada, então todas foram enviadas.)'))
                 }
                 const fmtDate = d => d ? d.toLocaleString('pt-BR') : '—';
-                function renderRadar() {
-                    const tb = $('radarRows');
-                    if (!tb)
-                        return;
-                    const novas = Prospect.rows.filter(r => r.situacao === 'Nova empresa').sort( (a, b) => (b.score || 0) - (a.score || 0)).slice(0, 300);
-                    tb.innerHTML = novas.length ? novas.map(r => `<tr><td><b>${esc(r.empresa)}</b></td><td>Nova empresa detectada · ${esc(r.segmento || r.categoria || '-')} · score ${esc(r.score || 0)}</td><td>${esc([r.cidade, r.uf, r.pais].filter(Boolean).join(' / '))}</td></tr>`).join('') : `<tr><td colspan="3" class="empty">${Prospect.rows.length ? 'Todas as empresas da última busca já estão na base do Hub.' : 'Faça uma prospecção para detectar empresas que ainda não estão na base.'}</td></tr>`
-                }
                 function renderSources() {
                     const tb = $('sourceFiles');
                     if (!tb)
@@ -2815,8 +3037,346 @@
                     return `O servidor está online, mas deu erro interno (500) ao processar ${p.city}/${p.uf}. Veja o traceback nos Logs do Render; se for falta de memória, reduza o limite (atual: ${p.limit}).`
                 }
 
+                // ===== VER58: Radar global (47 países), contato imediato, exportação completa e temas =====
+                const Radar = { store: new Map(), enriching: false };
+                const metaOf = iso => COUNTRY_META[iso] || null;
+                const isoOfName = name => (COUNTRIES[name] && COUNTRIES[name].iso) || (name ? null : 'BR');
+                const nameOfIso = iso => Object.keys(COUNTRIES).find(k => COUNTRIES[k].iso === iso) || iso;
+                const fmtIdh = v => v == null ? '—' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+                const fmtUsd = v => v == null ? '—' : 'US$ ' + Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+                const radarKey = r => r.id ? 'id:' + r.id : 'n:' + norm(r.empresa) + '|' + norm(r.cidade) + '|' + norm(r.pais);
+                const domainOf = u => {
+                    const s = safeUrl(u);
+                    if (!s) return '';
+                    try { return new URL(s).hostname.replace(/^www\./, '') } catch (_) { return '' }
+                };
+                const digits = v => String(v || '').replace(/\D/g, '');
+                function inHubNow(r) {
+                    const k = r.id ? 'id:' + r.id : 'n:' + norm(r.empresa) + '|' + norm(r.cidade);
+                    return Hub.rows.some(h => h.srcKey === k) || existing(r)
+                }
+                // Guarda as empresas novas de cada prospecção (o radar acumula buscas de vários países)
+                function radarIngest(p) {
+                    const now = new Date();
+                    Prospect.rows.filter(r => r.situacao === 'Nova empresa').forEach(r => {
+                        const k = radarKey(r);
+                        if (!r.pais) r.pais = p.country;
+                        r._iso = p.country_iso;
+                        r._busca = `${p.city}/${p.uf} · ${p.country}`;
+                        const old = Radar.store.get(k);
+                        r._detectado = old ? old._detectado : now;
+                        Radar.store.set(k, r)
+                    });
+                }
+                function radarRows() {
+                    return [...Radar.store.values()].filter(r => !inHubNow(r))
+                }
+                function radarFilters() {
+                    return {
+                        pais: $('rCountry')?.value || '',
+                        cont: $('rCont')?.value || '',
+                        idh: $('rIdh')?.value || '',
+                        renda: $('rRenda')?.value || '',
+                        score: +($('rScore')?.value || 0),
+                        txt: norm($('rText')?.value || ''),
+                        mail: !!$('rOnlyMail')?.checked
+                    }
+                }
+                function countryPass(iso, f) {
+                    const m = metaOf(iso);
+                    if (f.pais && nameOfIso(iso) !== f.pais) return false;
+                    if (f.cont && (!m || m.cont !== f.cont)) return false;
+                    if (f.idh && idhFaixa(m && m.idh) !== f.idh) return false;
+                    if (f.renda && rendaFaixa(m && m.rpc) !== f.renda) return false;
+                    return true
+                }
+                function radarFiltered() {
+                    const f = radarFilters();
+                    return radarRows().filter(r => {
+                        const iso = r._iso || isoOfName(r.pais) || '';
+                        if (!countryPass(iso, f)) return false;
+                        if ((+r.score || 0) < f.score) return false;
+                        if (f.mail && !r.email) return false;
+                        if (f.txt && !norm([r.empresa, r.categoria, r.segmento, r.cidade, r.uf, r.pais, r.email, r.website, r.endereco].join(' ')).includes(f.txt)) return false;
+                        return true
+                    }).sort((a, b) => (b.score || 0) - (a.score || 0))
+                }
+                function networkCount(rows) {
+                    const c = {};
+                    rows.forEach(r => { const d = domainOf(r.website); if (d) c[d] = (c[d] || 0) + 1 });
+                    return c
+                }
+                function contactCell(r) {
+                    const site = safeUrl(r.website)
+                      , tel = String(r.telefone || '').replace(/[^\d+]/g, '')
+                      , wa = digits(r.telefone)
+                      , q = encodeURIComponent(`"${r.empresa}" ${r.cidade || ''} ${r.pais || ''} email contato`)
+                      , out = [];
+                    if (r.email)
+                        out.push(`<div class="cx mail"><span>✉</span><a href="mailto:${esc(r.email)}">${esc(r.email)}</a><button class="cx-copy" data-copy="${esc(r.email)}" title="Copiar e-mail">Copiar</button></div>`);
+                    else
+                        out.push(`<div class="cx none"><span>✉</span>E-mail não informado na fonte · <a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">buscar e-mail ↗</a></div>`);
+                    if (r.telefone)
+                        out.push(`<div class="cx"><span>☎</span><a href="tel:${esc(tel)}">${esc(r.telefone)}</a>${wa.length >= 10 ? ` · <a href="https://wa.me/${esc(wa)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}<button class="cx-copy" data-copy="${esc(r.telefone)}" title="Copiar telefone">Copiar</button></div>`);
+                    if (site)
+                        out.push(`<div class="cx"><span>⌂</span><a href="${esc(site)}" target="_blank" rel="noopener">${esc(domainOf(site) || site)}</a> · <a href="${esc(site.replace(/\/$/, ''))}/contato" target="_blank" rel="noopener" title="Tenta abrir a página de contato do site">contato ↗</a></div>`);
+                    return out.join('')
+                }
+                function renderRadar() {
+                    const tb = $('radarRows');
+                    if (!tb) return;
+                    const all = radarRows()
+                      , rows = radarFiltered()
+                      , net = networkCount(all)
+                      , n = rows.length
+                      , mail = rows.filter(r => r.email).length
+                      , tel = rows.filter(r => r.telefone).length
+                      , paises = new Set(rows.map(r => r._iso || isoOfName(r.pais))).size;
+                    const pc = (a, b) => b ? ` (${Math.round(a / b * 100)}%)` : '';
+                    if ($('rKpis'))
+                        $('rKpis').innerHTML = kpi('Empresas no filtro', fmtN(n), `de ${fmtN(all.length)} no radar`) + kpi('Com e-mail', fmtN(mail), n ? `${mail} de ${n}${pc(mail, n)}` : '') + kpi('Com telefone', fmtN(tel), n ? `${tel} de ${n}${pc(tel, n)}` : '') + kpi('Países com empresas', fmtN(paises), `de ${Object.keys(COUNTRIES).length} monitorados`);
+                    const shown = rows.slice(0, 500);
+                    tb.innerHTML = shown.length ? shown.map(r => {
+                        const iso = r._iso || isoOfName(r.pais)
+                          , m = metaOf(iso)
+                          , d = domainOf(r.website)
+                          , rede = d && net[d] > 1 ? `<br><span class="tag">Possível rede: ${net[d]} unidades com ${esc(d)}</span>` : ''
+                          , open = Prospect.rows.indexOf(r) >= 0 ? `<button class="linkbtn" data-open="${esc(r._id)}" title="Abrir Empresa 360°">${esc(r.empresa)}</button>` : `<b>${esc(r.empresa)}</b>`;
+                        return `<tr><td>${open}<br><small>${esc(r.endereco || '')}</small>${rede}</td><td>Nova empresa detectada · ${esc(r.segmento || prettyCat(r.categoria) || '-')}<br><small>score ${esc(r.score || 0)} · ${esc(fmtDate(r._detectado))}</small></td><td>${esc([r.cidade, r.uf].filter(Boolean).join(' / '))}<br><b>${esc(r.pais || nameOfIso(iso))}</b>${m ? `<br><small>IDH ${fmtIdh(m.idh)} (${idhFaixa(m.idh)}) · Renda ${fmtUsd(m.rpc)}</small>` : ''}</td><td class="cx-cell">${contactCell(r)}</td></tr>`
+                    }).join('') + (rows.length > 500 ? `<tr><td colspan="4" class="empty">Exibindo 500 de ${rows.length}. A exportação traz todas.</td></tr>` : '') : `<tr><td colspan="4" class="empty">${all.length ? 'Nenhuma empresa nos filtros atuais.' : (Prospect.rows.length ? 'Todas as empresas das buscas já estão na base do Hub.' : 'Faça uma prospecção no Mapa de Prospecção para detectar empresas que ainda não estão na base. O radar acumula as buscas de todos os países.')}</td></tr>`;
+                    renderCountryPanel(all)
+                }
+                function renderCountryPanel(all) {
+                    const tb = $('rCountryRows');
+                    if (!tb) return;
+                    const f = radarFilters()
+                      , cnt = {};
+                    (all || radarRows()).forEach(r => { const i = r._iso || isoOfName(r.pais); cnt[i] = (cnt[i] || 0) + 1 });
+                    const list = Object.keys(COUNTRIES).map(name => ({ name, iso: COUNTRIES[name].iso, m: metaOf(COUNTRIES[name].iso) || {} })).filter(c => countryPass(c.iso, f)).sort((a, b) => (b.m.idh || 0) - (a.m.idh || 0));
+                    if ($('rCountryCount')) $('rCountryCount').textContent = `${list.length} de ${Object.keys(COUNTRIES).length} países`;
+                    tb.innerHTML = list.map(c => `<tr><td><b>${esc(c.name)}</b> <small>${esc(c.iso)}</small></td><td>${esc(c.m.cont || '—')}</td><td>${fmtIdh(c.m.idh)} <span class="tag">${idhFaixa(c.m.idh)}</span></td><td>${fmtUsd(c.m.rpc)} <small>${esc(c.m.rpcAno || '')}</small><br><small>${rendaFaixa(c.m.rpc)}</small></td><td>${esc(COUNTRIES[c.name].taxId)}</td><td>${cnt[c.iso] || 0}</td><td><button class="btn light" style="padding:5px 10px;font-size:11.5px" data-goprospect="${esc(c.name)}">Prospectar</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty">Nenhum país nos filtros.</td></tr>'
+                }
+                // ---- Exportação completa (todas as colunas, pronta para tabela dinâmica)
+                function matrizFilial(r) {
+                    const c = r.cad;
+                    if (c && (c.descricao_identificador_matriz_filial || c.identificador_matriz_filial))
+                        return { v: c.descricao_identificador_matriz_filial || (String(c.identificador_matriz_filial) === '1' ? 'MATRIZ' : 'FILIAL'), f: 'Receita Federal (BrasilAPI)' };
+                    const d = digits(r.cnpj);
+                    if (d.length === 14)
+                        return { v: d.slice(8, 12) === '0001' ? 'Matriz (provável)' : 'Filial (provável)', f: 'Ordem do CNPJ (/0001 = matriz)' };
+                    return { v: 'Não identificado', f: 'Sem CNPJ / registro fiscal na fonte' }
+                }
+                function fullRow(r, net) {
+                    const iso = r._iso || isoOfName(r.pais) || ''
+                      , m = metaOf(iso) || {}
+                      , c = r.cad || {}
+                      , mf = matrizFilial(r)
+                      , d = domainOf(r.website)
+                      , cep = c.cep || r.cep || r.postcode || r.postal_code || r.zip || ''
+                      , gm = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([r.empresa, r.endereco, r.cidade, r.uf, r.pais].filter(Boolean).join(' '));
+                    return {
+                        'Nome da empresa (razão social)': c.razao_social || '',
+                        'Nome fantasia / comercial': c.nome_fantasia || r.empresa || '',
+                        'Matriz ou filial': mf.v,
+                        'Fonte matriz/filial': mf.f,
+                        'Indício de rede (unidades c/ mesmo site)': d && net[d] > 1 ? net[d] : '',
+                        'Documento fiscal': r.cnpj || '',
+                        'Tipo de documento': (COUNTRIES[nameOfIso(iso)] || {}).taxId || '',
+                        'Situação cadastral': c.descricao_situacao_cadastral || '',
+                        'Porte': c.porte || c.descricao_porte || '',
+                        'Natureza jurídica': c.natureza_juridica || '',
+                        'CNAE / atividade principal': [c.cnae_fiscal, c.cnae_fiscal_descricao].filter(Boolean).join(' · '),
+                        'Capital social': c.capital_social != null ? +c.capital_social : '',
+                        'Data de abertura': c.data_inicio_atividade || '',
+                        'Segmento BSA': r.segmento || '',
+                        'Categoria (fonte)': prettyCat(r.categoria) || r.categoria || '',
+                        'Endereço completo': r.endereco || [c.logradouro, c.numero].filter(Boolean).join(', '),
+                        'Logradouro': c.logradouro || '',
+                        'Número': c.numero || '',
+                        'Complemento': c.complemento || '',
+                        'Bairro': c.bairro || '',
+                        'Cidade': r.cidade || c.municipio || '',
+                        'Estado / Província': r.uf || c.uf || '',
+                        'País': r.pais || nameOfIso(iso),
+                        'ISO país': iso,
+                        'Continente / região': m.cont || '',
+                        'CEP / ZIP code': cep,
+                        'E-mail': r.email || c.email || '',
+                        'Telefone': r.telefone || c.ddd_telefone_1 || '',
+                        'WhatsApp (link)': digits(r.telefone).length >= 10 ? 'https://wa.me/' + digits(r.telefone) : '',
+                        'Website': r.website || '',
+                        'Domínio': d,
+                        'Google Maps': gm,
+                        'Latitude': r.latitude != null && r.latitude !== '' ? +r.latitude : '',
+                        'Longitude': r.longitude != null && r.longitude !== '' ? +r.longitude : '',
+                        'Distância do centro (km)': r.distancia_km != null ? +r.distancia_km : '',
+                        'Score de contato': +r.score || 0,
+                        'Faixa de score': (+r.score || 0) >= 70 ? '70+' : (+r.score || 0) >= 45 ? '45-69' : 'Até 44',
+                        'Tem e-mail': r.email ? 'Sim' : 'Não',
+                        'Tem telefone': r.telefone ? 'Sim' : 'Não',
+                        'Tem website': r.website ? 'Sim' : 'Não',
+                        'Situação na base': inHubNow(r) ? 'Já existe na base' : 'Nova empresa',
+                        'Status BDR': r.status || 'Pendente',
+                        'Nota BDR': r.nota || '',
+                        'IDH do país': m.idh ?? '',
+                        'Faixa IDH': idhFaixa(m.idh),
+                        'Renda per capita país (US$)': m.rpc ?? '',
+                        'Ano renda': m.rpcAno || '',
+                        'Faixa de renda': rendaFaixa(m.rpc),
+                        'Busca de origem': r._busca || '',
+                        'Detectado em': r._detectado ? fmtDate(r._detectado) : '',
+                        'Fonte': r.origem || r.source || 'Overture Maps',
+                        'ID na fonte': r.id || ''
+                    }
+                }
+                const SKIP_KEYS = new Set(['_id', '_iso', '_busca', '_detectado', 'cad', 'raw', 'status', 'nota', 'situacao', 'empresa', 'cnpj', 'pais', 'uf', 'cidade', 'segmento', 'categoria', 'endereco', 'cep', 'telefone', 'email', 'website', 'latitude', 'longitude', 'score', 'origem', 'source', 'id', 'distancia_km', 'capital_social', 'srcKey', 'postcode', 'postal_code', 'zip']);
+                function exportFull(rows, base, xlsx) {
+                    if (!rows.length) { alert('Nenhuma empresa no radar com os filtros atuais.'); return }
+                    const net = networkCount(radarRows());
+                    const extraKeys = [...new Set(rows.flatMap(r => Object.keys(r)))].filter(k => !SKIP_KEYS.has(k));
+                    const data = rows.map(r => {
+                        const o = fullRow(r, net);
+                        extraKeys.forEach(k => { const v = r[k]; o['Fonte · ' + k] = v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : v });
+                        return o
+                    });
+                    const stamp = new Date().toISOString().slice(0, 10);
+                    if (xlsx && window.XLSX) {
+                        const wb = XLSX.utils.book_new()
+                          , ws = XLSX.utils.json_to_sheet(data)
+                          , hs = Object.keys(data[0]);
+                        ws['!autofilter'] = { ref: XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: data.length, c: hs.length - 1 } }) };
+                        ws['!cols'] = hs.map(h => ({ wch: Math.min(48, Math.max(12, h.length + 2, ...data.slice(0, 200).map(x => String(x[h] ?? '').length))) }));
+                        ws['!freeze'] = { xSplit: 1, ySplit: 1 };
+                        XLSX.utils.book_append_sheet(wb, ws, 'Empresas');
+                        const paises = Object.keys(COUNTRIES).map(n => { const mm = metaOf(COUNTRIES[n].iso) || {}; return { 'País': n, 'ISO': COUNTRIES[n].iso, 'Continente / região': mm.cont || '', 'IDH': mm.idh ?? '', 'Ano IDH': mm.idhAno || '', 'Faixa IDH': idhFaixa(mm.idh), 'Renda per capita (US$)': mm.rpc ?? '', 'Ano renda': mm.rpcAno || '', 'Fonte renda': mm.rpcFonte || '', 'Faixa de renda': rendaFaixa(mm.rpc), 'Documento fiscal': COUNTRIES[n].taxId, 'Empresas exportadas': rows.filter(r => (r._iso || isoOfName(r.pais)) === COUNTRIES[n].iso).length } });
+                        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(paises), 'Países');
+                        XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['Leia-me'], ['Gerado em', new Date().toLocaleString('pt-BR')], ['Empresas', rows.length], ['Empresas: base pronta para Tabela Dinâmica (Inserir > Tabela Dinâmica). Cada linha é uma empresa; filtros já aplicados no cabeçalho.'], ['Razão social, porte, situação e matriz/filial oficiais só existem quando há CNPJ consultado na BrasilAPI. Sem CNPJ, "Nome fantasia" traz o nome da fonte (Overture Maps).'], ['Matriz/filial "provável" vem da ordem do CNPJ (/0001); confirme na Receita.'], ['"Indício de rede" conta unidades com o mesmo domínio de site na lista: hipótese, não confirmação.'], ['IDH: PNUD, Relatório de Desenvolvimento Humano 2025 (dados 2023).'], ['Renda per capita: RNB per capita, método Atlas, Banco Mundial (US$ correntes).'], ['Colunas "Fonte · ..." são campos extras enviados pelo motor de prospecção, preservados sem alteração.']]), 'Leia-me');
+                        XLSX.writeFile(wb, `${base}_${stamp}.xlsx`);
+                        return
+                    }
+                    const hs = Object.keys(data[0])
+                      , csv = [hs.map(h => '"' + h.replace(/"/g, '""') + '"').join(';'), ...data.map(r => hs.map(k => '"' + String(r[k] ?? '').replace(/"/g, '""') + '"').join(';'))].join('\n')
+                      , a = document.createElement('a');
+                    a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' }));
+                    a.download = `${base}_${stamp}.csv`;
+                    a.click();
+                    URL.revokeObjectURL(a.href)
+                }
+                async function enrichCnpjs() {
+                    if (Radar.enriching) return;
+                    const st = $('rStatus')
+                      , list = radarFiltered().filter(r => digits(r.cnpj).length === 14 && !r.cad);
+                    if (!list.length) {
+                        st.textContent = 'Nenhuma empresa do filtro tem CNPJ ainda não consultado. O Overture Maps não traz CNPJ: informe-o na Empresa 360° ou importe uma base com CNPJ.';
+                        return
+                    }
+                    Radar.enriching = true;
+                    let ok = 0, fail = 0;
+                    for (let i = 0; i < list.length; i++) {
+                        st.textContent = `Consultando CNPJ ${i + 1} de ${list.length} na BrasilAPI…`;
+                        try { list[i].cad = await getJSON(`https://brasilapi.com.br/api/cnpj/v1/${digits(list[i].cnpj)}`, 20000); ok++ } catch (e) { fail++ }
+                        await sleep(400)
+                    }
+                    Radar.enriching = false;
+                    st.textContent = `Enriquecimento concluído: ${ok} de ${list.length} CNPJs consultados` + (fail ? `; ${fail} falharam (CNPJ inválido ou limite da API).` : '.');
+                    renderRadar()
+                }
+                // ---- Renda per capita ao vivo (Banco Mundial); mantém a referência embutida se a API falhar
+                async function refreshIncome() {
+                    try {
+                        const isos = Object.keys(COUNTRY_META).join(';');
+                        const d = await getJSON(`https://api.worldbank.org/v2/country/${isos}/indicator/NY.GNP.PCAP.CD?format=json&mrnev=1&per_page=200`, 25000);
+                        let n = 0;
+                        ((d && d[1]) || []).forEach(x => {
+                            const iso2 = x.country && x.country.id, m = COUNTRY_META[iso2];
+                            if (m && x.value != null) { m.rpc = Math.round(x.value); m.rpcAno = +x.date; m.rpcFonte = 'Banco Mundial (API)'; n++ }
+                        });
+                        if (n) { fillCountrySelects(); renderRadar() }
+                    } catch (_) {}
+                }
+                // ---- Seletores de país com IDH / renda
+                function fillCountrySelects() {
+                    const names = Object.keys(COUNTRIES);
+                    const lab = n => { const m = metaOf(COUNTRIES[n].iso); return m ? `${n} · IDH ${fmtIdh(m.idh)}` : n };
+                    const rc = $('rCountry');
+                    if (rc) { const v = rc.value; rc.innerHTML = '<option value="">Todos os países</option>' + names.map(n => option(n, lab(n))).join(''); rc.value = v }
+                    const rcont = $('rCont');
+                    if (rcont && rcont.options.length <= 1) rcont.innerHTML = '<option value="">Todos</option>' + [...new Set(Object.values(COUNTRY_META).map(m => m.cont))].sort().map(c => option(c)).join('');
+                    ['rIdh', 'mIdh'].forEach(id => { const s = $(id); if (s && s.options.length <= 1) s.innerHTML = '<option value="">Todas</option>' + IDH_FAIXAS.map(x => option(x)).join('') });
+                    ['rRenda', 'mRenda'].forEach(id => { const s = $(id); if (s && s.options.length <= 1) s.innerHTML = '<option value="">Todas</option>' + RENDA_FAIXAS.map(x => option(x)).join('') });
+                    const mc = $('mCountry');
+                    if (mc) {
+                        const cur = mc.value || 'Brasil'
+                          , f = { idh: $('mIdh')?.value || '', renda: $('mRenda')?.value || '' }
+                          , ok = names.filter(n => countryPass(COUNTRIES[n].iso, f));
+                        mc.innerHTML = ok.map(n => option(n, lab(n))).join('') || '<option value="">Nenhum país nessa faixa</option>';
+                        if (ok.includes(cur)) mc.value = cur;
+                        else if (ok.length) { mc.value = ok[0]; window.loadMapStates && window.loadMapStates() }
+                        if ($('mCountryInfo')) {
+                            const m = metaOf(COUNTRIES[mc.value]?.iso);
+                            $('mCountryInfo').textContent = m ? `${ok.length} países na faixa · ${mc.value}: IDH ${fmtIdh(m.idh)} (${idhFaixa(m.idh)}) · renda per capita ${fmtUsd(m.rpc)} (${m.rpcAno})` : ''
+                        }
+                    }
+                }
+                // ---- Temas de cor
+                const THEMES = [
+                    { id: 'padrao', nome: 'Azul Marinho', cores: ['#061a33', '#0a3d7a', '#f58220'] },
+                    { id: 'verde', nome: 'Verde Industrial', cores: ['#0b2a1b', '#1f6b45', '#d99a1e'] },
+                    { id: 'grafite', nome: 'Grafite & Ciano', cores: ['#111827', '#374151', '#0e8aa8'] },
+                    { id: 'vinho', nome: 'Bordô Executivo', cores: ['#2a0a16', '#7a1f3d', '#b7791f'] }
+                ];
+                function applyTheme(id, silent) {
+                    const t = THEMES.find(x => x.id === id) || THEMES[0];
+                    document.documentElement.setAttribute('data-theme', t.id);
+                    try { SafeStorage.setItem('paim_theme', t.id) } catch (_) {}
+                    document.querySelectorAll('.theme-opt').forEach(b => b.setAttribute('aria-checked', String(b.dataset.theme === t.id)));
+                    if ($('themeLabel')) $('themeLabel').textContent = t.nome;
+                    if (!silent) { renderHubMap(); renderProspects(); refreshIntel() }
+                }
+                function setupThemes() {
+                    const menu = $('themeMenu'), btn = $('themeBtn');
+                    if (!menu || !btn) return;
+                    menu.innerHTML = THEMES.map(t => `<button class="theme-opt" role="menuitemradio" data-theme="${t.id}"><span class="sw">${t.cores.map(c => `<i style="background:${c}"></i>`).join('')}</span>${esc(t.nome)}</button>`).join('');
+                    btn.addEventListener('click', e => { e.stopPropagation(); const o = menu.classList.toggle('open'); btn.setAttribute('aria-expanded', String(o)) });
+                    menu.addEventListener('click', e => { const b = e.target.closest('.theme-opt'); if (b) { applyTheme(b.dataset.theme); menu.classList.remove('open'); btn.setAttribute('aria-expanded', 'false') } });
+                    document.addEventListener('click', e => { if (!e.target.closest('.theme-wrap')) { menu.classList.remove('open'); btn.setAttribute('aria-expanded', 'false') } });
+                    applyTheme(SafeStorage.getItem('paim_theme') || 'padrao', true)
+                }
+                function setupRadar() {
+                    fillCountrySelects();
+                    ['rCountry', 'rCont', 'rIdh', 'rRenda', 'rScore', 'rOnlyMail'].forEach(id => $(id)?.addEventListener('change', renderRadar));
+                    $('rText')?.addEventListener('input', renderRadar);
+                    ['mIdh', 'mRenda'].forEach(id => $(id)?.addEventListener('change', fillCountrySelects));
+                    $('mCountry')?.addEventListener('change', fillCountrySelects);
+                    $('rExportXlsx')?.addEventListener('click', () => exportFull(radarFiltered(), 'radar_empresas', true));
+                    $('rExportCsv')?.addEventListener('click', () => exportFull(radarFiltered(), 'radar_empresas', false));
+                    $('rEnrich')?.addEventListener('click', enrichCnpjs);
+                    $('rClearFilters')?.addEventListener('click', () => { ['rCountry', 'rCont', 'rIdh', 'rRenda', 'rText'].forEach(id => { if ($(id)) $(id).value = '' }); if ($('rScore')) $('rScore').value = '0'; if ($('rOnlyMail')) $('rOnlyMail').checked = false; renderRadar() });
+                    $('rClear')?.addEventListener('click', () => { if (confirm('Limpar todas as empresas acumuladas no radar?')) { Radar.store.clear(); renderRadar() } });
+                    document.addEventListener('click', e => {
+                        const c = e.target.closest('[data-copy]');
+                        if (c) {
+                            e.preventDefault();
+                            const v = c.dataset.copy;
+                            (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => { c.textContent = 'Copiado ✓'; setTimeout(() => c.textContent = 'Copiar', 1400) }).catch(() => prompt('Copie:', v));
+                            return
+                        }
+                        const g = e.target.closest('[data-goprospect]');
+                        if (g) {
+                            ['mIdh', 'mRenda'].forEach(id => { if ($(id)) $(id).value = '' });
+                            fillCountrySelects();
+                            $('mCountry').value = g.dataset.goprospect;
+                            window.loadMapStates();
+                            fillCountrySelects();
+                            document.querySelector('.nav button[data-tab="geomap"]')?.click()
+                        }
+                    });
+                    refreshIncome()
+                }
                 function init() {
                     setup();
+                    setupThemes();
+                    setupRadar();
                     health();
 
                     const bind = (id, ev, fn) => {
@@ -2876,7 +3436,8 @@
                         const uf = $('mUf')?.value || '';
                         const pais = countryOf('m') || 'Brasil';
                         const item = CNAE_LIST.find(i => i.code === cnae);
-                        const termo = pais === 'Brasil' ? [cnae, seg] : [SEG_ES[seg] || (item ? item.ciiuDesc : '')];
+                        const lg = (COUNTRY_META[(COUNTRIES[pais] || {}).iso] || {}).lang;
+                        const termo = pais === 'Brasil' ? [cnae, seg] : lg === 'es' ? [SEG_ES[seg] || (item ? item.ciiuDesc : '')] : [SEG_EN[seg] || seg];
                         const cidade = city === OTHER_CITY ? '' : city;
                         window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent([...termo, cidade, uf, pais].filter(Boolean).join(' ')), '_blank', 'noopener');
                     }
