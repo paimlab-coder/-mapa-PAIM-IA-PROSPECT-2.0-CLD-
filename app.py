@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""PAIM IA PROSPECT - app.py VER51: Brasil (paim_engine) + America Latina (latam_engine), CORS, erros em JSON,
+"""PAIM IA PROSPECT - app.py VER52: Brasil (paim_engine) + 45 paises (latam_engine, VER52-global), CORS, erros em JSON,
 protecao de memoria e LOGIN.
 
 Autenticacao (novo nesta versao):
@@ -405,7 +405,7 @@ def info():
     return jsonify({
         'ok': True,
         'service': 'PAIM IA PROSPECT API',
-        'version': '50-latam',
+        'version': '52-global',
         'source': 'Overture Maps',
         'municipalities': len(engine.CITY),
         'latam_countries': sorted(latam.SUPPORTED),
@@ -423,7 +423,7 @@ def health():
     status = 200 if not _startup_error and len(engine.CITY) >= 5500 else 503
     return jsonify({
         'ok': status == 200,
-        'version': '50-latam',
+        'version': '52-global',
         'source': 'Overture Maps',
         'municipalities': len(engine.CITY),
         'latam_countries': sorted(latam.SUPPORTED),
@@ -447,6 +447,7 @@ def prospect_api():
         if not segment:
             segment = CNAE_TO_SEGMENT.get(str(payload.get('cnae', '')).strip(), '')
         segment_es = str(payload.get('segment_es', '')).strip()
+        segment_en = str(payload.get('segment_en', '')).strip()
         km = max(5, min(MAX_KM, int(payload.get('km', 20))))
         limit = max(1, min(MAX_LIMIT, int(payload.get('limit', 50))))
         min_score = max(0, min(100, int(payload.get('min_score', 0))))
@@ -460,7 +461,7 @@ def prospect_api():
         if iso == 'BR':
             task = (engine.prospect, (city, uf, segment, km, limit, min_score))
         elif iso in latam.SUPPORTED:
-            task = (latam.prospect, (iso, region, city, segment, segment_es, km, limit, min_score))
+            task = (latam.prospect, (iso, region, city, segment, segment_es, km, limit, min_score, segment_en))
         else:
             return jsonify({'ok': False, 'error': f'País não suportado: {iso}.'}), 400
 
